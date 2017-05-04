@@ -18,6 +18,8 @@ class Robot():
         self.__position = position
         self.__orientation = orientation
         self.murs = liste_murs
+        self.image = 'images/gwenHaDu.jpg'
+        self.image = 'images/triskel.png'
 
     def __str__(self):
         s = " Points de vie: "
@@ -95,12 +97,15 @@ class Robot():
 
     def dessin(self, qp, ihm):
         
-        painter = QtGui.QPainter(ihm)
-        painter.setPen(QtGui.QPen(QtCore.Qt.red))
-        painter.drawArc(QtCore.QRectF(self.position[0]*100 + 100,self.position[1]*100 + 100, 10, 10), 0, 5760)
+        image_robot = QtGui.QImage(self.image)
         
-        qp.setPen(QtCore.Qt.red)
-        qp.drawEllipse(self.position[0],self.position[1], 10, 5)
+        painter = QtGui.QPainter(ihm)
+        painter.drawImage(QtCore.QRectF(self.position[0]*59 + 20,self.position[1]*59 + 45, 50, 50),image_robot)
+        
+        
+#        painter.setPen(QtGui.QPen(QtCore.Qt.red))
+#        painter.drawArc(QtCore.QRectF(self.position[0]*100 + 35,self.position[1]*100 + 65, 10, 10), 0, 5760)
+        
 
     
 if __name__ == "__main__":
@@ -108,3 +113,15 @@ if __name__ == "__main__":
     twonky = Robot((1,1),1)
     print(twonky)
     print(twonky.position)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

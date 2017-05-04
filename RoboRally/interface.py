@@ -135,4 +135,3 @@ if __name__ == "__main__":
     ui.setupUi(interface_ihm)
     interface_ihm.show()
     sys.exit(app.exec_())
-
