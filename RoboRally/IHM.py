@@ -13,7 +13,7 @@ import Joueur
 import Plateau
 import Cartes
 import Robot as rob
-import Master
+import Jeu
 
 class IHM(QtGui.QMainWindow):
     def __init__(self):
@@ -22,13 +22,11 @@ class IHM(QtGui.QMainWindow):
         # Configuration de l'interface utilisateur.
         self.ui = Ui_interface_ihm()
         self.ui.setupUi(self)
-        xfen = self.ui.conteneur.width()
-        yfen = self.ui.conteneur.height()
-        self.plateau = Plateau.Plateau(xfen,yfen)
+        self.plateau = Plateau.Plateau(10,9)
         self.pioche = [Cartes.Translation(1) for i in range(9)]
-        self.jeu = Master.Jeu(self.plateau, self.pioche)
-#        self.dessinplateau()
-#        self.drawrobot()
+        self.jeu = Jeu.Jeu(self.plateau, self.pioche)
+        
+#        QtCore.QObject.startTimer()
         
         #Mise en place de l'arrière plan
         palette = QtGui.QPalette()
@@ -38,42 +36,25 @@ class IHM(QtGui.QMainWindow):
 
         
         #Connecte les boutons aux fonctions définies ci-dessous
-#        self.ui.bouton_partie.clicked.connect(self.dessinplateau)
-#        self.ui.bouton_distrib.clicked.connect(self.distrib)
-#        self.ui.bouton_instru.clicked.connect(self.simuler)
+#        self.ui.bouton_partie.clicked.connect(           )
+        self.ui.bouton_distrib.clicked.connect(self.distrib)
+        self.ui.bouton_instru.clicked.connect(self.simuler)
 
 
-    def dessinplateau(self):
-        
-        ############################ TA VERSION ######################################
-#        print('dessinplateau')
-#        #choisir un plateau au hasard
-#        window = QtGui.QMainWindow()
-#        window.setGeometry(50, 50, 400, 200)
-#        pic = QtGui.QLabel(window)
-#        pic.setGeometry(0, 0, 300, 300)
-#        pic.setPixmap(QtGui.QPixmap("tableau_jeu.png"))
-
-                
-        ############################ MA VERSION ######################################
-        pic = QtGui.QLabel(self.ui.conteneur)
-        pixmap = QtGui.QPixmap("tableau_jeu.png")
-        if self.ui.conteneur.width() > self.ui.conteneur.height():
-            pixmap = pixmap.scaledToHeight(self.ui.conteneur.height())
-        else:
-            pixmap = pixmap.scaledToWidth(self.ui.conteneur.width())
-        pic.setPixmap(pixmap)
-        
-    
     def distrib(self):
 #        print('distrib')
         self.jeu.prepareTour()
-        self.ui.tapiscarte.update()
+#        self.ui.tapiscarte.update()
 
     def simuler(self):
 #        print('simuler')
-        self.jeu.Tour()
-        self.ui.conteneur.update()
+
+        def step_draw():
+            self.ui.centralwidget.update()
+            pass
+        
+        self.jeu.Tour(step_draw)
+        self.ui.centralwidget.update()
 
 
     #Affichage des robots sur le plateau

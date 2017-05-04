@@ -108,7 +108,7 @@ class Joueur():
         pass
 
 
-def creerJoueur(numero, robot_options = (9,9,0)):
+def creerJoueur(numero, robot_options = (0,0,0)):
     """
     Permet d'instancier un joueur en demandant les paramètres à l'utilisateur
     robot_options permet de choisir l'orientation du robot par défaut depuis les fichiers Master / IHM

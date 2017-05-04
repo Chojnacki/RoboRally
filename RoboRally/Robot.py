@@ -98,9 +98,10 @@ class Robot():
     def dessin(self, qp, ihm):
         
         image_robot = QtGui.QImage(self.image)
+        square_size = 67
         
         painter = QtGui.QPainter(ihm)
-        painter.drawImage(QtCore.QRectF(self.position[0]*59 + 20,self.position[1]*59 + 45, 50, 50),image_robot)
+        painter.drawImage(QtCore.QRectF(self.position[0]*square_size + 20,self.position[1]*square_size + 45, 50, 50),image_robot)
         
         
 #        painter.setPen(QtGui.QPen(QtCore.Qt.red))
