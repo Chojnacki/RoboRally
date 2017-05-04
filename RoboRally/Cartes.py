@@ -113,20 +113,32 @@ class Translation(Carte):
         robot: Robot
            
         """
-        
-        for i in range(self.__vitesse):
-            if robot.orientation == 0:
-                robot.position = (robot.position[0]+1,robot.position[1])
-    
-            elif robot.orientation == 1:
-                robot.position = (robot.position[0],robot.position[1]-1)
-                
-            elif robot.orientation == 2:
-                robot.position = (robot.position[0]-1,robot.position[1])
-                
-            elif robot.orientation == 3:
-                robot.position = (robot.position[0],robot.position[1]+1)
+        if self.__vitesse > 0:
+            for i in range(self.__vitesse):
+                if robot.orientation == 0:
+                    robot.position = (robot.position[0]+1,robot.position[1])
 
+                elif robot.orientation == 1:
+                    robot.position = (robot.position[0],robot.position[1]-1)
+
+                elif robot.orientation == 2:
+                    robot.position = (robot.position[0]-1,robot.position[1])
+
+                elif robot.orientation == 3:
+                    robot.position = (robot.position[0],robot.position[1]+1)
+
+        else:
+                if robot.orientation == 0:
+                    robot.position = (robot.position[0]-1,robot.position[1])
+
+                elif robot.orientation == 1:
+                    robot.position = (robot.position[0],robot.position[1]+1)
+
+                elif robot.orientation == 2:
+                    robot.position = (robot.position[0]+1,robot.position[1])
+
+                elif robot.orientation == 3:
+                    robot.position = (robot.position[0],robot.position[1]-1)
 
 
         
