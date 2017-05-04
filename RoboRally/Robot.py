@@ -18,7 +18,8 @@ class Robot():
         self.__position = position
         self.__orientation = orientation
         self.murs = liste_murs
-        self.image = 'gwenHaDu.jpg'
+        self.image = 'images/gwenHaDu.jpg'
+        self.image = 'images/triskel.png'
 
     def __str__(self):
         s = " Points de vie: "
