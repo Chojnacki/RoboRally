@@ -16,6 +16,16 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget
 
 
+
+test = [[i + 10*j for i in range(10)] for j in range(5)];
+
+print(test);
+print(test[1][9])
+
+
+
+
+
 if __name__ == '__main__':
     
     app = QApplication(sys.argv)

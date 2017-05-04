@@ -1,15 +1,23 @@
 # -*- coding: utf-8 -*-
+"""
+Created on Thu Mar 23 12:46:17 2017
+
+@author: Chojnacki
+"""
+
+import Murs
+from PyQt4 import QtGui, QtCore
+
+dico_orientation = {0: "Droite", 1: "Haut", 2: "Gauche", 3: "Bas"} # Ce dictionaire permet de traduire la direction à l'affichage
 
 
-
-
-
-class Robot:
+class Robot():
     
-    def __init__(self,position,orientation = 1):
+    def __init__(self,position,orientation = 0, liste_murs = []):
         self.__pv = 9
         self.__position = position
         self.__orientation = orientation
+        self.murs = liste_murs
 
     def __str__(self):
         s = " Points de vie: "
@@ -17,7 +25,7 @@ class Robot:
         s += " | Position: "
         s += str(self.__position)
         s += " | Orientation: "
-        s += str(self.orientation)
+        s += str(dico_orientation[self.orientation])
         return s
 
     @property
@@ -44,22 +52,59 @@ class Robot:
     @property
     def position(self):
         """
+        accesseur en lecture de la position du robot
         """
         return self.__position
-
+    
     @position.setter
     def position(self, position):
         """
+        accesseur en ecriture de la position du robot
+        on passe les murs en argument
         """
-        self.__position = position
+        
+        mur_test = Murs.Mur(self.position,position)
+        # Mur avec lequel on compare les murs de la liste
+#        print(mur_test)
+        
+        if not (mur_test in self.murs):
+            self.__position = position
+        
+        
+        
+        """ Ce test ne marche que pour un déplacement d'une case """
+        
+        
+        
         return self.__position
 
+
+    @property
+    def pv(self):
+        """
+        """
+        return self.__pv
+
+
+    @pv.setter
+    def pv(self, pv):
+        """
+        """
+        self.__pv = pv
+        return self.__pv
+
+    def dessin(self, qp, ihm):
+        
+        painter = QtGui.QPainter(ihm)
+        painter.setPen(QtGui.QPen(QtCore.Qt.red))
+        painter.drawArc(QtCore.QRectF(self.position[0]*100 + 100,self.position[1]*100 + 100, 10, 10), 0, 5760)
+        
+        qp.setPen(QtCore.Qt.red)
+        qp.drawEllipse(self.position[0],self.position[1], 10, 5)
+
+    
 if __name__ == "__main__":
     
     twonky = Robot((1,1),1)
     print(twonky)
-
-
-
-
-        
+    print(twonky.position)
