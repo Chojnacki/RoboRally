@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_interface_ihm(object):
     def setupUi(self, interface_ihm):
         interface_ihm.setObjectName(_fromUtf8("interface_ihm"))
-        interface_ihm.resize(850, 600)
+        interface_ihm.resize(900, 700)
         self.centralwidget = QtGui.QWidget(interface_ihm)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.conteneur = QtGui.QWidget(self.centralwidget)
