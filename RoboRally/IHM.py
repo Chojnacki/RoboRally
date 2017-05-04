@@ -66,19 +66,19 @@ class IHM(QtGui.QMainWindow):
         
     
     def distrib(self):
-        print('distrib')
+#        print('distrib')
         self.jeu.prepareTour()
         self.ui.tapiscarte.update()
 
     def simuler(self):
-        print('simuler')
+#        print('simuler')
         self.jeu.Tour()
         self.ui.conteneur.update()
 
 
     #Affichage des robots sur le plateau
     def drawrobot(self, qp):
-        print('drawrobot')
+#        print('drawrobot')
         for joueur in self.jeu.listeJoueurs:
             joueur.robot.dessin(qp, self)
             
@@ -94,7 +94,7 @@ class IHM(QtGui.QMainWindow):
         
     def paintEvent(self,e):
 
-        print('paintEvent')
+#        print('paintEvent')
         qp = QtGui.QPainter(self)
         self.drawrobot(qp)
         
