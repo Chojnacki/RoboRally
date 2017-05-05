@@ -13,7 +13,8 @@ import Joueur
 import Plateau
 import Cartes
 import Robot as rob
-import Master
+import Jeu
+import time
 
 class IHM(QtGui.QMainWindow):
     def __init__(self):
@@ -22,12 +23,13 @@ class IHM(QtGui.QMainWindow):
         # Configuration de l'interface utilisateur.
         self.ui = Ui_interface_ihm()
         self.ui.setupUi(self)
-        xfen = self.ui.conteneur.width()
-        yfen = self.ui.conteneur.height()
-        self.plateau = Plateau.Plateau(xfen,yfen)
+        self.plateau = Plateau.Plateau(10,9)
         self.pioche = [Cartes.Translation(1) for i in range(9)]
-        self.jeu = Master.Jeu(self.plateau, self.pioche)
-
+        self.jeu = Jeu.Jeu(self.plateau, self.pioche)
+        self.timer = QtCore.QTimer()
+        self.timer.start(100)
+        self.timer.timeout.connect(self.simuler)
+        self.continuer = False
         
         #Mise en place de l'arrière plan
         palette = QtGui.QPalette()
@@ -37,6 +39,7 @@ class IHM(QtGui.QMainWindow):
 
         
         #Connecte les boutons aux fonctions définies ci-dessous
+
         self.ui.bouton_partie.clicked.connect(self.nvellepartie)
         self.ui.bouton_distrib.clicked.connect(self.distrib)
         self.ui.bouton_instru.clicked.connect(self.simuler)
@@ -47,10 +50,16 @@ class IHM(QtGui.QMainWindow):
         
     def distrib(self):
         self.jeu.prepareTour()
-        self.ui.tapiscarte.update()
+        self.continuer = True
+#        self.ui.tapiscarte.update()
+
+    def affichage(self):
+        
+        self.ui.centralwidget.update()
 
         
     def simuler(self):
+
         
         listeChoix = []
         # Le joueur choisit ses cartes tout en etant limite par la vie de son robot
@@ -72,9 +81,11 @@ class IHM(QtGui.QMainWindow):
             valeurs[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
             self.jeu.listeJoueurs[0].cartes[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
 
+        if self.continuer == True:
+            time.sleep(0.2)
+            self.continuer = self.jeu.Tour2()
+            self.ui.centralwidget.update()
 
-        self.jeu.Tour()
-        self.ui.conteneur.update()
 
 
 
