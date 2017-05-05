@@ -31,8 +31,6 @@ class IHM(QtGui.QMainWindow):
         self.timer.timeout.connect(self.simuler)
         self.continuer = False
         
-#        QtCore.QObject.startTimer()
-        
         #Mise en place de l'arrière plan
         palette = QtGui.QPalette()
         pixmap = QtGui.QPixmap("images/tableau_jeu.png")
@@ -41,13 +39,16 @@ class IHM(QtGui.QMainWindow):
 
         
         #Connecte les boutons aux fonctions définies ci-dessous
-#        self.ui.bouton_partie.clicked.connect(           )
+
+        self.ui.bouton_partie.clicked.connect(self.nvellepartie)
         self.ui.bouton_distrib.clicked.connect(self.distrib)
         self.ui.bouton_instru.clicked.connect(self.simuler)
 
-
+    def nvellepartie(self):
+        nbjoueur = self.ui.nbjoueur.value()
+        
+        
     def distrib(self):
-#        print('distrib')
         self.jeu.prepareTour()
         self.continuer = True
 #        self.ui.tapiscarte.update()
@@ -56,22 +57,45 @@ class IHM(QtGui.QMainWindow):
         
         self.ui.centralwidget.update()
 
+        
     def simuler(self):
+
+        
+        listeChoix = []
+        # Le joueur choisit ses cartes tout en etant limite par la vie de son robot
+        valeurs = self.ui.choixcarte.toPlainText()
+        valeurs = valeurs.split(' ')
+        #Tant qu on ne choisi pas des cartes differentes
+        while not(Joueur.uniqueness(valeurs)):
+            print('Cannot pick same card twice')
+            valeurs = self.ui.choixcarte.toPlainText()
+            valeurs = valeurs.split(' ')
+
+        removeList = [] #liste des cartes à retirer de la pioche
+        for valeur in valeurs:
+            listeChoix.append(int(valeur))
+            removeList.append(self.jeu.pioche[int(valeur)])
+
+        # Une fois le choix effectue, on met les cartes choisies dans la variable joueur
+        for i in range(self.jeu.listeJoueurs[0].robot.pv - 4):
+            valeurs[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
+            self.jeu.listeJoueurs[0].cartes[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
+
         if self.continuer == True:
             time.sleep(0.2)
             self.continuer = self.jeu.Tour2()
             self.ui.centralwidget.update()
 
 
+
+
     #Affichage des robots sur le plateau
     def drawrobot(self, qp):
-#        print('drawrobot')
         for joueur in self.jeu.listeJoueurs:
             joueur.robot.dessin(qp, self)
             
         
     def paintEvent(self,e):
-#        print('paintevent')
         qp = QtGui.QPainter(self)
         self.drawrobot(qp)
         qp.end()

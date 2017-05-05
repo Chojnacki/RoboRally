@@ -80,32 +80,32 @@ class Joueur():
             print(i," - ",self.mainJoueur[i])
         print('\n')
         
-        listeChoix = []
-        # Le joueur choisit ses cartes tout en etant limite par la vie de son robot
-        valeurs = input("Choisissez vos cartes (par numero): ")
-        valeurs = valeurs.split(' ')
-        while not(uniqueness(valeurs)):
-            print('Cannot pick same card twice')
-            valeurs = input("Choisissez vos cartes (par numero): ")
-            valeurs = valeurs.split(' ')
-
-        removeList = [] #liste des cartes à retirer de la pioche
-        for valeur in valeurs:
-            listeChoix.append(int(valeur))
-            removeList.append(pioche[int(valeur)])
-    
-#        for item in removeList:
-#            pioche.remove(item)
-
-        """Les deux lignes ci dessus sont commentées car la pioche ne se remplit pas à la fin de chaque tour"""
-
-        
-        # Une fois le choix effectue, on met les cartes choisies dans la variable joueur
-        for i in range(self.robot.pv - 4):
-            self.cartes[i] = self.mainJoueur[listeChoix[i]]
-
-        # Cette fonction ne renvoie rien
-        pass
+#        listeChoix = []
+#        # Le joueur choisit ses cartes tout en etant limite par la vie de son robot
+#        valeurs = input("Choisissez vos cartes (par numero): ")
+#        valeurs = valeurs.split(' ')
+#        while not(uniqueness(valeurs)):
+#            print('Cannot pick same card twice')
+#            valeurs = input("Choisissez vos cartes (par numero): ")
+#            valeurs = valeurs.split(' ')
+#
+#        removeList = [] #liste des cartes à retirer de la pioche
+#        for valeur in valeurs:
+#            listeChoix.append(int(valeur))
+#            removeList.append(pioche[int(valeur)])
+#    
+##        for item in removeList:
+##            pioche.remove(item)
+#
+#        """Les deux lignes ci dessus sont commentées car la pioche ne se remplit pas à la fin de chaque tour"""
+#
+#        
+#        # Une fois le choix effectue, on met les cartes choisies dans la variable joueur
+#        for i in range(self.robot.pv - 4):
+#            self.cartes[i] = self.mainJoueur[listeChoix[i]]
+#
+#        # Cette fonction ne renvoie rien
+#        pass
 
 
 def creerJoueur(numero, robot_options = (0,0,0)):
