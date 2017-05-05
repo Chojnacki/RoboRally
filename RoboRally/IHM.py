@@ -27,8 +27,7 @@ class IHM(QtGui.QMainWindow):
         self.plateau = Plateau.Plateau(xfen,yfen)
         self.pioche = [Cartes.Translation(1) for i in range(9)]
         self.jeu = Master.Jeu(self.plateau, self.pioche)
-#        self.dessinplateau()
-#        self.drawrobot()
+
         
         #Mise en place de l'arrière plan
         palette = QtGui.QPalette()
@@ -38,72 +37,56 @@ class IHM(QtGui.QMainWindow):
 
         
         #Connecte les boutons aux fonctions définies ci-dessous
-#        self.ui.bouton_partie.clicked.connect(self.dessinplateau)
-#        self.ui.bouton_distrib.clicked.connect(self.distrib)
-#        self.ui.bouton_instru.clicked.connect(self.simuler)
+        self.ui.bouton_partie.clicked.connect(self.nvellepartie)
+        self.ui.bouton_distrib.clicked.connect(self.distrib)
+        self.ui.bouton_instru.clicked.connect(self.simuler)
 
-
-    def dessinplateau(self):
+    def nvellepartie(self):
+        nbjoueur = self.ui.nbjoueur.value()
         
-        ############################ TA VERSION ######################################
-#        print('dessinplateau')
-#        #choisir un plateau au hasard
-#        window = QtGui.QMainWindow()
-#        window.setGeometry(50, 50, 400, 200)
-#        pic = QtGui.QLabel(window)
-#        pic.setGeometry(0, 0, 300, 300)
-#        pic.setPixmap(QtGui.QPixmap("tableau_jeu.png"))
-
-                
-        ############################ MA VERSION ######################################
-        pic = QtGui.QLabel(self.ui.conteneur)
-        pixmap = QtGui.QPixmap("tableau_jeu.png")
-        if self.ui.conteneur.width() > self.ui.conteneur.height():
-            pixmap = pixmap.scaledToHeight(self.ui.conteneur.height())
-        else:
-            pixmap = pixmap.scaledToWidth(self.ui.conteneur.width())
-        pic.setPixmap(pixmap)
         
-    
     def distrib(self):
-        print('distrib')
         self.jeu.prepareTour()
         self.ui.tapiscarte.update()
 
+        
     def simuler(self):
-        print('simuler')
+        
+        listeChoix = []
+        # Le joueur choisit ses cartes tout en etant limite par la vie de son robot
+        valeurs = self.ui.choixcarte.toPlainText()
+        valeurs = valeurs.split(' ')
+        #Tant qu on ne choisi pas des cartes differentes
+        while not(Joueur.uniqueness(valeurs)):
+            print('Cannot pick same card twice')
+            valeurs = self.ui.choixcarte.toPlainText()
+            valeurs = valeurs.split(' ')
+
+        removeList = [] #liste des cartes à retirer de la pioche
+        for valeur in valeurs:
+            listeChoix.append(int(valeur))
+            removeList.append(self.jeu.pioche[int(valeur)])
+
+        # Une fois le choix effectue, on met les cartes choisies dans la variable joueur
+        for i in range(self.jeu.listeJoueurs[0].robot.pv - 4):
+            valeurs[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
+            self.jeu.listeJoueurs[0].cartes[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
+
+
         self.jeu.Tour()
         self.ui.conteneur.update()
 
 
+
     #Affichage des robots sur le plateau
     def drawrobot(self, qp):
-        print('drawrobot')
         for joueur in self.jeu.listeJoueurs:
             joueur.robot.dessin(qp, self)
             
-            
-#        pic = QtGui.QLabel(self.ui.conteneur)
-#        pixmap = QtGui.QPixmap("cigale1.png")
-#        if self.ui.conteneur.width() > self.ui.conteneur.height():
-#            pixmap = pixmap.scaledToHeight(self.ui.conteneur.height())
-#        else:
-#            pixmap = pixmap.scaledToWidth(self.ui.conteneur.width())
-#        pic.setPixmap(pixmap)    
-            
         
     def paintEvent(self,e):
-
-        print('paintEvent')
         qp = QtGui.QPainter(self)
         self.drawrobot(qp)
-        
-#        
-#        painter = QtGui.QPainter(self)
-#        painter.setPen(QtGui.QPen(QtCore.Qt.red))
-#        painter.drawArc(QtCore.QRectF(250, 250, 10, 10), 0, 5760)
-        
-        
         qp.end()
             
 
