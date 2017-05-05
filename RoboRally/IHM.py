@@ -14,6 +14,7 @@ import Plateau
 import Cartes
 import Robot as rob
 import Jeu
+import time
 
 class IHM(QtGui.QMainWindow):
     def __init__(self):
@@ -25,6 +26,10 @@ class IHM(QtGui.QMainWindow):
         self.plateau = Plateau.Plateau(10,9)
         self.pioche = [Cartes.Translation(1) for i in range(9)]
         self.jeu = Jeu.Jeu(self.plateau, self.pioche)
+        self.timer = QtCore.QTimer()
+        self.timer.start(100)
+        self.timer.timeout.connect(self.simuler)
+        self.continuer = False
         
 #        QtCore.QObject.startTimer()
         
@@ -44,17 +49,18 @@ class IHM(QtGui.QMainWindow):
     def distrib(self):
 #        print('distrib')
         self.jeu.prepareTour()
+        self.continuer = True
 #        self.ui.tapiscarte.update()
 
-    def simuler(self):
-#        print('simuler')
-
-        def step_draw():
-            self.ui.centralwidget.update()
-            pass
+    def affichage(self):
         
-        self.jeu.Tour(step_draw)
         self.ui.centralwidget.update()
+
+    def simuler(self):
+        if self.continuer == True:
+            time.sleep(0.2)
+            self.continuer = self.jeu.Tour2()
+            self.ui.centralwidget.update()
 
 
     #Affichage des robots sur le plateau
@@ -63,28 +69,11 @@ class IHM(QtGui.QMainWindow):
         for joueur in self.jeu.listeJoueurs:
             joueur.robot.dessin(qp, self)
             
-            
-#        pic = QtGui.QLabel(self.ui.conteneur)
-#        pixmap = QtGui.QPixmap("cigale1.png")
-#        if self.ui.conteneur.width() > self.ui.conteneur.height():
-#            pixmap = pixmap.scaledToHeight(self.ui.conteneur.height())
-#        else:
-#            pixmap = pixmap.scaledToWidth(self.ui.conteneur.width())
-#        pic.setPixmap(pixmap)    
-            
         
     def paintEvent(self,e):
-
-#        print('paintEvent')
+#        print('paintevent')
         qp = QtGui.QPainter(self)
         self.drawrobot(qp)
-        
-#        
-#        painter = QtGui.QPainter(self)
-#        painter.setPen(QtGui.QPen(QtCore.Qt.red))
-#        painter.drawArc(QtCore.QRectF(250, 250, 10, 10), 0, 5760)
-        
-        
         qp.end()
             
 
