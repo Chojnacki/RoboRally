@@ -60,6 +60,7 @@ class Jeu():
         """
         for joueur in self.listeJoueurs:
             joueur.distribuer(self.pioche)
+            joueur.cartes = [None]*(joueur.robot.pv - 4)
         pass
     
     def Tour(self, fonction = lambda *args: None):
@@ -94,14 +95,14 @@ class Jeu():
         if self.step == 9:
             self.step = 0
 #            print('fin')
-            return False
+#            return False
         
         if self.step % 2 == 0:
             for joueur in self.listeJoueurs:
                 carte = joueur.cartes[self.step % 2]
                 carte.effet(joueur.robot)
                 self.step += 1
-            return True
+#            return True
                   
         if self.step % 2 == 1:
             for row in self.plateau.cases:
@@ -110,10 +111,8 @@ class Jeu():
                         if case.position == joueur.robot.position:
                             case.effet(joueur.robot)
             self.step += 1
-            return True
+#            return True
             
-            
-        
     
     def Jouer(self):
         """
