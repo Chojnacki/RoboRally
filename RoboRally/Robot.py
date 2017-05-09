@@ -19,7 +19,7 @@ class Robot():
         self.__orientation = orientation
         self.murs = liste_murs
         self.image = 'images/gwenHaDu.jpg'
-        self.image = 'images/triskel.png'
+#        self.image = 'images/triskel.png'
 
     def __str__(self):
         s = " Points de vie: "
@@ -65,13 +65,17 @@ class Robot():
         on passe les murs en argument
         """
         
-        mur_test = Murs.Mur(self.position,position)
-        # Mur avec lequel on compare les murs de la liste
-#        print(mur_test)
-        
-        if not (mur_test in self.murs):
-            self.__position = position
-        
+        if self.pv == 0:
+            None
+        else:
+                
+            mur_test = Murs.Mur(self.position,position)
+            # Mur avec lequel on compare les murs de la liste
+    #        print(mur_test)
+            
+            if not (mur_test in self.murs):
+                self.__position = position
+            
         
         
         """ Ce test ne marche que pour un déplacement d'une case """
@@ -98,12 +102,28 @@ class Robot():
     def dessin(self, qp, ihm):
         
         image_robot = QtGui.QImage(self.image)
-        square_size = 67
+        side = 50   #côté du carré qui représente le robot
+        image_robot = image_robot.scaled(side,side)
+        square_size = 67 #côté du carré d'une case
         
         painter = QtGui.QPainter(ihm)
-        painter.drawImage(QtCore.QRectF(self.position[0]*square_size + 20,self.position[1]*square_size + 45, 50, 50),image_robot)
+#        painter.rotate(self.orientation*90)  #Pour prendre en compte l'orientation du robot dans l'affichage
         
+        if (self.orientation == 1 or self.orientation == 2):
+            correction_x  = side
+        else:
+            correction_x  = 0
+        if (self.orientation == 2 or self.orientation == 3):
+            correction_y  = side
+        else:
+            correction_y  = 0
+            
+#        correction_y = 
         
+#        painter.translate(correction_x,correction_y)           #Pour corriger le décalage créé par la fonction 'rotate'
+                         
+        painter.drawImage(QtCore.QRectF(self.position[0]*square_size + 20,self.position[1]*square_size + 45, side, side),image_robot)
+        painter.resetTransform()
 #        painter.setPen(QtGui.QPen(QtCore.Qt.red))
 #        painter.drawArc(QtCore.QRectF(self.position[0]*100 + 35,self.position[1]*100 + 65, 10, 10), 0, 5760)
         

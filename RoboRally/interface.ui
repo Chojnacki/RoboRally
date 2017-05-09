@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1039</width>
+    <width>1395</width>
     <height>878</height>
    </rect>
   </property>
@@ -127,6 +127,9 @@
        <property name="text">
         <string>Envoyer les instructions au robot</string>
        </property>
+       <property name="shortcut">
+        <string>Return</string>
+       </property>
       </widget>
      </item>
      <item row="1" column="0">
@@ -191,8 +194,8 @@ puis envoyez les instructions au robot.</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1039</width>
-     <height>27</height>
+     <width>1395</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFIchier">
