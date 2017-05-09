@@ -10,6 +10,8 @@ from PyQt4 import QtGui, QtCore
 class Mur:
     def __init__(self, voisin1, voisin2):
         self.v1, self.v2 = voisin1, voisin2
+        self.x = (self.v1[0] + self.v2[0])/ 2
+        self.y = (self.v1[1] + self.v2[1])/ 2
 
     
     def __str__(self):
@@ -26,7 +28,7 @@ class Mur:
         return False
 
         
-    def dessin(self, qp, ihm):
+    def dessin(self, qp):
         pass
         
 
@@ -36,16 +38,15 @@ class MurHorizontal(Mur):
         self.image = 'images/murHorizontal.png'
     
         
-    def dessin(self, qp, ihm):
+    def dessin(self, qp):
         
         image_mur = QtGui.QImage(self.image)
-        largeur = 7   #dimensions du mur en pixels
-        hauteur = 40
+        largeur = 50   #dimensions du mur en pixels
+        hauteur = 7
         square_size = 50 #côté du carré d'une case
-        
-        painter = QtGui.QPainter(ihm)
-        painter.drawImage(QtCore.QRectF(self.v1.position[0]*1.5*square_size + 20, self.v1.position[1]*1.5*square_size + 45, largeur, hauteur),image_mur)
-        painter.resetTransform()
+                
+        qp.drawImage(QtCore.QRectF(self.x*square_size + 18, self.y*square_size + 63, largeur, hauteur),image_mur)
+        qp.resetTransform()
 
 
 class MurVertical(Mur):
@@ -54,16 +55,15 @@ class MurVertical(Mur):
         self.image = 'images/murVertical.png'
     
         
-    def dessin(self, qp, ihm):
+    def dessin(self, qp):
         
         image_mur = QtGui.QImage(self.image)
         largeur = 7   #dimensions du mur en pixels
-        hauteur = 40
+        hauteur = 50
         square_size = 50 #côté du carré d'une case
-        
-        painter = QtGui.QPainter(ihm)
-        painter.drawImage(QtCore.QRectF(self.v2.position[0]*1.5*square_size + 20, self.position[1]*1.5*square_size + 45, hauteur, largeur),image_mur)
-        painter.resetTransform()
+                
+        qp.drawImage(QtCore.QRectF(self.x*square_size + 40, self.y*square_size + 43, largeur, hauteur),image_mur)
+        qp.resetTransform()
 
         
 if __name__ == "__main__":

@@ -192,14 +192,14 @@ class IHM(QtGui.QMainWindow):
     #Affichage des robots sur le plateau
     def drawrobot(self, qp):
         for joueur in self.jeu.listeJoueurs:
-            joueur.robot.dessin(qp, self)
+            joueur.robot.dessin(qp)
             
     def drawboard(self, qp):
         for rangee in self.jeu.plateau.cases:
             for case in rangee:
                 case.dessin(qp, case.image)
-#        for mur in self.jeu.plateau.listeMurs:
-#            mur.dessin(qp)
+        for mur in self.jeu.plateau.listeMurs:
+            mur.dessin(qp)
         
     def paintEvent(self,e):
         qp = QtGui.QPainter(self)
@@ -224,5 +224,6 @@ def uniqueness(l):
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     window = IHM()
+    window.setGeometry(100,50,1100,900)
     window.show()
     app.exec_()

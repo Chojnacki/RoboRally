@@ -9,8 +9,7 @@ Created on Thu Mar 23 12:46:17 2017
 import Joueur as j
 import Plateau as p
 import Cartes
-#import Robot as r
-
+#import Robot
 
 class Jeu():
     
@@ -63,71 +62,6 @@ class Jeu():
             joueur.cartes = [None]*(joueur.robot.pv - 4)
         pass
     
-#    def Tour(self, fonction = lambda *args: None):
-#        """
-#        Lance un tour de la partie, personne ne peut intervenir pendant l'execution de cette fonction
-#        Paramètres
-#        ----------
-#        plateau: le plateau de jeu pour la partie
-#        pioche: une liste de cartes
-#        """
-#        for compteur in range(5):
-#            for joueur in self.listeJoueurs:
-#                carte = joueur.cartes[compteur]
-#                carte.effet(joueur.robot)
-#                fonction()
-#            
-#            for row in self.plateau.cases:
-#                for case in row:
-#                    for joueur in self.listeJoueurs:
-#                        if case.position == joueur.robot.position:
-#                            case.effet(joueur.robot)
-#                            fonction()
-#            print(self)
-#          
-#        pass
-#    
-#    def Tour2(self):
-#        """
-#        permet de lancer le tour carte par carte et action par action
-#        cela devrait permettre d'afficher le jeu en dynamique depuis IHM.py
-#        """
-#        if self.step == 9:
-#            self.step = 0
-##            print('fin')
-##            return False
-#        
-#        if self.step % 2 == 0:
-#            for joueur in self.listeJoueurs:
-#                carte = joueur.cartes[self.step % 2]
-#                carte.effet(joueur.robot)
-#                self.step += 1
-##            return True
-#                  
-#        if self.step % 2 == 1:
-#            for row in self.plateau.cases:
-#                for case in row:
-#                    for joueur in self.listeJoueurs:
-#                        if case.position == joueur.robot.position:
-#                            case.effet(joueur.robot)
-#            self.step += 1
-##            return True
-#            
-#    
-#    def Jouer(self):
-#        """
-#        Lance le jeu et le fait tourner jusqu'à ce qu'il y ait un vainqueur
-#        """
-#        try:
-#            Vainqueur = False
-#            while not(Vainqueur):
-#                self.prepareTour()
-#                self.Tour()
-#        except Exception as v:
-#            Vainqueur = True
-#            print(self)
-#            print(v)
-            
     
     def __str__(self):
         """
@@ -154,8 +88,19 @@ class Jeu():
                 x,y = position
                 c = self.plateau.cases[y][x].car
         return c
+    
+    def moveRobot(self, robot):
+        mur_test = Murs.Mur(robot.position,position)
+            # Mur avec lequel on compare les murs de la liste
+    #        print(mur_test)
+            
+        if not (mur_test in self.plateau.listeMurs):
+            print('move')
+        
+        
 
 def main():
+    
 #    plateau = input("Sur quel plateau voulez vous jouer?")
 #    listeCartes = input("Quelles sont les cartes disponibles?")
     
