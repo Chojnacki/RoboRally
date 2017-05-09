@@ -28,7 +28,6 @@ class IHM(QtGui.QMainWindow):
         self.pioche = plateau1.listeCartes
         self.jeu = Jeu.Jeu(self.plateau, self.pioche)
         self.timer = QtCore.QTimer()
-
         
         #Mise en place de l'arrière plan
         palette = QtGui.QPalette()
