@@ -127,17 +127,6 @@ def creerJoueur(numero, robot_options = (0,0,0)):
     return Joueur(numero, rob.Robot((x,y),o))
 
 
-def uniqueness(l):
-    """
-    Renvoie true si les éléments de la liste l sont uniques, false sinon
-    ----------
-    l: liste a vérifier (index dans la pioche des cartes choisies)
-    """
-    for i in range(len(l)):
-        for j in range(i+1, len(l)):
-            if l[i] == l[j]:
-                return False
-    return True
 
     
     

@@ -9,12 +9,13 @@ import os
 import sys
 from PyQt4 import QtGui, QtCore
 from interface import Ui_interface_ihm
-import Joueur
-import Plateau
-import Cartes
-import Robot as rob
+#import Joueur
+#import Plateau
+#import Cartes
+#import Robot as rob
 import Jeu
 import time
+import plateau1 #contient un plateau de jeu 'jouable'
 
 class IHM(QtGui.QMainWindow):
     def __init__(self):
@@ -23,8 +24,8 @@ class IHM(QtGui.QMainWindow):
         # Configuration de l'interface utilisateur.
         self.ui = Ui_interface_ihm()
         self.ui.setupUi(self)
-        self.plateau = Plateau.Plateau(10,9)
-        self.pioche = [Cartes.Translation(1) for i in range(50)]
+        self.plateau = plateau1.plateau
+        self.pioche = plateau1.listeCartes
         self.jeu = Jeu.Jeu(self.plateau, self.pioche)
         self.timer = QtCore.QTimer()
         
@@ -58,7 +59,7 @@ class IHM(QtGui.QMainWindow):
         #dictionnaire des actions à effectuer lors de la transition
         self.dict_ac = {
                         None: (lambda *args: None), "play": self.play,
-                        "pick":(lambda *args: print('pick'))                        
+                        "pick":(lambda *args: None)                        
                         }
         
         #On lie le timeout à la fsm
@@ -95,11 +96,16 @@ class IHM(QtGui.QMainWindow):
         try:
             new_state = self.dict_tr[(self.current_state,self.transition)]
             if new_state in self.states:
+                if new_state != self.current_state:
+                    print("{} -> {}".format(self.current_state,new_state))
                 self.dict_ac[self.transition]()
                 self.current_state = new_state
 #                self.transition = None
         except KeyError as erreur:
             print ("transition ou état non définit dans le dictionnaire respectif", erreur)
+        except Exception as VouD: #Victoire ou Défaite
+            print ("C'est la {} Mamène".format(VouD))
+            exit()
         
 #        time.sleep(1) #juste pour débugger tranquillement
         self.affichage()
@@ -113,7 +119,7 @@ class IHM(QtGui.QMainWindow):
     def nvellepartie(self):
         """Cette fonction n'est pas encore prête"""
         nbjoueur = self.ui.nbjoueur.value()
-        print(nbjoueur)
+#        print(nbjoueur)
         
         
     def distrib(self):
@@ -128,7 +134,7 @@ class IHM(QtGui.QMainWindow):
         valeurs = valeurs.split(' ')
         print(len(valeurs),self.jeu.listeJoueurs[0].robot.pv - 4)
         #Tant qu on ne choisi pas des cartes differentes
-        if not(Joueur.uniqueness(valeurs)) or (len(valeurs) != self.jeu.listeJoueurs[0].robot.pv - 4):
+        if not(uniqueness(valeurs)) or (len(valeurs) != self.jeu.listeJoueurs[0].robot.pv - 4):
             print("Veuillez choisir {} cartes distinctes".format(self.jeu.listeJoueurs[0].robot.pv - 4) )
 #            valeurs = self.ui.choixcarte.toPlainText()
 #            valeurs = valeurs.split(' ')
@@ -150,7 +156,6 @@ class IHM(QtGui.QMainWindow):
         """
         Lance un tour
         """
-        print('fonction play lancée')
         #penser a coder une liste qui retient les joueurs ayant déjà joué
         #penser à coder la priorité pour les cartes les plus rapides
         
@@ -195,7 +200,20 @@ class IHM(QtGui.QMainWindow):
         qp = QtGui.QPainter(self)
         self.drawrobot(qp)
         qp.end()
-            
+     
+
+def uniqueness(l):
+    """
+    Renvoie true si les éléments de la liste l sont uniques, false sinon
+    ----------
+    l: liste a vérifier (index dans la pioche des cartes choisies)
+    """
+    for i in range(len(l)):
+        for j in range(i+1, len(l)):
+            if l[i] == l[j]:
+                return False
+    return True
+       
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

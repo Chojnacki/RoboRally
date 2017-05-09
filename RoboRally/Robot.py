@@ -65,13 +65,17 @@ class Robot():
         on passe les murs en argument
         """
         
-        mur_test = Murs.Mur(self.position,position)
-        # Mur avec lequel on compare les murs de la liste
-#        print(mur_test)
-        
-        if not (mur_test in self.murs):
-            self.__position = position
-        
+        if self.pv == 0:
+            None
+        else:
+                
+            mur_test = Murs.Mur(self.position,position)
+            # Mur avec lequel on compare les murs de la liste
+    #        print(mur_test)
+            
+            if not (mur_test in self.murs):
+                self.__position = position
+            
         
         
         """ Ce test ne marche que pour un déplacement d'une case """
