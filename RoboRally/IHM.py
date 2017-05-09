@@ -28,7 +28,7 @@ class IHM(QtGui.QMainWindow):
         self.pioche = plateau1.listeCartes
         self.jeu = Jeu.Jeu(self.plateau, self.pioche)
         self.timer = QtCore.QTimer()
-        
+
         
         #Mise en place de l'arrière plan
         palette = QtGui.QPalette()
@@ -195,9 +195,16 @@ class IHM(QtGui.QMainWindow):
         for joueur in self.jeu.listeJoueurs:
             joueur.robot.dessin(qp, self)
             
+    def drawboard(self, qp):
+        for rangee in self.jeu.plateau.cases:
+            for case in rangee:
+                case.dessin(qp, case.image)
+#        for mur in self.jeu.plateau.listeMurs:
+#            mur.dessin(qp)
         
     def paintEvent(self,e):
         qp = QtGui.QPainter(self)
+        self.drawboard(qp)
         self.drawrobot(qp)
         qp.end()
      

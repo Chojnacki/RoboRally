@@ -18,7 +18,7 @@ engr = Cases.CaseEngrenage((3,1), -1)
 tapis2 = Cases.Tapis((3,2),0,False)
 engr2 = Cases.CaseEngrenage((4,3), -1)
 trou = Cases.CaseArrivee((3,3))
-mur = Murs.Mur((0,0),(1,0))
+mur = Murs.MurVertical((0,0),(1,0))
 plateau.ajouterMur(mur)
 
 Caz = [tapis,engr,tapis2,engr2,trou]

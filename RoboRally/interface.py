@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\corazzal\Desktop\RoboRally-master\RoboRally\interface.ui'
+# Form implementation generated from reading ui file 'interface.ui'
 #
 # Created by: PyQt4 UI code generator 4.11.4
 #
@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_interface_ihm(object):
     def setupUi(self, interface_ihm):
         interface_ihm.setObjectName(_fromUtf8("interface_ihm"))
-        interface_ihm.resize(1395, 878)
+        interface_ihm.resize(1039, 878)
         self.centralwidget = QtGui.QWidget(interface_ihm)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.conteneur = QtGui.QWidget(self.centralwidget)
@@ -96,7 +96,7 @@ class Ui_interface_ihm(object):
         self.label_2.setObjectName(_fromUtf8("label_2"))
         interface_ihm.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(interface_ihm)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1395, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1039, 27))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menuFIchier = QtGui.QMenu(self.menubar)
         self.menuFIchier.setObjectName(_fromUtf8("menuFIchier"))
@@ -129,7 +129,6 @@ class Ui_interface_ihm(object):
         self.bouton_partie.setText(_translate("interface_ihm", "Nouvelle partie", None))
         self.Quitter.setText(_translate("interface_ihm", "Quitter", None))
         self.bouton_instru.setText(_translate("interface_ihm", "Envoyer les instructions au robot", None))
-        self.bouton_instru.setShortcut(_translate("interface_ihm", "Return", None))
         self.plainTextEdit.setPlainText(_translate("interface_ihm", "Cliquez sur distribuer,\n"
 "choisissez vos 5 cartes (ex: 1 2 3 4 5)\n"
 "puis envoyez les instructions au robot.", None))
@@ -140,4 +139,14 @@ class Ui_interface_ihm(object):
         self.actionSolo.setText(_translate("interface_ihm", "Solo", None))
         self.actionMultijoueur.setText(_translate("interface_ihm", "Multijoueur", None))
         self.actionIntelligence_Artificielle.setText(_translate("interface_ihm", "Intelligence Artificielle", None))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    interface_ihm = QtGui.QMainWindow()
+    ui = Ui_interface_ihm()
+    ui.setupUi(interface_ihm)
+    interface_ihm.show()
+    sys.exit(app.exec_())
 
