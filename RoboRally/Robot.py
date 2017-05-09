@@ -106,7 +106,7 @@ class Robot():
         image_robot = QtGui.QImage(self.image)
         side = 50   #côté du carré qui représente le robot
         image_robot = image_robot.scaled(side,side)
-        square_size = 67 #côté du carré d'une case
+        square_size = 50 #côté du carré d'une case
         
         painter = QtGui.QPainter(ihm)
 #        painter.rotate(self.orientation*90)  #Pour prendre en compte l'orientation du robot dans l'affichage

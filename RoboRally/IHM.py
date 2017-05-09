@@ -31,7 +31,7 @@ class IHM(QtGui.QMainWindow):
         
         #Mise en place de l'arrière plan
         palette = QtGui.QPalette()
-        pixmap = QtGui.QPixmap("images/tableau_jeu.png")
+        pixmap = QtGui.QPixmap("images/background.jpg")
         palette.setBrush(QtGui.QPalette.Background,QtGui.QBrush(pixmap))
         self.setPalette(palette)
 
