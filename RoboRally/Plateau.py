@@ -44,26 +44,3 @@ class Plateau:
     
     def ajouterMur(self, mur):
         self.listeMurs.append(mur)
-
-
-
-
-if __name__ == '__main__':
-    plateau = Plateau(10,5)
-    mur = Murs.Mur((0,0),(1,0))
-    case = Cases.Tapis((1,1),0,False)
-    plateau.mettreCase(case)
-    plateau.ajouterMur(mur)
-    print(plateau)
-    print(plateau.listeMurs[0])
-
-
-
-
-
-
-
-
-
-
-

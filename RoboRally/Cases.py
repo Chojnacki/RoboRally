@@ -8,7 +8,7 @@ Created on Thu Mar 23 12:46:17 2017
 
 import abc
 import Robot as rob
-
+from PyQt4 import QtGui, QtCore
 
 
 class Case():
@@ -30,6 +30,7 @@ class Case():
             Par convention, x croit vers la droite et y vers le bas.
         """
         self.__pos = position
+        self.image = 'images/caseNeutre.png'
         
         
     @property
@@ -64,7 +65,13 @@ class Case():
         """
         pass
     
-    
+    def dessin(self, qp, image = 'images/caseNeutre.png'):
+        
+        image = QtGui.QImage(self.image)
+        side = 50 #côté du carré d'une case
+        qp.drawImage(QtCore.QRectF(self.position[0]*side + 20, self.position[1]*side + 45, side, side),image)
+        qp.resetTransform()
+
     
     
 class CaseNeutre(Case):
@@ -83,7 +90,6 @@ class CaseNeutre(Case):
             Par convention, x croit vers la droite et y vers le bas.
         """
         super().__init__(position) #On invoque le constructeur de la classe-mère
-            
      
     @property    
     def car(self):
@@ -104,7 +110,6 @@ class CaseNeutre(Case):
     
 
 
-
 class CaseArrivee(Case):
     """
     La case arrivee fait gagner le premier robot qui l'atteint
@@ -121,6 +126,7 @@ class CaseArrivee(Case):
             Par convention, x croit vers la droite et y vers le bas.
         """
         super().__init__(position)
+        self.image = 'images/caseArrivee.png'
         
         
     @property    
@@ -150,6 +156,8 @@ class CaseArrivee(Case):
         raise Exception ('Victoire')
         pass
     
+    
+        
 class CaseTrou(Case):
     """
     Le trou detruit immediatement le robot qui y tombe.
@@ -166,6 +174,7 @@ class CaseTrou(Case):
             Par convention, x croit vers la droite et y vers le bas.
         """
         super().__init__(position)
+        self.image = 'images/trou.png'
         
         
     @property    
@@ -197,6 +206,8 @@ class CaseTrou(Case):
         robot.pv = 0
         
         
+        
+        
 class CaseReparation(Case):
     """
     La case reparation repare le robot et sauvegarde sa position.
@@ -212,6 +223,7 @@ class CaseReparation(Case):
             Par convention, x croit vers la droite et y vers le bas.
         """
         super().__init__(position)
+        self.image = 'images/reparation.png'
         
         
     @property    
@@ -243,6 +255,7 @@ class CaseReparation(Case):
         robot.pv += 1
         
         
+        
 class CaseEngrenage(Case):
     """
     La case engrenage fait tourner le robot
@@ -263,7 +276,7 @@ class CaseEngrenage(Case):
         """
         super().__init__(position)
         self.__sens = sens
-        
+        self.image = 'images/engrenage{}.png'.format(self.__sens)
         
     @property    
     def car(self):
@@ -294,6 +307,7 @@ class CaseEngrenage(Case):
         
         robot.orientation = (robot.orientation + self.__sens) % 4
     
+        
     
 class Tapis(Case):
     def __init__(self,position,orientation,virage,vitesse=1):
@@ -318,6 +332,7 @@ class Tapis(Case):
         self.__orientation = orientation
         self.__virage = virage
         self.__vitesse = vitesse 
+        self.image = 'images/tapis{}{}{}.png'.format(self.__orientation, self.__virage, self.__vitesse)
         
 
         
