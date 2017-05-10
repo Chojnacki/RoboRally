@@ -1,10 +1,10 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Mar 23 12:46:17 2017
+Created on Wed May 10 09:58:02 2017
 
-@author: Corazza
+@author: corazzal
 """
-
 
 import abc
 import Robot as rob
@@ -63,7 +63,7 @@ class Case():
         ----------
         Aucun
         """
-        pass
+        return robot.state
     
     def dessin(self, qp, image = 'images/caseNeutre.png'):
         
@@ -153,9 +153,11 @@ class CaseArrivee(Case):
         robot: Robot
             autre idee: teleporte le robot sur une case à part
         """
-        raise Exception ('Victoire')
+        raise Victoire()
         pass
-    
+
+class Victoire(Exception):
+    pass
     
         
 class CaseTrou(Case):
@@ -203,7 +205,11 @@ class CaseTrou(Case):
         robot: Robot
             Le robot qui se trouve sur la case Trou perd tous ses points de vie.
         """
-        robot.pv = 0
+#        robot.pv = 0
+        estimated_state = robot.state
+        estimated_state[0] = 0
+        return estimated_state
+        
         
         
         
@@ -252,8 +258,10 @@ class CaseReparation(Case):
         robot: Robot
             Le robot qui se trouve sur la case Reparation regagne un point de vie.
         """
-        robot.pv += 1
-        
+        estimated_state = robot.state
+        if estimated_state[0] < 9:
+            estimated_state[0] += 1
+        return estimated_state
         
         
 class CaseEngrenage(Case):
@@ -305,8 +313,10 @@ class CaseEngrenage(Case):
             Le robot qui se trouve sur la case tourne sur lui même.
         """
         
-        robot.orientation = (robot.orientation + self.__sens) % 4
-    
+        estimate = (robot.orientation + self.__sens) % 4
+        estimated_state = robot.state
+        estimated_state[3] = estimate
+        return estimated_state
         
     
 class Tapis(Case):
@@ -374,57 +384,63 @@ class Tapis(Case):
         
         #Convention x vers le droite, y vers le bas importante ici
         
+        estimatetr = (robot.state[1],robot.state[2])
+        estimateor = robot.state[3]
         
         for i in range(self.__vitesse):
             if self.__virage == False and self.__orientation == 0:
-                robot.position = (robot.position[0]+1,robot.position[1])
+                estimatetr = (robot.position[0]+1,robot.position[1])
     
             elif self.__virage == False and self.__orientation == 1:
-                robot.position = (robot.position[0],robot.position[1]-1)
+                estimatetr = (robot.position[0],robot.position[1]-1)
                 
             elif self.__virage == False and self.__orientation == 2:
-                robot.position = (robot.position[0]-1,robot.position[1])
+                estimatetr = (robot.position[0]-1,robot.position[1])
                 
             elif self.__virage == False and self.__orientation == 3:
-                robot.position = (robot.position[0],robot.position[1]+1)
+                estimatetr = (robot.position[0],robot.position[1]+1)
     
     
             
                 
             if self.__virage == "Droite" and self.__orientation == 0:
-                robot.position = (robot.position[0],robot.position[1]+1)
-                robot.orientation = robot.orientation - 1
+                estimatetr = (robot.position[0],robot.position[1]+1)
+                estimateor = robot.orientation - 1
     
             elif self.__virage == "Droite" and self.__orientation == 1:
-                robot.position = (robot.position[0]+1,robot.position[1])
-                robot.orientation = robot.orientation - 1
+                estimatetr = (robot.position[0]+1,robot.position[1])
+                estimateor = robot.orientation - 1
                 
             elif self.__virage == "Droite" and self.__orientation == 2:
-                robot.position = (robot.position[0],robot.position[1]-1)
-                robot.orientation = robot.orientation - 1
+                estimatetr = (robot.position[0],robot.position[1]-1)
+                estimateor = robot.orientation - 1
                 
             elif self.__virage == "Droite" and self.__orientation == 3:
-                robot.position = (robot.position[0]-1,robot.position[1])
-                robot.orientation = robot.orientation - 1
+                estimatetr = (robot.position[0]-1,robot.position[1])
+                estimateor = robot.orientation - 1
                 
                 
                 
                 
             if self.__virage == "Gauche" and self.__orientation == 0:
-                robot.position = (robot.position[0],robot.position[1]-1)
-                robot.orientation = robot.orientation + 1
+                estimatetr = (robot.position[0],robot.position[1]-1)
+                estimateor = robot.orientation + 1
     
             elif self.__virage == "Gauche" and self.__orientation == 1:
-                robot.position = (robot.position[0]-1,robot.position[1])
-                robot.orientation = robot.orientation + 1
+                estimatetr = (robot.position[0]-1,robot.position[1])
+                estimateor = robot.orientation + 1
                 
             elif self.__virage == "Gauche" and self.__orientation == 2:
-                robot.position = (robot.position[0],robot.position[1]+1)
-                robot.orientation = robot.orientation + 1
+                estimatetr = (robot.position[0],robot.position[1]+1)
+                estimateor = robot.orientation + 1
                 
             elif self.__virage == "Gauche" and self.__orientation == 3:
-                robot.position = (robot.position[0]+1,robot.position[1])
-                robot.orientation = robot.orientation + 1
+                estimatetr = (robot.position[0]+1,robot.position[1])
+                estimateor = robot.orientation + 1
+                
+        estimated_state = robot.state
+        estimated_state[1],estimated_state[2],estimated_state[3] = estimatetr[0],estimatetr[1],estimateor
+        return estimated_state
             
             
         
