@@ -6,10 +6,9 @@ Created on Thu Mar 23 12:46:17 2017
 """
 
 import Cases
-import Cartes
 import Murs
 
-class Plateau:
+class Plateau():
     def __init__(self, x = 10, y = 10):
         """
         x = nombre de colonnes; y = nombre de lignes; default = 10 par 10

@@ -2,33 +2,15 @@
 <ui version="4.0">
  <class>interface_ihm</class>
  <widget class="QMainWindow" name="interface_ihm">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>1395</width>
-    <height>878</height>
-   </rect>
-  </property>
   <property name="windowTitle">
    <string>RoboRally</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="conteneur" native="true">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>781</width>
-      <height>621</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QWidget" name="formLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>360</x>
-      <y>740</y>
+      <x>390</x>
+      <y>700</y>
       <width>141</width>
       <height>82</height>
      </rect>
@@ -45,42 +27,6 @@
       <widget class="QLineEdit" name="lineEdit">
        <property name="text">
         <string>KerTwonkaradec</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="verticalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>790</x>
-      <y>10</y>
-      <width>221</width>
-      <height>621</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QWidget" name="pioche" native="true">
-       <widget class="QLabel" name="tapiscarte">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>10</y>
-          <width>331</width>
-          <height>621</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="bouton_distrib">
-       <property name="text">
-        <string>Distribuer</string>
        </property>
       </widget>
      </item>
@@ -115,10 +61,10 @@
    <widget class="QWidget" name="gridLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>740</x>
-      <y>630</y>
-      <width>271</width>
-      <height>195</height>
+      <x>830</x>
+      <y>620</y>
+      <width>411</width>
+      <height>232</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
@@ -132,38 +78,32 @@
        </property>
       </widget>
      </item>
+     <item row="2" column="0">
+      <widget class="QTextEdit" name="choixcarte"/>
+     </item>
      <item row="1" column="0">
       <widget class="QPlainTextEdit" name="plainTextEdit">
        <property name="plainText">
-        <string>Cliquez sur distribuer,
-choisissez vos 5 cartes (ex: 1 2 3 4 5)
+        <string>Distribuez les cartes,
+choisissez en 5 (ex: 0 8 3 1 5) entre 0 et 8
 puis envoyez les instructions au robot.</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QTextEdit" name="choixcarte"/>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="bouton_distrib">
+       <property name="text">
+        <string>Distribuer</string>
+       </property>
+      </widget>
      </item>
     </layout>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>680</x>
-      <y>740</y>
-      <width>64</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Choix</string>
-    </property>
    </widget>
    <widget class="QSpinBox" name="nbjoueur">
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>660</y>
+      <y>650</y>
       <width>64</width>
       <height>33</height>
      </rect>
@@ -179,7 +119,7 @@ puis envoyez les instructions au robot.</string>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>670</y>
+      <y>660</y>
       <width>131</width>
       <height>21</height>
      </rect>
@@ -194,8 +134,8 @@ puis envoyez les instructions au robot.</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1395</width>
-     <height>21</height>
+     <width>1244</width>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFIchier">

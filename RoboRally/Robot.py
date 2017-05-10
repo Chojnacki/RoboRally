@@ -5,7 +5,7 @@ Created on Thu Mar 23 12:46:17 2017
 @author: Chojnacki
 """
 
-import Murs
+#import Murs
 from PyQt4 import QtGui, QtCore
 
 dico_orientation = {0: "Droite", 1: "Haut", 2: "Gauche", 3: "Bas"} # Ce dictionaire permet de traduire la direction à l'affichage
@@ -71,12 +71,12 @@ class Robot():
             None
         else:
                 
-            mur_test = Murs.Mur(self.position,position)
-            # Mur avec lequel on compare les murs de la liste
-    #        print(mur_test)
-            
-            if not (mur_test in self.murs):
-                self.__position = position
+#            mur_test = Murs.Mur(self.position,position)
+#            # Mur avec lequel on compare les murs de la liste
+#            print(mur_test)
+#            
+#            if not (mur_test in self.murs):
+            self.__position = position
             
         
         
@@ -101,34 +101,43 @@ class Robot():
         self.__pv = pv
         return self.__pv
 
-    def dessin(self, qp, ihm):
+    def dessin(self, qp):
         
         image_robot = QtGui.QImage(self.image)
         side = 50   #côté du carré qui représente le robot
         image_robot = image_robot.scaled(side,side)
-        square_size = 67 #côté du carré d'une case
+        square_size = 50 #côté du carré d'une case
         
-        painter = QtGui.QPainter(ihm)
-#        painter.rotate(self.orientation*90)  #Pour prendre en compte l'orientation du robot dans l'affichage
+#        qp.rotate(self.orientation*20)  #Pour prendre en compte l'orientation du robot dans l'affichage
+#        
+#        if (self.orientation == 1 or self.orientation == 2):
+#            correction_x  = side
+#        else:
+#            correction_x  = 0
+#        if (self.orientation == 2 or self.orientation == 3):
+#            correction_y  = side
+#        else:
+#            correction_y  = 0
+#                    
+#        qp.translate(correction_x,correction_y)           #Pour corriger le décalage créé par la fonction 'rotate'
+#                         
+#        qp.drawImage(QtCore.QRectF(self.position[0]*square_size + 20,self.position[1]*square_size + 45, side, side),image_robot)
+#        qp.resetTransform()
         
-        if (self.orientation == 1 or self.orientation == 2):
-            correction_x  = side
-        else:
-            correction_x  = 0
-        if (self.orientation == 2 or self.orientation == 3):
-            correction_y  = side
-        else:
-            correction_y  = 0
-            
-#        correction_y = 
         
-#        painter.translate(correction_x,correction_y)           #Pour corriger le décalage créé par la fonction 'rotate'
-                         
-        painter.drawImage(QtCore.QRectF(self.position[0]*square_size + 20,self.position[1]*square_size + 45, side, side),image_robot)
-        painter.resetTransform()
-#        painter.setPen(QtGui.QPen(QtCore.Qt.red))
-#        painter.drawArc(QtCore.QRectF(self.position[0]*100 + 35,self.position[1]*100 + 65, 10, 10), 0, 5760)
+        qp.rotate((-self.orientation%4)*90)  #Pour prendre en compte l'orientation du robot dans l'affichage
         
+        x , y = self.position[0]*square_size + 20,self.position[1]*square_size + 45
+        if self.orientation == 1:
+            x,y = - square_size - y , x
+        elif self.orientation == 2:
+            x,y = - square_size - x , - square_size - y
+        elif self.orientation == 3:
+            x,y = y, - square_size-x
+                    
+        qp.drawImage(QtCore.QRectF(x, y, side, side),image_robot)
+        qp.resetTransform()
+
 
     
 if __name__ == "__main__":
@@ -136,15 +145,3 @@ if __name__ == "__main__":
     twonky = Robot((1,1),1)
     print(twonky)
     print(twonky.position)
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    

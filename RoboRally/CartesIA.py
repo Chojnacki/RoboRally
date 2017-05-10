@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed May 10 09:51:29 2017
+
+@author: corazzal
+"""
+
 # -*- coding: utf-8 -*-
 """
 Created on Thu Mar 23 12:46:17 2017
@@ -7,7 +15,9 @@ Created on Thu Mar 23 12:46:17 2017
 
 
 import abc
-from PyQt4 import QtGui, QtCore
+#from Cases import *
+#import Robot as rob
+
 
 class Carte():
     """
@@ -23,6 +33,7 @@ class Carte():
         
         Paramètres
         ----------
+        Aucun
         """
         
     def __str__(self):
@@ -51,14 +62,6 @@ class Carte():
         """
         pass
     
-    def dessin(self, qp, image, x, y):
-        
-        image = QtGui.QImage(self.image)
-        side = 100 #dimensions d'une carte
-        qp.drawImage(QtCore.QRectF(x*side + 900, y*side + 50, side, side),image)
-        qp.resetTransform()
-
-    
 class Translation(Carte):
     """
     La carte translation fait avancer ou reculer le robot.
@@ -75,7 +78,6 @@ class Translation(Carte):
         """
         super().__init__()
         self.__vitesse = vitesse
-        self.image = 'images/avance{}.png'.format(self.__vitesse)
         
     def __str__(self):
         """
@@ -122,30 +124,31 @@ class Translation(Carte):
         if self.__vitesse > 0:
             for i in range(self.__vitesse):
                 if robot.orientation == 0:
-                    robot.position = (robot.position[0]+1,robot.position[1])
+                    estimate = (robot.position[0]+1,robot.position[1])
 
                 elif robot.orientation == 1:
-                    robot.position = (robot.position[0],robot.position[1]-1)
+                    estimate = (robot.position[0],robot.position[1]-1)
 
                 elif robot.orientation == 2:
-                    robot.position = (robot.position[0]-1,robot.position[1])
+                    estimate = (robot.position[0]-1,robot.position[1])
 
                 elif robot.orientation == 3:
-                    robot.position = (robot.position[0],robot.position[1]+1)
+                    estimate = (robot.position[0],robot.position[1]+1)
 
         else:
                 if robot.orientation == 0:
-                    robot.position = (robot.position[0]-1,robot.position[1])
+                    estimate = (robot.position[0]-1,robot.position[1])
 
                 elif robot.orientation == 1:
-                    robot.position = (robot.position[0],robot.position[1]+1)
+                    estimate = (robot.position[0],robot.position[1]+1)
 
                 elif robot.orientation == 2:
-                    robot.position = (robot.position[0]+1,robot.position[1])
+                    estimate = (robot.position[0]+1,robot.position[1])
 
                 elif robot.orientation == 3:
-                    robot.position = (robot.position[0],robot.position[1]-1)
+                    estimate = (robot.position[0],robot.position[1]-1)
 
+        return estimate
 
         
 class Rotation(Carte):
@@ -166,7 +169,6 @@ class Rotation(Carte):
         self.__angle = angle
         # Un angle de 3 correspond à 1/4 de tour à droite 
         # (3/4 de tour à gauche)
-        self.image = 'images/rotat{}.png'.format(self.__angle)
         
 
     def __str__(self):
@@ -213,16 +215,17 @@ class Rotation(Carte):
         """
         
         if robot.orientation + self.__angle <= 3:
-            robot.orientation += self.__angle
+            estimate = robot.orientation + self.__angle
             
 
         else:
             for i in range(1,4):
                     if robot.orientation == 4-i and self.__angle >= i:
-                        robot.orientation = self.__angle - i
+                        estimate = self.__angle - i
                         break #pour eviter de rentrer dans un autre if
                               #une fois la modification effectuee.       
-                    
+        
+        return estimate
                     
 if __name__ == '__main__':
     print("OK")
