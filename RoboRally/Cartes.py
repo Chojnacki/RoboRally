@@ -54,8 +54,9 @@ class Carte():
     def dessin(self, qp, image, x, y):
         
         image = QtGui.QImage(self.image)
-        side = 100 #dimensions d'une carte
-        qp.drawImage(QtCore.QRectF(x*side + 900, y*side + 50, side, side),image)
+        side1 = 100 #dimensions d'une carte
+        side2 = 200
+        qp.drawImage(QtCore.QRectF(x*side1 + 900, y*side2 + 50, side1, side2),image)
         qp.resetTransform()
 
     

@@ -62,6 +62,14 @@ class Carte():
         """
         pass
     
+    def dessin(self, qp, image, x, y):
+        
+        image = QtGui.QImage(self.image)
+        side1 = 100 #dimensions d'une carte
+        side2 = 200
+        qp.drawImage(QtCore.QRectF(x*side1 + 900, y*side2 + 50, side1, side2),image)
+        qp.resetTransform()
+    
 class Translation(Carte):
     """
     La carte translation fait avancer ou reculer le robot.
@@ -78,6 +86,7 @@ class Translation(Carte):
         """
         super().__init__()
         self.__vitesse = vitesse
+        self.image = 'images/avance{}.png'.format(self.__vitesse)
         
     def __str__(self):
         """
@@ -169,6 +178,7 @@ class Rotation(Carte):
         self.__angle = angle
         # Un angle de 3 correspond à 1/4 de tour à droite 
         # (3/4 de tour à gauche)
+        self.image = 'images/rotat{}.png'.format(self.__angle)
         
 
     def __str__(self):
