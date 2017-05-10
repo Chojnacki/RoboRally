@@ -102,7 +102,7 @@ class IHM(QtGui.QMainWindow):
 #                self.transition = None
         except KeyError as erreur:
             print ("transition ou état non définit dans le dictionnaire respectif", erreur)
-        except Exception as VouD: #Victoire ou Défaite
+        except Victoire as VouD: #Victoire ou Défaite
             print ("C'est la {} Mamène".format(VouD))
             exit()
         
@@ -171,12 +171,21 @@ class IHM(QtGui.QMainWindow):
             for joueur in self.jeu.listeJoueurs:
                 # On applique l'effet de la carte:
                 carte = joueur.cartes.pop(0)
-                carte.effet(joueur.robot)
-                # On applique l'effet de la case:
+                estimated_state = carte.effet(joueur.robot)
+                if True: #vérifier pour les murs etc
+#                    joueur.robot.position = (estimated_state[1],estimated_state[2])
+#                    joueur.robot.orientation = estimated_state[3]
+#                    print(estimated_state)
+                    joueur.robot.set_state(estimated_state)
+#                    print(joueur.robot)
+#                 On applique l'effet de la case:
                 for row in self.plateau.cases:
                     for case in row:
                         if case.position == joueur.robot.position:
-                            case.effet(joueur.robot)
+#                            case.effet(joueur.robot)
+                            estimated_state = case.effet(joueur.robot)
+                            if True:
+                                joueur.robot.set_state(estimated_state)
                 
             
             self.transition = "play"                    #Si le tour n'est pas fini, on continue de jouer
@@ -219,7 +228,22 @@ def uniqueness(l):
             if l[i] == l[j]:
                 return False
     return True
-       
+
+def realState(state1,state2,jeu):
+    """
+    renvoie l'état réel en tenant compte des murs et autres obstacles
+    ----------
+    state1: état de départ
+    state2: état prévu par les cartes / cases en ignorant les conditions externes
+    jeu: le jeu, contient toutes les variables nécessaires à la création de realState
+    """
+    listeMur = jeu.plateau.listeMur
+    pass
+    # a finir    
+    
+    
+    
+    
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

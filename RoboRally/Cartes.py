@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed May 10 09:51:29 2017
+
+@author: corazzal
+"""
+
 # -*- coding: utf-8 -*-
 """
 Created on Thu Mar 23 12:46:17 2017
@@ -44,15 +52,15 @@ class Carte():
         return "Carte"
         
     @abc.abstractmethod
-    def effet(self):
+    def effet(self,robot):
         """
         Applique l'effet de la carte sur le robot
         
         Paramètres
         ----------
-        Aucun
+        Le robot sur lequel l'action doit être effectuée
         """
-        pass
+        return robot.state
     
 class Translation(Carte):
     """
@@ -114,32 +122,36 @@ class Translation(Carte):
            
         """
         if self.__vitesse > 0:
-            for i in range(self.__vitesse):
-                if robot.orientation == 0:
-                    robot.position = (robot.position[0]+1,robot.position[1])
+            v = self.__vitesse
+            if robot.orientation == 0:
+                estimate = (robot.position[0]+1*v,robot.position[1])
 
-                elif robot.orientation == 1:
-                    robot.position = (robot.position[0],robot.position[1]-1)
+            elif robot.orientation == 1:
+                estimate = (robot.position[0],robot.position[1]-1*v)
 
-                elif robot.orientation == 2:
-                    robot.position = (robot.position[0]-1,robot.position[1])
+            elif robot.orientation == 2:
+                estimate = (robot.position[0]-1*v,robot.position[1])
 
-                elif robot.orientation == 3:
-                    robot.position = (robot.position[0],robot.position[1]+1)
+            elif robot.orientation == 3:
+                estimate = (robot.position[0],robot.position[1]+1*v)
 
         else:
-                if robot.orientation == 0:
-                    robot.position = (robot.position[0]-1,robot.position[1])
+            if robot.orientation == 0:
+                estimate = (robot.position[0]-1*v,robot.position[1])
 
-                elif robot.orientation == 1:
-                    robot.position = (robot.position[0],robot.position[1]+1)
+            elif robot.orientation == 1:
+                estimate = (robot.position[0],robot.position[1]+1*v)
 
-                elif robot.orientation == 2:
-                    robot.position = (robot.position[0]+1,robot.position[1])
+            elif robot.orientation == 2:
+                estimate = (robot.position[0]+1*v,robot.position[1])
 
-                elif robot.orientation == 3:
-                    robot.position = (robot.position[0],robot.position[1]-1)
+            elif robot.orientation == 3:
+                estimate = (robot.position[0],robot.position[1]-1*v)
 
+        estimated_state = robot.state
+        estimated_state[1] = estimate[0]
+        estimated_state[2] = estimate[1]
+        return estimated_state
 
         
 class Rotation(Carte):
@@ -206,16 +218,20 @@ class Rotation(Carte):
         """
         
         if robot.orientation + self.__angle <= 3:
-            robot.orientation += self.__angle
+            estimate = robot.orientation + self.__angle
             
 
         else:
             for i in range(1,4):
                     if robot.orientation == 4-i and self.__angle >= i:
-                        robot.orientation = self.__angle - i
+                        estimate = self.__angle - i
                         break #pour eviter de rentrer dans un autre if
-                              #une fois la modification effectuee.       
-                    
+                              #une fois la modification effectuee.
+                        
+        estimated_state = robot.state
+        estimated_state[3] = estimate % 4
+        
+        return estimated_state
                     
 if __name__ == '__main__':
     print("OK")
