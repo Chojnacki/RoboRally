@@ -15,7 +15,9 @@ Created on Thu Mar 23 12:46:17 2017
 
 
 import abc
-from PyQt4 import QtGui, QtCore
+#from Cases import *
+#import Robot as rob
+
 
 class Carte():
     """
@@ -31,6 +33,7 @@ class Carte():
         
         Paramètres
         ----------
+        Aucun
         """
         
     def __str__(self):
@@ -49,15 +52,15 @@ class Carte():
         return "Carte"
         
     @abc.abstractmethod
-    def effet(self,robot):
+    def effet(self):
         """
         Applique l'effet de la carte sur le robot
         
         Paramètres
         ----------
-        Le robot sur lequel l'action doit être effectuée
+        Aucun
         """
-        return robot.state
+        pass
     
     def dessin(self, qp, image, x, y):
         
@@ -66,7 +69,6 @@ class Carte():
         side2 = 200
         qp.drawImage(QtCore.QRectF(x*side1 + 900, y*side2 + 50, side1, side2),image)
         qp.resetTransform()
-
     
 class Translation(Carte):
     """
@@ -129,36 +131,33 @@ class Translation(Carte):
            
         """
         if self.__vitesse > 0:
-            v = self.__vitesse
-            if robot.orientation == 0:
-                estimate = (robot.position[0]+1*v,robot.position[1])
+            for i in range(self.__vitesse):
+                if robot.orientation == 0:
+                    estimate = (robot.position[0]+1,robot.position[1])
 
-            elif robot.orientation == 1:
-                estimate = (robot.position[0],robot.position[1]-1*v)
+                elif robot.orientation == 1:
+                    estimate = (robot.position[0],robot.position[1]-1)
 
-            elif robot.orientation == 2:
-                estimate = (robot.position[0]-1*v,robot.position[1])
+                elif robot.orientation == 2:
+                    estimate = (robot.position[0]-1,robot.position[1])
 
-            elif robot.orientation == 3:
-                estimate = (robot.position[0],robot.position[1]+1*v)
+                elif robot.orientation == 3:
+                    estimate = (robot.position[0],robot.position[1]+1)
 
         else:
-            if robot.orientation == 0:
-                estimate = (robot.position[0]-1*v,robot.position[1])
+                if robot.orientation == 0:
+                    estimate = (robot.position[0]-1,robot.position[1])
 
-            elif robot.orientation == 1:
-                estimate = (robot.position[0],robot.position[1]+1*v)
+                elif robot.orientation == 1:
+                    estimate = (robot.position[0],robot.position[1]+1)
 
-            elif robot.orientation == 2:
-                estimate = (robot.position[0]+1*v,robot.position[1])
+                elif robot.orientation == 2:
+                    estimate = (robot.position[0]+1,robot.position[1])
 
-            elif robot.orientation == 3:
-                estimate = (robot.position[0],robot.position[1]-1*v)
+                elif robot.orientation == 3:
+                    estimate = (robot.position[0],robot.position[1]-1)
 
-        estimated_state = robot.state
-        estimated_state[1] = estimate[0]
-        estimated_state[2] = estimate[1]
-        return estimated_state
+        return estimate
 
         
 class Rotation(Carte):
@@ -234,12 +233,9 @@ class Rotation(Carte):
                     if robot.orientation == 4-i and self.__angle >= i:
                         estimate = self.__angle - i
                         break #pour eviter de rentrer dans un autre if
-                              #une fois la modification effectuee.
-                        
-        estimated_state = robot.state
-        estimated_state[3] = estimate % 4
+                              #une fois la modification effectuee.       
         
-        return estimated_state
+        return estimate
                     
 if __name__ == '__main__':
     print("OK")

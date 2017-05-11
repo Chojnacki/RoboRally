@@ -5,10 +5,12 @@ Created on Thu Mar 23 12:46:17 2017
 @author: Chojnacki
 """
 
-#import numpy as np
+
 import Joueur as j
 import Plateau as p
 import Cartes
+import Murs
+
 #import Robot
 
 class Jeu():

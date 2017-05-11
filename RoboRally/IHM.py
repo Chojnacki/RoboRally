@@ -35,7 +35,11 @@ class IHM(QtGui.QMainWindow):
         palette.setBrush(QtGui.QPalette.Background,QtGui.QBrush(pixmap))
         self.setPalette(palette)
 
+        
+        self.faireAffichageDesCartes = False
+        
 
+        
         ######################################################################
         #partie liée à la fsm qui DOIT se trouver dans init
 
@@ -58,7 +62,7 @@ class IHM(QtGui.QMainWindow):
         #dictionnaire des actions à effectuer lors de la transition
         self.dict_ac = {
                         None: (lambda *args: None), "play": self.play,
-                        "pick":(lambda *args: None)                        
+                        "pick": self.FaireAffichageDesCartes                      
                         }
         
         #On lie le timeout à la fsm
@@ -118,7 +122,7 @@ class IHM(QtGui.QMainWindow):
     def nvellepartie(self):
         """Cette fonction n'est pas encore prête"""
         nbjoueur = self.ui.nbjoueur.value()
-#        print(nbjoueur)
+        print(nbjoueur)
         
         
     def distrib(self):
@@ -132,23 +136,31 @@ class IHM(QtGui.QMainWindow):
         valeurs = self.ui.choixcarte.toPlainText()
         valeurs = valeurs.split(' ')
         print(len(valeurs),self.jeu.listeJoueurs[0].robot.pv - 4)
-        #Tant qu on ne choisi pas des cartes differentes
-        if not(uniqueness(valeurs)) or (len(valeurs) != self.jeu.listeJoueurs[0].robot.pv - 4):
-            print("Veuillez choisir {} cartes distinctes".format(self.jeu.listeJoueurs[0].robot.pv - 4) )
+        
+        #Tant qu on ne choisi pas des cartes differentes et le choix de la carte n est pas entre 0 et 8
+        var = False
+        for carte in valeurs:
+            if int(carte) > 8 or int(carte) < 0:
+                var = True
+                
+        
+        if (not(uniqueness(valeurs)) or (len(valeurs) != self.jeu.listeJoueurs[0].robot.pv - 4) or var):
+            print("Veuillez choisir {} cartes distinctes entre 0 et 8".format(self.jeu.listeJoueurs[0].robot.pv - 4) )
 #            valeurs = self.ui.choixcarte.toPlainText()
 #            valeurs = valeurs.split(' ')
-
+        
         else:
             removeList = [] #liste des cartes à retirer de la pioche
             for valeur in valeurs:
                 listeChoix.append(int(valeur))
                 removeList.append(self.jeu.pioche[int(valeur)])
-    
-            # Une fois le choix effectue, on met les cartes choisies dans la variable joueur
+        
+                # Une fois le choix effectue, on met les cartes choisies dans la variable joueur
             for i in range(self.jeu.listeJoueurs[0].robot.pv - 4):
                 valeurs[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
                 self.jeu.listeJoueurs[0].cartes[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
-            
+
+                
             self.transition = "play"
 
     def play(self):
@@ -190,7 +202,11 @@ class IHM(QtGui.QMainWindow):
             
             self.transition = "play"                    #Si le tour n'est pas fini, on continue de jouer
         
-
+        
+    def FaireAffichageDesCartes(self):
+        self.faireAffichageDesCartes = True
+        
+        
     def affichage(self):
         """
         fonction élémentaire pour lancer toutes fonctions servant à 'refresh' l'affichage du jeu
@@ -209,11 +225,20 @@ class IHM(QtGui.QMainWindow):
                 case.dessin(qp, case.image)
         for mur in self.jeu.plateau.listeMurs:
             mur.dessin(qp)
-        
+
+    def drawcards(self, qp):
+        c=0
+        x=[0,0,0,1,1,1,2,2,2]
+        for carte in self.jeu.listeJoueurs[0].mainJoueur:
+            carte.dessin(qp, carte.image, x[c], c%3)
+            c+=1
+
     def paintEvent(self,e):
         qp = QtGui.QPainter(self)
         self.drawboard(qp)
         self.drawrobot(qp)
+        if self.faireAffichageDesCartes:
+            self.drawcards(qp)
         qp.end()
      
 
@@ -248,6 +273,6 @@ def realState(state1,state2,jeu):
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     window = IHM()
-    window.setGeometry(100,50,1100,900)
+    window.setGeometry(100,50,1300,900)
     window.show()
     app.exec_()
