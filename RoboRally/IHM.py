@@ -135,6 +135,7 @@ class IHM(QtGui.QMainWindow):
         # Le joueur choisit ses cartes tout en etant limite par la vie de son robot
         valeurs = self.ui.choixcarte.toPlainText()
         valeurs = valeurs.split(' ')
+        valeurs = [int(valeurs[i])-1 for i in range(len(valeurs))]
         print(len(valeurs),self.jeu.listeJoueurs[0].robot.pv - 4)
         
         #Tant qu on ne choisi pas des cartes differentes et le choix de la carte n est pas entre 0 et 8
@@ -226,9 +227,9 @@ class IHM(QtGui.QMainWindow):
 
     def drawcards(self, qp):
         c=0
-        x=[0,0,0,1,1,1,2,2,2]
+        y=[0,0,0,1,1,1,2,2,2]
         for carte in self.jeu.listeJoueurs[0].mainJoueur:
-            carte.dessin(qp, carte.image, x[c], c%3)
+            carte.dessin(qp, carte.image, c%3, y[c])
             c+=1
 
     def paintEvent(self,e):
