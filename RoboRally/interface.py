@@ -104,6 +104,9 @@ class Ui_interface_ihm(object):
         QtCore.QMetaObject.connectSlotsByName(interface_ihm)
 
     def retranslateUi(self, interface_ihm):
+
+        self.choixcarte.setText(_translate("interface_ihm","0 1 2 3 4", None)) #Ajout CJK
+        
         interface_ihm.setWindowTitle(_translate("interface_ihm", "RoboRally", None))
         self.lineEdit.setText(_translate("interface_ihm", "KerTwonkaradec", None))
         self.bouton_partie.setText(_translate("interface_ihm", "Nouvelle partie", None))

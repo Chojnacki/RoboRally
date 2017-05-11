@@ -9,6 +9,12 @@ from PyQt4 import QtGui, QtCore
 
 class Mur:
     def __init__(self, voisin1, voisin2):
+        
+        #petite boucle pour que les murs soient définis de gauche à droite et de haut en bas
+        if voisin1[0] <= voisin2[0] and voisin1[1] <= voisin2[1]:
+            pass
+        else:
+            voisin1,voisin2 = voisin2,voisin1
         self.v1, self.v2 = voisin1, voisin2
         self.x = (self.v1[0] + self.v2[0])/ 2
         self.y = (self.v1[1] + self.v2[1])/ 2
