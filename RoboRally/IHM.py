@@ -62,7 +62,7 @@ class IHM(QtGui.QMainWindow):
         #dictionnaire des actions à effectuer lors de la transition
         self.dict_ac = {
                         None: (lambda *args: None), "play": self.play,
-                        "pick": self.FaireAffichageDesCartes                      
+                        "pick": self.FaireAffichage                      
                         }
         
         #On lie le timeout à la fsm
@@ -74,8 +74,17 @@ class IHM(QtGui.QMainWindow):
         #Connecte les boutons aux fonctions définies en dessous
 
         self.ui.bouton_partie.clicked.connect(self.nvellepartie)
-        self.ui.bouton_distrib.clicked.connect(self.distrib)
         self.ui.bouton_instru.clicked.connect(self.chooseCard)
+        self.ui.checkBox_1.stateChanged.connect(self.checkBox1)
+        self.ui.checkBox_2.stateChanged.connect(self.checkBox2)
+        self.ui.checkBox_3.stateChanged.connect(self.checkBox3)
+        self.ui.checkBox_4.stateChanged.connect(self.checkBox4)
+        self.ui.checkBox_5.stateChanged.connect(self.checkBox5)
+        self.ui.checkBox_6.stateChanged.connect(self.checkBox6)
+        self.ui.checkBox_7.stateChanged.connect(self.checkBox7)
+        self.ui.checkBox_8.stateChanged.connect(self.checkBox8)
+        self.ui.checkBox_9.stateChanged.connect(self.checkBox9)
+
 
 
 
@@ -115,54 +124,139 @@ class IHM(QtGui.QMainWindow):
 
 
 ################################################################################################################################
+    
+    def checkBox1(self):
+        checker = self.ui.checkBox_1
+        if checker.isChecked():
+            self.jeu.listeJoueurs[0].cartesChoisies.append(1)
+        else:
+            self.jeu.listeJoueurs[0].cartesChoisies.pop(self.jeu.listeJoueurs[0].cartesChoisies.index(1))
+        self.ui.choixcarte.setText("{}".format(self.jeu.listeJoueurs[0].cartesChoisies))
+#        print(self.jeu.listeJoueurs[0].cartesChoisies)
 
+    def checkBox2(self):
+        checker = self.ui.checkBox_2
+        if checker.isChecked():
+            self.jeu.listeJoueurs[0].cartesChoisies.append(2)
+        else:
+            self.jeu.listeJoueurs[0].cartesChoisies.pop(self.jeu.listeJoueurs[0].cartesChoisies.index(2))
+        self.ui.choixcarte.setText("{}".format(self.jeu.listeJoueurs[0].cartesChoisies))
+#        print(self.jeu.listeJoueurs[0].cartesChoisies)
 
+    def checkBox3(self):
+        checker = self.ui.checkBox_3
+        if checker.isChecked():
+            self.jeu.listeJoueurs[0].cartesChoisies.append(3)
+        else:
+            self.jeu.listeJoueurs[0].cartesChoisies.pop(self.jeu.listeJoueurs[0].cartesChoisies.index(3))
+        self.ui.choixcarte.setText("{}".format(self.jeu.listeJoueurs[0].cartesChoisies))
+#        print(self.jeu.listeJoueurs[0].cartesChoisies)
+
+    def checkBox4(self):
+        checker = self.ui.checkBox_4
+        if checker.isChecked():
+            self.jeu.listeJoueurs[0].cartesChoisies.append(4)
+        else:
+            self.jeu.listeJoueurs[0].cartesChoisies.pop(self.jeu.listeJoueurs[0].cartesChoisies.index(4))
+        self.ui.choixcarte.setText("{}".format(self.jeu.listeJoueurs[0].cartesChoisies))
+#        print(self.jeu.listeJoueurs[0].cartesChoisies)
+
+    def checkBox5(self):
+        checker = self.ui.checkBox_5
+        if checker.isChecked():
+            self.jeu.listeJoueurs[0].cartesChoisies.append(5)
+        else:
+            self.jeu.listeJoueurs[0].cartesChoisies.pop(self.jeu.listeJoueurs[0].cartesChoisies.index(5))
+        self.ui.choixcarte.setText("{}".format(self.jeu.listeJoueurs[0].cartesChoisies))
+#        print(self.jeu.listeJoueurs[0].cartesChoisies)
+
+    def checkBox6(self):
+        checker = self.ui.checkBox_6
+        if checker.isChecked():
+            self.jeu.listeJoueurs[0].cartesChoisies.append(6)
+        else:
+            self.jeu.listeJoueurs[0].cartesChoisies.pop(self.jeu.listeJoueurs[0].cartesChoisies.index(6))
+        self.ui.choixcarte.setText("{}".format(self.jeu.listeJoueurs[0].cartesChoisies))
+#        print(self.jeu.listeJoueurs[0].cartesChoisies)
+
+    def checkBox7(self):
+        checker = self.ui.checkBox_7
+        if checker.isChecked():
+            self.jeu.listeJoueurs[0].cartesChoisies.append(7)
+        else:
+            self.jeu.listeJoueurs[0].cartesChoisies.pop(self.jeu.listeJoueurs[0].cartesChoisies.index(7))
+        self.ui.choixcarte.setText("{}".format(self.jeu.listeJoueurs[0].cartesChoisies))
+#        print(self.jeu.listeJoueurs[0].cartesChoisies)
+
+    def checkBox8(self):
+        checker = self.ui.checkBox_8
+        if checker.isChecked():
+            self.jeu.listeJoueurs[0].cartesChoisies.append(8)
+        else:
+            self.jeu.listeJoueurs[0].cartesChoisies.pop(self.jeu.listeJoueurs[0].cartesChoisies.index(8))
+        self.ui.choixcarte.setText("{}".format(self.jeu.listeJoueurs[0].cartesChoisies))
+#        print(self.jeu.listeJoueurs[0].cartesChoisies)
+
+    def checkBox9(self):
+        checker = self.ui.checkBox_9
+        if checker.isChecked():
+            self.jeu.listeJoueurs[0].cartesChoisies.append(9)
+        else:
+            self.jeu.listeJoueurs[0].cartesChoisies.pop(self.jeu.listeJoueurs[0].cartesChoisies.index(9))
+        self.ui.choixcarte.setText("{}".format(self.jeu.listeJoueurs[0].cartesChoisies))
+#        print(self.jeu.listeJoueurs[0].cartesChoisies)
 
 
     def nvellepartie(self):
         """Cette fonction n'est pas encore prête"""
-        nbjoueur = self.ui.nbjoueur.value()
-        print(nbjoueur)
-        
-        
-    def distrib(self):
+#        nbjoueur = self.ui.nbjoueur.value()
+#        print(nbjoueur)
         self.jeu.prepareTour()
         self.transition = "pick"
 #        self.ui.tapiscarte.update()
         
+    
+        
     def chooseCard(self):
-        listeChoix = []
-        # Le joueur choisit ses cartes tout en etant limite par la vie de son robot
-        valeurs = self.ui.choixcarte.toPlainText()
-        valeurs = valeurs.split(' ')
-        valeurs = [int(valeurs[i])-1 for i in range(len(valeurs))]
-        print(len(valeurs),self.jeu.listeJoueurs[0].robot.pv - 4)
         
-        #Tant qu on ne choisi pas des cartes differentes et le choix de la carte n est pas entre 0 et 8
-        var = False
-        for carte in valeurs:
-            if int(carte) > 8 or int(carte) < 0:
-                var = True
+        if self.current_state == "pick":
+            
+            listeChoix = []
+            # Le joueur choisit ses cartes tout en etant limite par la vie de son robot
+    #        valeurs = self.ui.choixcarte.toPlainText()
+    #        valeurs = valeurs.split(' ')
+            valeurs = self.jeu.listeJoueurs[0].cartesChoisies
+            valeurs = [int(valeurs[i])-1 for i in range(len(valeurs))]
+    #        print(len(valeurs),self.jeu.listeJoueurs[0].robot.pv - 4)
+            
+            #Tant qu on ne choisi pas des cartes differentes et le choix de la carte n est pas entre 0 et 8
+            var = False
+            for carte in valeurs:
+                if int(carte) > 8 or int(carte) < 0:
+                    var = True
+                    
+            
+            if (not(uniqueness(valeurs)) or (len(valeurs) != self.jeu.listeJoueurs[0].robot.pv - 4) or var):
+                print("Veuillez choisir {} cartes distinctes entre 1 et 9".format(self.jeu.listeJoueurs[0].robot.pv - 4) )
+    #            valeurs = self.ui.choixcarte.toPlainText()
+    #            valeurs = valeurs.split(' ')
+            
+            else:
+                removeList = [] #liste des cartes à retirer de la pioche
+                for valeur in valeurs:
+                    listeChoix.append(int(valeur))
+                    removeList.append(self.jeu.pioche[int(valeur)])
+            
+                    # Une fois le choix effectue, on met les cartes choisies dans la variable joueur
+                for i in range(self.jeu.listeJoueurs[0].robot.pv - 4):
+                    valeurs[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
+                    self.jeu.listeJoueurs[0].cartes[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
+    
+                    
+                self.transition = "play"
                 
-        
-        if (not(uniqueness(valeurs)) or (len(valeurs) != self.jeu.listeJoueurs[0].robot.pv - 4) or var):
-            print("Veuillez choisir {} cartes distinctes entre 0 et 8".format(self.jeu.listeJoueurs[0].robot.pv - 4) )
-#            valeurs = self.ui.choixcarte.toPlainText()
-#            valeurs = valeurs.split(' ')
-        
         else:
-            removeList = [] #liste des cartes à retirer de la pioche
-            for valeur in valeurs:
-                listeChoix.append(int(valeur))
-                removeList.append(self.jeu.pioche[int(valeur)])
-        
-                # Une fois le choix effectue, on met les cartes choisies dans la variable joueur
-            for i in range(self.jeu.listeJoueurs[0].robot.pv - 4):
-                valeurs[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
-                self.jeu.listeJoueurs[0].cartes[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
-
-                
-            self.transition = "play"
+            pass
 
     def play(self):
         """
@@ -178,7 +272,7 @@ class IHM(QtGui.QMainWindow):
                 fin_tour = False
         
         if fin_tour:
-            self.distrib()              #Si le tour est fini on redistribue
+            self.nvellepartie()              #Si le tour est fini on redistribue
         
         else:
             for joueur in self.jeu.listeJoueurs:
@@ -189,6 +283,7 @@ class IHM(QtGui.QMainWindow):
                 real_state = realState(joueur.robot.state,estimated_state,self.jeu)
                 print('real_state',real_state)
                 joueur.robot.set_state(real_state)
+
                 
 #                 On applique l'effet de la case:
                 for row in self.plateau.cases:
@@ -202,10 +297,13 @@ class IHM(QtGui.QMainWindow):
             
             self.transition = "play"                    #Si le tour n'est pas fini, on continue de jouer
         
-    def FaireAffichageDesCartes(self):
+    def FaireAffichage(self):
+        """
+        Fonction qui affiche les cartes et les pv du joueur
+        """
         self.faireAffichageDesCartes = True
-        
-        
+        self.ui.progress_pv.setValue(self.jeu.listeJoueurs[0].robot.pv)
+
     def affichage(self):
         """
         fonction élémentaire pour lancer toutes fonctions servant à 'refresh' l'affichage du jeu

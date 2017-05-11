@@ -63,7 +63,7 @@ class Case():
         ----------
         Aucun
         """
-        return robot.state
+        return robot.state[:]
     
     def dessin(self, qp, image = 'images/caseNeutre.png'):
         
@@ -153,11 +153,9 @@ class CaseArrivee(Case):
         robot: Robot
             autre idee: teleporte le robot sur une case à part
         """
-        raise Victoire()
+        raise Exception('Victoire')
         pass
 
-class Victoire(Exception):
-    pass
     
         
 class CaseTrou(Case):
@@ -206,7 +204,7 @@ class CaseTrou(Case):
             Le robot qui se trouve sur la case Trou perd tous ses points de vie.
         """
 #        robot.pv = 0
-        estimated_state = robot.state
+        estimated_state = robot.state[:]
         estimated_state[0] = 0
         return estimated_state
         
@@ -258,7 +256,7 @@ class CaseReparation(Case):
         robot: Robot
             Le robot qui se trouve sur la case Reparation regagne un point de vie.
         """
-        estimated_state = robot.state
+        estimated_state = robot.state[:]
         if estimated_state[0] < 9:
             estimated_state[0] += 1
         return estimated_state
@@ -314,7 +312,7 @@ class CaseEngrenage(Case):
         """
         
         estimate = (robot.orientation + self.__sens) % 4
-        estimated_state = robot.state
+        estimated_state = robot.state[:]
         estimated_state[3] = estimate
         return estimated_state
         
@@ -438,7 +436,7 @@ class Tapis(Case):
                 estimatetr = (robot.position[0]+1,robot.position[1])
                 estimateor = robot.orientation + 1
                 
-        estimated_state = robot.state
+        estimated_state = robot.state[:]
         estimated_state[1],estimated_state[2],estimated_state[3] = estimatetr[0],estimatetr[1],estimateor
         return estimated_state
             

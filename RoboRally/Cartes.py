@@ -57,7 +57,7 @@ class Carte():
         ----------
         Le robot sur lequel l'action doit être effectuée
         """
-        return robot.state
+        return robot.state[:]
     
     def dessin(self, qp, image, x, y):
         
@@ -155,7 +155,7 @@ class Translation(Carte):
             elif robot.orientation == 3:
                 estimate = (robot.position[0],robot.position[1]-1*v)
 
-        estimated_state = robot.state
+        estimated_state = robot.state[:]
         estimated_state[1] = estimate[0]
         estimated_state[2] = estimate[1]
         return estimated_state
@@ -236,7 +236,7 @@ class Rotation(Carte):
                         break #pour eviter de rentrer dans un autre if
                               #une fois la modification effectuee.
                         
-        estimated_state = robot.state
+        estimated_state = robot.state[:]
         estimated_state[3] = estimate % 4
         
         return estimated_state
