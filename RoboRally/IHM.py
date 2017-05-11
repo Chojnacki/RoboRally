@@ -66,7 +66,7 @@ class IHM(QtGui.QMainWindow):
                         }
         
         #On lie le timeout à la fsm
-        self.timer.start(500)
+        self.timer.start(100)
         self.timer.timeout.connect(self.fsm)
         ######################################################################
         
@@ -106,7 +106,7 @@ class IHM(QtGui.QMainWindow):
 #                self.transition = None
         except KeyError as erreur:
             print ("transition ou état non définit dans le dictionnaire respectif", erreur)
-        except Victoire as VouD: #Victoire ou Défaite
+        except Exception as VouD: #Victoire ou Défaite
             print ("C'est la {} Mamène".format(VouD))
             exit()
         
@@ -135,6 +135,7 @@ class IHM(QtGui.QMainWindow):
         # Le joueur choisit ses cartes tout en etant limite par la vie de son robot
         valeurs = self.ui.choixcarte.toPlainText()
         valeurs = valeurs.split(' ')
+        valeurs = [int(valeurs[i])-1 for i in range(len(valeurs))]
         print(len(valeurs),self.jeu.listeJoueurs[0].robot.pv - 4)
         
         #Tant qu on ne choisi pas des cartes differentes et le choix de la carte n est pas entre 0 et 8
@@ -184,24 +185,22 @@ class IHM(QtGui.QMainWindow):
                 # On applique l'effet de la carte:
                 carte = joueur.cartes.pop(0)
                 estimated_state = carte.effet(joueur.robot)
-                if True: #vérifier pour les murs etc
-#                    joueur.robot.position = (estimated_state[1],estimated_state[2])
-#                    joueur.robot.orientation = estimated_state[3]
-#                    print(estimated_state)
-                    joueur.robot.set_state(estimated_state)
-#                    print(joueur.robot)
+                print('robot',joueur.robot.state)
+                real_state = realState(joueur.robot.state,estimated_state,self.jeu)
+                print('real_state',real_state)
+                joueur.robot.set_state(real_state)
+                
 #                 On applique l'effet de la case:
                 for row in self.plateau.cases:
                     for case in row:
                         if case.position == joueur.robot.position:
 #                            case.effet(joueur.robot)
                             estimated_state = case.effet(joueur.robot)
-                            if True:
-                                joueur.robot.set_state(estimated_state)
+                            real_state = realState(joueur.robot.state,estimated_state,self.jeu)
+                            joueur.robot.set_state(real_state)
                 
             
             self.transition = "play"                    #Si le tour n'est pas fini, on continue de jouer
-        
         
     def FaireAffichageDesCartes(self):
         self.faireAffichageDesCartes = True
@@ -228,9 +227,9 @@ class IHM(QtGui.QMainWindow):
 
     def drawcards(self, qp):
         c=0
-        x=[0,0,0,1,1,1,2,2,2]
+        y=[0,0,0,1,1,1,2,2,2]
         for carte in self.jeu.listeJoueurs[0].mainJoueur:
-            carte.dessin(qp, carte.image, x[c], c%3)
+            carte.dessin(qp, carte.image, c%3, y[c])
             c+=1
 
     def paintEvent(self,e):
@@ -262,11 +261,51 @@ def realState(state1,state2,jeu):
     state2: état prévu par les cartes / cases en ignorant les conditions externes
     jeu: le jeu, contient toutes les variables nécessaires à la création de realState
     """
-    listeMur = jeu.plateau.listeMur
+    listeMurs = jeu.plateau.listeMurs
+    real_state = state2
+    for mur in listeMurs:
+        real_state = correctedStateMur(state1,real_state,mur)
+    
+    return real_state
+
+    
+def correctedStateMur (state1,state2,mur):
+    """
+    renvoie l'état corrigé, en prenant en compte le mur passé en argument
+    ----------
+    state1: état de départ
+    state2: état prévu par les cartes / cases en ignorant les conditions externes
+    mur: le mur considéré
+    """
+    a, b = state1[1], state1[2]
+    correctedState = state2[:]
+#    print(state1,state2)
+
+    #en fonction de la direction du robot un des deux blocs ne sera pas executé: 'in range' est vide    
+    
+    #si le robot va de gauche à droite ou de haut en bas
+    for x in range(state1[1],state2[1]+1,1):
+        for y in range(state1[2],state2[2]+1,1):
+#            print('gauche,droite',a,b,x,y) #pour vérifier quel mur est testé et dans quelle direction
+            if mur.v1 == (a,b) and mur.v2 == (x,y):
+                correctedState[1],correctedState[2] = a,b
+                break
+            #si on peut avancer d'une case, le problème se ré-itère au cran suivant:
+            a,b = x,y
+    
+    #si le robot va de droite à gauche ou de bas en haut
+    for x in range(state1[1],state2[1]-1,-1):
+        for y in range(state1[2],state2[2]-1,-1):
+#            print('droite,gauche',x,y,a,b)
+            if mur.v1 == (x,y) and mur.v2 == (a,b):
+                correctedState[1],correctedState[2] = a,b
+                break
+            a,b = x,y
+    return correctedState
+    
+    
+class Victoire(Exception):
     pass
-    # a finir    
-    
-    
     
     
 
