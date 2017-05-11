@@ -20,6 +20,7 @@ import plateau1 #contient un plateau de jeu 'jouable'
 class IHM(QtGui.QMainWindow):
     def __init__(self):
         print('init')
+        
         super().__init__()
         # Configuration de l'interface utilisateur.
         self.ui = Ui_interface_ihm()
