@@ -18,6 +18,7 @@ class Joueur():
     def __init__(self, numero, robot = None, AI = True):
         
         self.mainJoueur = [0 for i in range(9)]   # Cartes que le joueur s'est vu distribues
+        self.cartesChoisies = []
         self.cartes = [0 for i in range(5)]   # Cartes que le joueur va jouer
         self.__num = numero
         self.robot = robot
