@@ -339,9 +339,16 @@ class Tapis(Case):
         super().__init__(position)
         self.__orientation = orientation
         self.__virage = virage
-        self.__vitesse = vitesse 
+        self.__vitesse = vitesse
         self.image = 'images/tapis{}{}{}.png'.format(self.__orientation, self.__virage, self.__vitesse)
         
+    @property
+    def vitesse(self):
+        return self.__vitesse
+    
+    @property
+    def orientation(self):
+        return self.__orientation
 
         
     @property
@@ -445,6 +452,7 @@ class Tapis(Case):
         
 if __name__ == "__main__":
     case = Tapis((1,2),0,False)
+    print(isinstance(case,Tapis))
     print(case)
     twonky = rob.Robot((1,1),1)
     print(twonky)
