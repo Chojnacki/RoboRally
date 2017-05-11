@@ -153,11 +153,9 @@ class CaseArrivee(Case):
         robot: Robot
             autre idee: teleporte le robot sur une case à part
         """
-        raise Victoire()
+        raise Exception('Victoire')
         pass
 
-class Victoire(Exception):
-    pass
     
         
 class CaseTrou(Case):

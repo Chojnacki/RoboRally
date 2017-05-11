@@ -66,7 +66,7 @@ class IHM(QtGui.QMainWindow):
                         }
         
         #On lie le timeout à la fsm
-        self.timer.start(500)
+        self.timer.start(100)
         self.timer.timeout.connect(self.fsm)
         ######################################################################
         
@@ -106,7 +106,7 @@ class IHM(QtGui.QMainWindow):
 #                self.transition = None
         except KeyError as erreur:
             print ("transition ou état non définit dans le dictionnaire respectif", erreur)
-        except Victoire as VouD: #Victoire ou Défaite
+        except Exception as VouD: #Victoire ou Défaite
             print ("C'est la {} Mamène".format(VouD))
             exit()
         
@@ -180,29 +180,26 @@ class IHM(QtGui.QMainWindow):
             self.distrib()              #Si le tour est fini on redistribue
         
         else:
-            try:
-                for joueur in self.jeu.listeJoueurs:
-                    # On applique l'effet de la carte:
-                    carte = joueur.cartes.pop(0)
-                    estimated_state = carte.effet(joueur.robot)
-                    print('robot',joueur.robot.state)
-                    real_state = realState(joueur.robot.state,estimated_state,self.jeu)
-                    print('real_state',real_state)
-                    joueur.robot.set_state(real_state)
-                    
-    #                 On applique l'effet de la case:
-                    for row in self.plateau.cases:
-                        for case in row:
-                            if case.position == joueur.robot.position:
-    #                            case.effet(joueur.robot)
-                                estimated_state = case.effet(joueur.robot)
-                                real_state = realState(joueur.robot.state,estimated_state,self.jeu)
-                                joueur.robot.set_state(real_state)
-                    
+            for joueur in self.jeu.listeJoueurs:
+                # On applique l'effet de la carte:
+                carte = joueur.cartes.pop(0)
+                estimated_state = carte.effet(joueur.robot)
+                print('robot',joueur.robot.state)
+                real_state = realState(joueur.robot.state,estimated_state,self.jeu)
+                print('real_state',real_state)
+                joueur.robot.set_state(real_state)
                 
-                self.transition = "play"                    #Si le tour n'est pas fini, on continue de jouer
-            except Victoire as VouD:
-                print("Victoire{}".format(VouD))
+#                 On applique l'effet de la case:
+                for row in self.plateau.cases:
+                    for case in row:
+                        if case.position == joueur.robot.position:
+#                            case.effet(joueur.robot)
+                            estimated_state = case.effet(joueur.robot)
+                            real_state = realState(joueur.robot.state,estimated_state,self.jeu)
+                            joueur.robot.set_state(real_state)
+                
+            
+            self.transition = "play"                    #Si le tour n'est pas fini, on continue de jouer
         
     def FaireAffichageDesCartes(self):
         self.faireAffichageDesCartes = True
