@@ -27,7 +27,7 @@ class IHM(QtGui.QMainWindow):
         self.ui.setupUi(self)
         self.plateau = plateau1.plateau
         self.pioche = plateau1.listeCartes
-        self.jeu = Jeu.Jeu(self.plateau, self.pioche)
+        self.jeu = Jeu.Jeu(self.plateau, self.pioche, 1)
         self.timer = QtCore.QTimer()
         
         #Mise en place de l'arrière plan
@@ -237,7 +237,7 @@ class IHM(QtGui.QMainWindow):
                     var = True
                     
             
-            if (not(uniqueness(valeurs)) or (len(valeurs) != self.jeu.listeJoueurs[0].robot.pv - 4) or var):
+            if (not(uniqueness(valeurs)) or (len(valeurs) != self.jeu.listeJoueurs[0].pv - 4) or var):
                 print("Veuillez choisir {} cartes distinctes entre 1 et 9".format(self.jeu.listeJoueurs[0].robot.pv - 4) )
     #            valeurs = self.ui.choixcarte.toPlainText()
     #            valeurs = valeurs.split(' ')
@@ -249,7 +249,7 @@ class IHM(QtGui.QMainWindow):
                     removeList.append(self.jeu.pioche[int(valeur)])
             
                     # Une fois le choix effectue, on met les cartes choisies dans la variable joueur
-                for i in range(self.jeu.listeJoueurs[0].robot.pv - 4):
+                for i in range(self.jeu.listeJoueurs[0].pv - 4):
                     valeurs[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
                     self.jeu.listeJoueurs[0].cartes[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
     
@@ -279,21 +279,21 @@ class IHM(QtGui.QMainWindow):
             for joueur in self.jeu.listeJoueurs:
                 # On applique l'effet de la carte:
                 carte = joueur.cartes.pop(0)
-                estimated_state = carte.effet(joueur.robot)
-                print('robot',joueur.robot.state)
-                real_state = realState(joueur.robot.state,estimated_state,self.jeu)
-                print('real_state',real_state)
-                joueur.robot.set_state(real_state)
+                estimated_state = carte.effet(joueur)
+#                print('robot',joueur.robot.state)
+                real_state = realState(joueur.state,estimated_state,self.jeu)
+#                print('real_state',real_state)
+                joueur.set_state(real_state)
 
                 
 #                 On applique l'effet de la case:
                 for row in self.plateau.cases:
                     for case in row:
-                        if case.position == joueur.robot.position:
+                        if case.position == joueur.position:
 #                            case.effet(joueur.robot)
-                            estimated_state = case.effet(joueur.robot)
-                            real_state = realState(joueur.robot.state,estimated_state,self.jeu)
-                            joueur.robot.set_state(real_state)
+                            estimated_state = case.effet(joueur)
+                            real_state = realState(joueur.state,estimated_state,self.jeu)
+                            joueur.set_state(real_state)
                 
             
             self.transition = "play"                    #Si le tour n'est pas fini, on continue de jouer
@@ -303,7 +303,7 @@ class IHM(QtGui.QMainWindow):
         Fonction qui affiche les cartes et les pv du joueur
         """
         self.faireAffichageDesCartes = True
-        self.ui.progress_pv.setValue(self.jeu.listeJoueurs[0].robot.pv)
+        self.ui.progress_pv.setValue(self.jeu.listeJoueurs[0].pv)
 
     def affichage(self):
         """
@@ -315,7 +315,7 @@ class IHM(QtGui.QMainWindow):
     #Affichage des robots sur le plateau
     def drawrobot(self, qp):
         for joueur in self.jeu.listeJoueurs:
-            joueur.robot.dessin(qp)
+            joueur.dessin(qp)
             
     def drawboard(self, qp):
         for rangee in self.jeu.plateau.cases:

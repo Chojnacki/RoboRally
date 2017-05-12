@@ -15,7 +15,7 @@ import Murs
 
 class Jeu():
     
-    def __init__(self,plateau = p.Plateau(), pioche = [Cartes.Carte() for i in range(9)]):
+    def __init__(self,plateau = p.Plateau(), pioche = [Cartes.Carte() for i in range(9)], nbJoueurs = 1):
         """
         Initialise le jeu.
         1 - Recupère le plateau de jeu
@@ -33,12 +33,12 @@ class Jeu():
         self.step = 0
         
 #        nbJoueurs = int(input("Nombre de joueurs?"))
-        nbJoueurs = 1
+        self.nbJoueurs = nbJoueurs
         
         self.listeJoueurs = [j.creerJoueur(i) for i in range(nbJoueurs)]
         
         for joueur in self.listeJoueurs:
-            joueur.robot.murs = self.plateau.listeMurs
+            joueur.murs = self.plateau.listeMurs
             #print(joueur.robot.murs[0])
         
 #        self.verification();
@@ -61,7 +61,7 @@ class Jeu():
         """
         for joueur in self.listeJoueurs:
             joueur.distribuer(self.pioche)
-            joueur.cartes = [None]*(joueur.robot.pv - 4)
+            joueur.cartes = [None]*(joueur.pv - 4)
         pass
     
     
@@ -109,12 +109,14 @@ def main():
 #   Pour le tableau, le robot doit commencer à la position O,1 avec une orientation de 0
 #   On le fait avance d'un cran à chaque coup 
 #   Choisir pour ce faire 5 fois la même case 'avancer de 1'
-    jeu = Jeu(p.plateau, p.listeCartes)
-    print(jeu.plateau.listeMurs[0])
-    print(jeu)
-    
+#    jeu = Jeu(p.plateau, p.listeCartes)
+#    print(jeu.plateau.listeMurs[0])
+#    print(jeu)
+#    
 #    print(jeu.pioche)
 #    jeu.Jouer()
+    
+    pass
     
     
     
