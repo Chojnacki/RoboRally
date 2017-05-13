@@ -15,10 +15,10 @@ from interface import Ui_interface_ihm
 #import Robot as rob
 import Jeu
 import time
-import plateau1 #contient un plateau de jeu 'jouable'
+import plateauIA as p #contient un plateau de jeu 'jouable'
 
 
-speed = 100 #vitesse de la fsm -> du jeu
+speed = 2000 #vitesse de la fsm -> du jeu
 
 class IHM(QtGui.QMainWindow):
     def __init__(self):
@@ -27,8 +27,8 @@ class IHM(QtGui.QMainWindow):
         # Configuration de l'interface utilisateur.
         self.ui = Ui_interface_ihm()
         self.ui.setupUi(self)
-        self.plateau = plateau1.plateau
-        self.pioche = plateau1.listeCartes
+        self.plateau = p.plateau
+        self.pioche = p.listeCartes
         self.jeu = Jeu.Jeu(self.plateau, self.pioche, 2)
         self.timer = QtCore.QTimer()
         
@@ -75,7 +75,7 @@ class IHM(QtGui.QMainWindow):
 
         #Connecte les boutons aux fonctions définies en dessous
 
-        self.ui.bouton_partie.clicked.connect(self.nvllePartie)
+#        self.ui.bouton_partie.clicked.connect(self.restart)
         self.ui.bouton_instru.clicked.connect(self.chooseCard)
         self.ui.checkBox_1.stateChanged.connect(self.checkBox1)
         self.ui.checkBox_2.stateChanged.connect(self.checkBox2)
@@ -86,9 +86,6 @@ class IHM(QtGui.QMainWindow):
         self.ui.checkBox_7.stateChanged.connect(self.checkBox7)
         self.ui.checkBox_8.stateChanged.connect(self.checkBox8)
         self.ui.checkBox_9.stateChanged.connect(self.checkBox9)
-
-
-
 
 ##############################################      FSM - FSM - FSM       ######################################################
         
@@ -211,8 +208,7 @@ class IHM(QtGui.QMainWindow):
 
 
     def nvllePartie(self):
-#        nbjoueur = self.ui.nbjoueur.value()
-        print('nvllePartie')
+        self.jeu.plateau.prepare()
         self.jeu.prepareTour()
         self.transition = "pick"
 #        self.ui.tapiscarte.update()
@@ -347,12 +343,15 @@ def correctedStateMur (state1,state2,mur):
     
 class Victoire(Exception):
     pass
-    
-    
 
-if __name__ == "__main__":
+def start():
     app = QtGui.QApplication(sys.argv)
     window = IHM()
+    window.nvllePartie()
     window.setGeometry(100,50,1300,900)
     window.show()
     app.exec_()
+    
+
+if __name__ == "__main__":
+    start()

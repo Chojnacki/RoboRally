@@ -32,6 +32,8 @@ class Carte():
         Paramètres
         ----------
         """
+        self.__vitesse = 0
+        self.__angle = 0
         
     def __str__(self):
         """
@@ -47,6 +49,14 @@ class Carte():
             La chaîne de caractères qui sera affichee via ''print''
         """
         return "Carte"
+        
+    @property
+    def vitesse(self):
+        return self.__vitesse
+        
+    @property
+    def angle(self):
+        return self.__angle
         
     @abc.abstractmethod
     def effet(self,robot):
@@ -84,7 +94,16 @@ class Translation(Carte):
         """
         super().__init__()
         self.__vitesse = vitesse
+        self.__angle = 0
         self.image = 'images/avance{}.png'.format(self.__vitesse)
+        
+    @property
+    def vitesse(self):
+        return self.__vitesse
+        
+    @property
+    def angle(self):
+        return self.__angle
         
     def __str__(self):
         """
@@ -128,8 +147,8 @@ class Translation(Carte):
         robot: Robot
            
         """
-        if self.__vitesse > 0:
-            v = self.__vitesse
+        v = self.__vitesse
+        if v > 0:
             if robot.orientation == 0:
                 estimate = (robot.position[0]+1*v,robot.position[1])
 
@@ -177,9 +196,18 @@ class Rotation(Carte):
         """
         super().__init__()
         self.__angle = angle
+        self.__vitesse = 0
         # Un angle de 3 correspond à 1/4 de tour à droite 
         # (3/4 de tour à gauche)
         self.image = 'images/rotat{}.png'.format(self.__angle)
+        
+    @property
+    def vitesse(self):
+        return self.__vitesse
+        
+    @property
+    def angle(self):
+        return self.__angle
         
 
     def __str__(self):
@@ -212,8 +240,8 @@ class Rotation(Carte):
         c: str
             Le caractère representant la carte.
         """
-        return "R"
-    
+        return "R"    
+        
     
     def effet(self,robot):
         """

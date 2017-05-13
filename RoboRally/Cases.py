@@ -65,6 +65,25 @@ class Case():
         """
         return robot.state[:]
     
+    @abc.abstractmethod
+    def copy(self, x=None,y=None,tourne=None, sym=None):
+        """
+        Applique l'effet de la case sur le robot suivant le type de la case
+        
+        Paramètres
+        ----------
+        x,y position de la nouvelle case
+        tourne: fait tourner la case
+        sym: pour changer la direction des tapis d'angle
+        """
+        if not x:
+            x = self.position[0]
+        if not y:
+            y = self.position[1]
+            
+        return Case((x,y))
+    
+    
     def dessin(self, qp, image = 'images/caseNeutre.png'):
         
         image = QtGui.QImage(self.image)
@@ -107,7 +126,14 @@ class CaseNeutre(Case):
         """
         return "N"
         
-    
+    def copy(self, x=None,y=None,tourne=None, sym=None):
+        
+        if not x:
+            x = self.position[0]
+        if not y:
+            y = self.position[1]
+            
+        return Case((x,y))
 
 
 class CaseArrivee(Case):
@@ -155,6 +181,14 @@ class CaseArrivee(Case):
         """
         raise Exception('Victoire')
         pass
+    
+    def copy(self, x=None,y=None,tourne=None,sym=None):
+        if not x:
+            x = self.position[0]
+        if not y:
+            y = self.position[1]
+            
+        return CaseArrivee((x,y))
 
     
         
@@ -209,7 +243,13 @@ class CaseTrou(Case):
         return estimated_state
         
         
-        
+    def copy(self, x=None,y=None,tourne=None,sym=None):
+        if not x:
+            x = self.position[0]
+        if not y:
+            y = self.position[1]
+            
+        return CaseTrou((x,y))
         
         
 class CaseReparation(Case):
@@ -260,6 +300,14 @@ class CaseReparation(Case):
         if estimated_state[0] < 9:
             estimated_state[0] += 1
         return estimated_state
+    
+    def copy(self, x=None,y=None,tourne=None,sym=None):
+        if not x:
+            x = self.position[0]
+        if not y:
+            y = self.position[1]
+            
+        return CaseReparation((x,y))
         
         
 class CaseEngrenage(Case):
@@ -283,6 +331,10 @@ class CaseEngrenage(Case):
         super().__init__(position)
         self.__sens = sens
         self.image = 'images/engrenage{}.png'.format(self.__sens)
+        
+    @property
+    def sens(self):
+        return self.__sens
         
     @property    
     def car(self):
@@ -316,6 +368,17 @@ class CaseEngrenage(Case):
         estimated_state[3] = estimate
         return estimated_state
         
+    def copy(self, x=None,y=None, tourne=None,sym=1):
+        if not x:
+            x = self.position[0]
+        if not y:
+            y = self.position[1]
+            
+        return CaseEngrenage((x,y), self.sens*sym)
+    
+#dictionnaires utiles pour la fonction copy
+dico_virage = {0: "Gauche", 1: "Droite"}
+dico_inv_virage = {"Gauche": 0, "Droite":1}
     
 class Tapis(Case):
     def __init__(self,position,orientation,virage,vitesse=1):
@@ -349,6 +412,10 @@ class Tapis(Case):
     @property
     def orientation(self):
         return self.__orientation
+    
+    @property
+    def virage(self):
+        return self.__virage
 
         
     @property
@@ -449,6 +516,22 @@ class Tapis(Case):
             
             
         
+    def copy(self, x=None,y=None,tourne=0,sym=1):
+        """
+        tourne = 0 ou 2 (2 pour symetrie)
+        sym = 0 ou 1 selon le cadre de symetrie
+        """
+        if not x:
+            x = self.position[0]
+        if not y:
+            y = self.position[1]    
+            
+        if self.__virage == False:
+                return Tapis((x,y), (self.orientation + tourne)%4, False, self.vitesse)
+            
+        else:
+                return Tapis((x,y), (self.orientation + tourne)%4, dico_virage[(dico_inv_virage[self.virage]+sym)%2], self.vitesse)
+            
         
 if __name__ == "__main__":
     case = Tapis((1,2),0,False)

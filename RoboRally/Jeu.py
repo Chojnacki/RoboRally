@@ -87,7 +87,7 @@ class Jeu():
                 self.__hasPicked = False
         if not(uniqueness(valeurs)):                         #2 cartes identiques
            self.__hasPicked = False
-        if len(valeurs) != self.listeJoueurs[0].pv - 4:     #Nombre de cartes incorrect
+        if len(valeurs) != max(0,self.listeJoueurs[0].pv - 4):     #Nombre de cartes incorrect
            self.__hasPicked = False
                 
         
@@ -103,7 +103,7 @@ class Jeu():
                 self.listeJoueurs[0].cartes[i] = self.listeJoueurs[0].mainJoueur[listeChoix[i]]
         
         else:
-            print("Veuillez choisir {} cartes distinctes entre 1 et 9".format(self.listeJoueurs[0].pv - 4) )
+            print("Veuillez choisir {} cartes distinctes entre 1 et 9".format(max(0,self.listeJoueurs[0].pv - 4)) )
             self.__hasPicked = False
             
 
