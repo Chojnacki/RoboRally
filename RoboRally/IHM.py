@@ -17,9 +17,11 @@ import Jeu
 import time
 import plateau1 #contient un plateau de jeu 'jouable'
 
+
+speed = 100 #vitesse de la fsm -> du jeu
+
 class IHM(QtGui.QMainWindow):
     def __init__(self):
-        print('init')
         
         super().__init__()
         # Configuration de l'interface utilisateur.
@@ -27,7 +29,7 @@ class IHM(QtGui.QMainWindow):
         self.ui.setupUi(self)
         self.plateau = plateau1.plateau
         self.pioche = plateau1.listeCartes
-        self.jeu = Jeu.Jeu(self.plateau, self.pioche, 1)
+        self.jeu = Jeu.Jeu(self.plateau, self.pioche, 2)
         self.timer = QtCore.QTimer()
         
         #Mise en place de l'arrière plan
@@ -35,11 +37,6 @@ class IHM(QtGui.QMainWindow):
         pixmap = QtGui.QPixmap("images/background.jpg")
         palette.setBrush(QtGui.QPalette.Background,QtGui.QBrush(pixmap))
         self.setPalette(palette)
-
-        
-        self.faireAffichageDesCartes = False
-        
-
         
         ######################################################################
         #partie liée à la fsm qui DOIT se trouver dans init
@@ -55,26 +52,30 @@ class IHM(QtGui.QMainWindow):
         
         #dictionnaire des transitions
         self.dict_tr = {
-                        ("initialize",None):"initialize",("pick","play"):"play",
-                        ("initialize","pick"):"pick",("pick","pick"):"pick",("play","play"):"play",
-                        ("play","pick"):"pick"
+                        ("initialize",None):"initialize",
+                        ("initialize","pick"):"pick",
+                        ("pick","play"):"play",
+                        ("pick","pick"):"pick",
+                        ("play","play"):"play",
+                        ("play","pick"):"pick",
                         }
         
         #dictionnaire des actions à effectuer lors de la transition
         self.dict_ac = {
-                        None: (lambda *args: None), "play": self.play,
-                        "pick": self.FaireAffichage                      
+#                        None: (lambda *args: None),
+                        "play": self.play,
+#                        "pick": (lambda *args: None),
                         }
         
         #On lie le timeout à la fsm
-        self.timer.start(100)
+        self.timer.start(speed)
         self.timer.timeout.connect(self.fsm)
         ######################################################################
         
 
         #Connecte les boutons aux fonctions définies en dessous
 
-        self.ui.bouton_partie.clicked.connect(self.nvellepartie)
+        self.ui.bouton_partie.clicked.connect(self.nvllePartie)
         self.ui.bouton_instru.clicked.connect(self.chooseCard)
         self.ui.checkBox_1.stateChanged.connect(self.checkBox1)
         self.ui.checkBox_2.stateChanged.connect(self.checkBox2)
@@ -111,14 +112,15 @@ class IHM(QtGui.QMainWindow):
             if new_state in self.states:
                 if new_state != self.current_state:
                     print("{} -> {}".format(self.current_state,new_state))
-                self.dict_ac[self.transition]()
+                action = self.dict_ac.get(self.transition,(lambda *args: None))
+                action()
                 self.current_state = new_state
 #                self.transition = None
         except KeyError as erreur:
             print ("transition ou état non définit dans le dictionnaire respectif", erreur)
-        except Exception as VouD: #Victoire ou Défaite
-            print ("C'est la {} Mamène".format(VouD))
-            exit()
+#        except Exception as VouD: #Victoire ou Défaite
+#            print ("C'est la {} Mamène".format(VouD))
+#            exit()
         
 #        time.sleep(1) #juste pour débugger tranquillement
         self.affichage()
@@ -208,102 +210,55 @@ class IHM(QtGui.QMainWindow):
 #        print(self.jeu.listeJoueurs[0].cartesChoisies)
 
 
-    def nvellepartie(self):
-        """Cette fonction n'est pas encore prête"""
+    def nvllePartie(self):
 #        nbjoueur = self.ui.nbjoueur.value()
-#        print(nbjoueur)
+        print('nvllePartie')
         self.jeu.prepareTour()
         self.transition = "pick"
 #        self.ui.tapiscarte.update()
+        pass
         
     
         
     def chooseCard(self):
         
         if self.current_state == "pick":
-            
-            listeChoix = []
-            # Le joueur choisit ses cartes tout en etant limite par la vie de son robot
-    #        valeurs = self.ui.choixcarte.toPlainText()
-    #        valeurs = valeurs.split(' ')
-            valeurs = self.jeu.listeJoueurs[0].cartesChoisies
-            valeurs = [int(valeurs[i])-1 for i in range(len(valeurs))]
-    #        print(len(valeurs),self.jeu.listeJoueurs[0].robot.pv - 4)
-            
-            #Tant qu on ne choisi pas des cartes differentes et le choix de la carte n est pas entre 0 et 8
-            var = False
-            for carte in valeurs:
-                if int(carte) > 8 or int(carte) < 0:
-                    var = True
-                    
-            
-            if (not(uniqueness(valeurs)) or (len(valeurs) != self.jeu.listeJoueurs[0].pv - 4) or var):
-                print("Veuillez choisir {} cartes distinctes entre 1 et 9".format(self.jeu.listeJoueurs[0].robot.pv - 4) )
-    #            valeurs = self.ui.choixcarte.toPlainText()
-    #            valeurs = valeurs.split(' ')
-            
-            else:
-                removeList = [] #liste des cartes à retirer de la pioche
-                for valeur in valeurs:
-                    listeChoix.append(int(valeur))
-                    removeList.append(self.jeu.pioche[int(valeur)])
-            
-                    # Une fois le choix effectue, on met les cartes choisies dans la variable joueur
-                for i in range(self.jeu.listeJoueurs[0].pv - 4):
-                    valeurs[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
-                    self.jeu.listeJoueurs[0].cartes[i] = self.jeu.listeJoueurs[0].mainJoueur[listeChoix[i]]
-    
-                    
+            self.jeu.playerPick()
+            if self.jeu.hasPicked:
+                self.jeu.aiPick()
                 self.transition = "play"
-                
+            else:
+                self.transition = "pick"
         else:
             pass
 
+
     def play(self):
         """
-        Lance un tour
+        Lance une séquence de jeu
         """
         #penser a coder une liste qui retient les joueurs ayant déjà joué
         #penser à coder la priorité pour les cartes les plus rapides
         
-        fin_tour = True
-        for joueur in self.jeu.listeJoueurs:
-#            print(joueur.cartes)
-            if joueur.cartes:
-                fin_tour = False
-        
-        if fin_tour:
-            self.nvellepartie()              #Si le tour est fini on redistribue
-        
-        else:
-            for joueur in self.jeu.listeJoueurs:
-                # On applique l'effet de la carte:
-                carte = joueur.cartes.pop(0)
-                estimated_state = carte.effet(joueur)
-#                print('robot',joueur.robot.state)
-                real_state = realState(joueur.state,estimated_state,self.jeu)
-#                print('real_state',real_state)
-                joueur.set_state(real_state)
+        self.jeu.jouerTour()
+        finSequence = self.jeu.finSequence
 
-                
-#                 On applique l'effet de la case:
-                for row in self.plateau.cases:
-                    for case in row:
-                        if case.position == joueur.position:
-#                            case.effet(joueur.robot)
-                            estimated_state = case.effet(joueur)
-                            real_state = realState(joueur.state,estimated_state,self.jeu)
-                            joueur.set_state(real_state)
-                
+        if finSequence:     #Si la sequence de jeu est finie, on en lance une nouvelle
             
-            self.transition = "play"                    #Si le tour n'est pas fini, on continue de jouer
-        
+            self.jeu.prepareTour()
+            self.transition = "pick"
+        else:            #Si la séquence n'est pas finie, on continue de jouer en lancant un autre tour
+            self.transition = "play" 
+
+        self.ui.progress_pv.setValue(self.jeu.listeJoueurs[0].pv) #On met à jour les pv du joueur
+
+
+    
     def FaireAffichage(self):
         """
         Fonction qui affiche les cartes et les pv du joueur
         """
         self.faireAffichageDesCartes = True
-        self.ui.progress_pv.setValue(self.jeu.listeJoueurs[0].pv)
 
     def affichage(self):
         """
@@ -328,29 +283,16 @@ class IHM(QtGui.QMainWindow):
         c=0
         y=[0,0,0,1,1,1,2,2,2]
         for carte in self.jeu.listeJoueurs[0].mainJoueur:
-            carte.dessin(qp, carte.image, c%3, y[c])
-            c+=1
+            if carte:
+                carte.dessin(qp, carte.image, c%3, y[c])
+                c+=1
 
     def paintEvent(self,e):
         qp = QtGui.QPainter(self)
         self.drawboard(qp)
         self.drawrobot(qp)
-        if self.faireAffichageDesCartes:
-            self.drawcards(qp)
+        self.drawcards(qp)
         qp.end()
-     
-
-def uniqueness(l):
-    """
-    Renvoie true si les éléments de la liste l sont uniques, false sinon
-    ----------
-    l: liste a vérifier (index dans la pioche des cartes choisies)
-    """
-    for i in range(len(l)):
-        for j in range(i+1, len(l)):
-            if l[i] == l[j]:
-                return False
-    return True
 
 def realState(state1,state2,jeu):
     """

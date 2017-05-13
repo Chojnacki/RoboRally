@@ -21,7 +21,6 @@ class Robot():
         self.state = [self.pv,self.position[0],self.position[1],self.orientation]
 
         self.image = 'images/gwenHaDu.png'
-#        self.image = 'images/triskel.png'
 
     def __str__(self):
         s = " Points de vie: "

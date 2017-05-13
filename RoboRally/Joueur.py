@@ -6,12 +6,10 @@ Created on Thu Mar 23 12:46:17 2017
 """
 
 
-from Cases import *
-from Cartes import *
-import Robot as rob
+from Robot import Robot
 from random import randint
 
-class Joueur(rob.Robot):
+class Joueur(Robot):
     """
     Le joueur est une liste de cartes, qui possède un numero, un robot et qui peut être une IA
     """
@@ -19,10 +17,12 @@ class Joueur(rob.Robot):
     def __init__(self,position,orientation):
         
         super().__init__(position,orientation)
-        self.mainJoueur = [0 for i in range(9)]   # Cartes que le joueur s'est vu distribues
+        self.mainJoueur = [None] * 9             # Cartes que le joueur s'est vu distribues
         self.cartesChoisies = []
-        self.cartes = [0 for i in range(5)]   # Cartes que le joueur va jouer
+        self.cartes = [None] * 5                 # Cartes que le joueur va jouer
         self.__num = Joueur.number
+        if self.numero != 0:                     # Les IA jouent avec des triskels
+            self.image = 'images/triskel.png'
         Joueur.number += 1
         pass
     
@@ -33,7 +33,7 @@ class Joueur(rob.Robot):
     def numero(self):
         return self.__num
  
-    def distribuer(self, pioche):
+    def distribuer(self, pioche, show = False):
         """
         Prend une liste 'pioche' et renvoie une liste de 'nbCartes' elements pris au hasard.
         
@@ -41,15 +41,17 @@ class Joueur(rob.Robot):
         ----------
         listeCarte: liste des cartes de la pioche
         """
-
+        self.mainJoueur = [None] * 9
         length = len(pioche)
         # Cartes que l'on a distribuees au joueur de façon aleatoire:
         for i in range(9):
             self.mainJoueur[i] = pioche[randint(0,length-1)]
+        
         # On affiche sa main au joueur pour qu'il puisse faire son choix
-        for i in range(len(self.mainJoueur)):
-            print(i," - ",self.mainJoueur[i])
-        print('\n')
+        if show:
+            for i in range(len(self.mainJoueur)):
+                print(i," - ",self.mainJoueur[i])
+            print('\n')
 
 def creerJoueur(numero, robot_options = (0,0,0)):
     """
@@ -74,7 +76,9 @@ def creerJoueur(numero, robot_options = (0,0,0)):
     
 if __name__ == "__main__":
     joueur = Joueur((0,0),3)
-    print(joueur.state)
+    print(joueur.numero)
+    joueur = Joueur((0,0),3)
+    print(joueur.numero)
     
     
     
