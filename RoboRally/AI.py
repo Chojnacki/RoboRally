@@ -105,19 +105,20 @@ def estimatedStateCarte(state,carte,p):
     """
     angleToMatrix = {0: p.m0,1: p.m1, 2: p.m2, 3: p.m3}
     vitesse = carte.vitesse
-    angle = state[3] + carte.angle
+    angle = state[3]
     if vitesse == -1: #si on recule
-        angle = -angle
-    angle = angle % 4 #ne pas réutiliser cet angle pour l'état final: si l'on recule il va se retourner!!
+        angle = -state[3]
+        angle = angle % 4 #ne pas réutiliser cet angle pour l'état final: si l'on recule il va se retourner!!
 
     matriceDirection = angleToMatrix[angle] #la matrice des contraintes dans la direction de déplacement du robot
     
 #    print('state',state)
-    new_state = state * matriceDirection #On utilise la propriété des MatricesD
-       
-    for i in range(vitesse): #Si on bouge de plusieurs cases
+#    new_state = state * matriceDirection #On utilise la propriété des MatricesD
+    new_state = state[:]
+    for i in range(abs(vitesse)): #Si on bouge de plusieurs cases
         new_state = matriceDirection(new_state)
         
+#    print(new_state)
 #    print('new_state',new_state) 
     
 #    if new_state[1] == 2 and new_state[2] == 1:
@@ -156,23 +157,90 @@ if __name__ == "__main__":
     import plateau1
     p = plateau1.plateau
     p.prepare()
-    state = (9,0,0,0)
+    state = (9,1,1,3)
     carte = Cartes.Translation(1)
 #    print(p.m0)
 #    print(estimatedStateCarte(state,carte, p))
     
-    listeCartes = [Cartes.Translation(1), Cartes.Translation(2),Cartes.Translation(3),
-               Cartes.Translation(1), Cartes.Translation(2),Cartes.Translation(1),
-               Cartes.Translation(1), Cartes.Translation(2),Cartes.Translation(1),
-               Cartes.Rotation(1), Cartes.Rotation(3),Cartes.Rotation(2)]
-               
-    outcomes = treeExplorer(state, listeCartes[:], 2, p)
-    for state,liste in outcomes:
-        print(state,liste)
-#    for index, outcome in enumerate(outcomes):
-#        state = outcome[0]
-#        if state[0] == 0 and state[2] == 2:
-#            print(True)
+#    listeCartes = [Cartes.Translation(1), Cartes.Translation(2),Cartes.Translation(3),
+#               Cartes.Translation(1), Cartes.Translation(2),Cartes.Translation(1),
+#               Cartes.Translation(1), Cartes.Translation(2),Cartes.Translation(1),
+#               Cartes.Rotation(1), Cartes.Rotation(3),Cartes.Rotation(2)]
+#    
+#    listeCartes = [Cartes.Translation(2),Cartes.Translation(3),
+#               Cartes.Rotation(3), Cartes.Rotation(3),Cartes.Rotation(2)]
+#               
+    listeCartes = [Cartes.Rotation(2),Cartes.Rotation(3),Cartes.Translation(2),Cartes.Rotation(3),Cartes.Translation(3)]
+#               
+    outcomes = treeExplorer(state, listeCartes[:], 5, p)
+#    for state,liste in outcomes:
+#        print(state,liste)
+    for index, outcome in enumerate(outcomes):
+        state = outcome[0]
+        liste = outcome[1]
+        if liste == [0,1,2,3,4]:
+            print(state)
+            pass
+#        if state[0] == 1 and state[2] ==3:
+#            print(state)
+
+#    state = (9,1,1,3)
+#    print(state,listeCartes[0])
+##    print(state)
+#    state = estimatedStateCarte(state,listeCartes[0], p)
+#    print(state,listeCartes[1])
+#    state = estimatedStateCarte(state,listeCartes[1], p)
+#    print(state,listeCartes[2])
+#    state = estimatedStateCarte(state,listeCartes[2], p)
+#    print(state,listeCartes[3])
+#    state = estimatedStateCarte(state,listeCartes[3], p)
+#    print(state,listeCartes[4])
+#    state = estimatedStateCarte(state,listeCartes[4], p)
+#    print(state)
+
+#    state = (9,1,1,3)
+#    carte = listeCartes[0]
+#    angleToMatrix = {0: p.m0,1: p.m1, 2: p.m2, 3: p.m3}
+#    vitesse = carte.vitesse
+#    angle = state[3] + carte.angle
+#    if vitesse == -1: #si on recule
+#        angle = -angle
+#    angle = angle % 4 #ne pas réutiliser cet angle pour l'état final: si l'on recule il va se retourner!!
+#    print(angle)
+#    matriceDirection = angleToMatrix[angle] #la matrice des contraintes dans la direction de déplacement du robot
+#    print(matriceDirection)
+#    print(p.m1)
+    
+#    state = (9,1,1,0)
+#    carte = listeCartes[2]
+#    print(state,carte)
+#    print(estimatedStateCarte(state,carte, p))
+#    angleToMatrix = {0: p.m0,1: p.m1, 2: p.m2, 3: p.m3}
+#    vitesse = carte.vitesse
+#    angle = state[3]
+#    if vitesse == -1: #si on recule
+#        angle = -state[3]
+#        angle = angle % 4 #ne pas réutiliser cet angle pour l'état final: si l'on recule il va se retourner!!
+#
+#    print(angle)
+#    matriceDirection = angleToMatrix[angle] #la matrice des contraintes dans la direction de déplacement du robot
+#    print(matriceDirection(state))
+##    print(p.m1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

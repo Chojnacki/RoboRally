@@ -93,14 +93,20 @@ class Plateau():
                     matriceTrous.m[y][x] = 9,x,y,0
     
         listeMatricesD = [self.m0,self.m1,self.m2,self.m3,self.mc]
-        for matrice in listeMatricesD:
-            matrice = matrice * matriceTrous
-#        for md in listeMatricesD:
-#            for y,rangee in enumerate(self.cases):
-#                for x,case in enumerate(rangee):
-#                    if isinstance(case,Cases.CaseTrou):
-##                        print(case, x ,y)
-#                        md.m[y][x] = 9,x,y,0
+#        for matrice in listeMatricesD:
+#            matrice = matrice * matriceTrous
+            
+        
+        #Pour chaque trou : on regarde toutes les cases des matrices de déplacements qui renvoient dessus et on met les dégats à 9
+        for yT,rangeeT in enumerate(self.cases):
+            for xT,case in enumerate(rangeeT):
+                if isinstance(case,Cases.CaseTrou):
+                    for matrice in listeMatricesD:
+                        for y,rangee in enumerate(matrice.m):
+                            for x,s in enumerate(rangee):
+                                if s[1] == xT and s[2] == yT:
+                                    matrice.m[y][x] = 9,xT,yT,0
+                                    
 
 if __name__ == "__main__":
     import plateau1 as p

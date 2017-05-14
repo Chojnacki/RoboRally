@@ -39,20 +39,20 @@ class MatriceD(object): #Matrice de Déplacement
                 if (0 <= targetx < self.x) and (0 <= targety < self.y):
                     new_target = other.m[targety][targetx]
                     new_damage,new_targetx,new_targety,new_angle = new_target
-                    new_target[0] += damage                     #On prend en compte les dégats d'avant
-                    target[0] += damage                         #idem, si on reste sur la même case
-#                    new_target[3] += angle % 4                  #On prend en compte l'angle
-#                    target[3] += angle % 4                      #idem
+                    new_damage += damage                     #On prend en compte les dégats d'avant
+                    damage += damage                         #idem, si on reste sur la même case
+                    new_angle += angle % 4                  #On prend en compte l'angle
+                    angle += angle % 4                      #idem
                     for mur in self.listeMurs:
                         if ((mur.v1 == (targetx,targety) and mur.v2 == (new_targetx,new_targety)) or (mur.v2 == (targetx,targety) and mur.v1 == (new_targetx,new_targety))):
 #                            damage += new_target[0] #on ajoute les nouveaux dégats
 #                            angle += new_target[3] % 4 #et la rotation
-                            matrice.m[y][x] = target
+                            matrice.m[y][x] = damage,targetx,targety,angle
 #                            print(mur.v1,targetx,targety,mur.v2,new_targetx,new_targety)
 #                            print(target)
                             break
                         else:
-                            matrice.m[y][x] = new_target
+                            matrice.m[y][x] = new_damage,new_targetx,new_targety,new_angle
                         
                 else:
                     matrice.m[y][x] = None

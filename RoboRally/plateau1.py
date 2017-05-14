@@ -13,7 +13,6 @@ import Plateau
 
 
 plateau = Plateau.Plateau(10,5)
-tapis = Cases.Tapis((1,1),0,False)
 engr = Cases.CaseEngrenage((3,1), -1)
 tapis2 = Cases.Tapis((3,2),0,False)
 engr2 = Cases.CaseEngrenage((4,3), -1)
@@ -42,7 +41,7 @@ trou2 = Cases.CaseTrou((2,2))
 trou3 = Cases.CaseTrou((2,1))
 
 trous = [trou, trou1, trou2, trou3]
-Caz = [tapis,engr,tapis2,engr2,arrivee]
+Caz = [engr,tapis2,engr2,arrivee]
 for case in Caz:
     plateau.mettreCase(case)
 for case in trous:

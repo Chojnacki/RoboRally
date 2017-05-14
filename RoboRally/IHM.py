@@ -15,7 +15,7 @@ from interface import Ui_interface_ihm
 #import Robot as rob
 import Jeu
 import time
-import plateau1 as p #contient un plateau de jeu 'jouable'
+import plateau0 as p #contient un plateau de jeu 'jouable'
 
 
 speed = 100 #vitesse de la fsm -> du jeu
