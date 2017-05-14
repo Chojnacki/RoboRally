@@ -26,8 +26,7 @@ class Plateau():
         self.m1 = None #vers le haut
         self.m2 = None #la gauche
         self.m3 = None #le bas
-        self.mc = None #Matrice de déplacement du plateau (cases et murs inclus)
-#        self.prepare()
+        self.mc = None #Matrice de déplacement du plateau (dû aux cases, murs compris)
     
 
     def __str__(self):
@@ -55,30 +54,34 @@ class Plateau():
         self.listeMurs.append(mur)
     
     def prepare(self):
-        Id = md.MatriceD(self.x,self.y,None,self.listeMurs) #la multiplication par "l'identité" permet de prendre en compte les murs 
-        self.m0 = Id*md.MatriceD(matrice = [[(i+1,j) for i in range(self.x)] for j in range(self.y)], listeMurs = self.listeMurs)
-        self.m1 = Id*md.MatriceD(matrice = [[(i,j - 1) for i in range(self.x)] for j in range(self.y)], listeMurs = self.listeMurs)
-        self.m2 = Id*md.MatriceD(matrice = [[(i - 1,j) for i in range(self.x)] for j in range(self.y)], listeMurs = self.listeMurs)
-        self.m3 = Id*md.MatriceD(matrice = [[(i,j + 1) for i in range(self.x)] for j in range(self.y)], listeMurs = self.listeMurs)
+        Id = md.MatriceD(self.x,self.y,0,None,self.listeMurs) #la multiplication par "l'identité" permet de prendre en compte les murs 
+        self.m0 = Id*md.MatriceD(angle = 0, matrice = [[(0,i+1,j,0) for i in range(self.x)] for j in range(self.y)], listeMurs = self.listeMurs)
+        self.m1 = Id*md.MatriceD(angle = 1, matrice = [[(0,i,j - 1,0) for i in range(self.x)] for j in range(self.y)], listeMurs = self.listeMurs)
+        self.m2 = Id*md.MatriceD(angle = 2, matrice = [[(0,i - 1,j,0) for i in range(self.x)] for j in range(self.y)], listeMurs = self.listeMurs)
+        self.m3 = Id*md.MatriceD(angle = 3, matrice = [[(0,i,j + 1,0) for i in range(self.x)] for j in range(self.y)], listeMurs = self.listeMurs)
         
-        md.MatriceD_cases = Id
+        matriceEffetCases = Id #matrice d'effet des cases
         for y in range(self.y):
             for x in range(self.x):
                 case = self.cases[y][x]
+                matriceEffetCases.m[y][x] = 
                 if isinstance(case,Cases.Tapis):
-#                    print('true')
                     vitesse = case.vitesse
                     o = case.orientation
                     if o == 0:
                         matrice = self.m0
                     if o == 1:
-                        matrice = self.m0
+                        matrice = self.m1
                     if o == 2:
-                        matrice = self.m0
+                        matrice = self.m2
                     if o == 3:
-                        matrice = self.m0
-                    destination = matrice.m[y][x] #On récupère la destination (avec l'influence des murs)
-                    md.MatriceD_cases.m[y][x] = destination  #On place la destination dans la matrice avec l'effet des cases
+                        matrice = self.m3
+                    new_state = matrice.m[y][x] #On récupère le nouvel état (avec l'influence des murs)
+                    md.MatriceD_cases.m[y][x] = new_state  #On place le nouvel état dans la matrice mc
+                    
+                if isinstance(case,Cases.CaseTrou):
+                    new_state = matrice.m[y][x] #On récupère le nouvel état (avec l'influence des murs)
+                    md.MatriceD_cases.m[y][x] = new_state  #On place le nouvel état dans la matrice mc
         self.mc = md.MatriceD_cases
         
                 

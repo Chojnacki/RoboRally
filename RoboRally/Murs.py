@@ -51,7 +51,7 @@ class MurHorizontal(Mur):
         hauteur = 7
         square_size = 50 #côté du carré d'une case
                 
-        qp.drawImage(QtCore.QRectF(self.x*square_size + 18, self.y*square_size + 63, largeur, hauteur),image_mur)
+        qp.drawImage(QtCore.QRectF(self.x*square_size + 18, self.y*square_size + 66, largeur, hauteur),image_mur)
         qp.resetTransform()
 
 

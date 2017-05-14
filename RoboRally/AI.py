@@ -30,12 +30,14 @@ def Puissante(jeu):
     listeIA = jeu.listeJoueurs[1:]
     for IA in listeIA:
 #        removeList = []             #liste des cartes à retirer de la pioche
-        for carte in IA.mainJoueur:
-            print(carte)
+#        for carte in IA.mainJoueur:
+#            print('cartes disponibles pour l\'ia')
+#            print(carte)
+        print(IA.state)
         distanceMin = jeu.plateau.x ** 2 + jeu.plateau.y ** 2
-        
+
         #Toutes les position possibles dans une liste
-        possibleOutcomes = treeExplorer(IA.state, IA.mainJoueur, 5, jeu.plateau)
+        possibleOutcomes = treeExplorer(IA.state, IA.mainJoueur, max(0,IA.pv - 4), jeu.plateau)
 #        min(IA.pv - 4,5)
         
         arrivee = jeu.plateau.casesVictoire[0]      #position d'une case qui fait gagner
@@ -50,12 +52,13 @@ def Puissante(jeu):
                 print(distanceMin,x,y)
         
         listeIndices = possibleOutcomes[indiceGagnant][1]
-        print(listeIndices)
+#        print(listeIndices)
+        print('cartes choisies par l\'IA')
         for idx,val in enumerate(listeIndices):
             IA.cartes[idx] = IA.mainJoueur[val]
-            print(val)
-        for carte in IA.cartes:
-            print(carte)
+            print(val,IA.cartes[idx])
+#        for carte in IA.cartes:
+#            print(carte)
 #        for i in range(len(IA.cartes)): #On remplit la liste des cartes
 # 
 #        
@@ -87,33 +90,27 @@ def treeExplorer(state, mainIA, choixRestants, plateau, indexChoisis = []):
 #        récupérer le __str__, dico ,matrice de déplacement associée
 
 def estimatedStateCarte(state,carte,p):
-#    print(1)
     """
     renvoie l'état d'un parti d'un état 'state' avec la carte 'carte' sur le plateau 'p'
     """
     angleToMatrix = {0: p.m0,1: p.m1, 2: p.m2, 3: p.m3}
     vitesse = carte.vitesse
-    angle = state[3] + carte.angle % 4
-#    print(angle)
-    if vitesse == -1:
-        angle = -angle %4
-#    print(angle)
-    angle = angle % 4
-    try:
-        matriceDirection = angleToMatrix[angle]
-    except KeyError as k:
-        print(k,angle)
-    #matrice qui donne la position du robot après la case:
-    matricePosition = md.MatriceD(p.x,p.y,None,p.listeMurs)
-#    print(vitesse)
-    for i in range(vitesse):
-#        print(matricePosition,matriceDirection)
-        matricePosition = matricePosition * matriceDirection
-    matricePosition = matricePosition * p.mc
-#    print(matriceDirection)
-#    print(matricePosition)
-    x,y = matricePosition.position((state[1],state[2]))
-    new_state = (state[0],x,y,angle)
+    angle = state[3] + carte.angle
+    if vitesse == -1: #si on recule
+        angle = -angle
+    angle = angle % 4 #ne pas réutiliser cet angle pour l'état final: si l'on recule il va se retourner!!
+
+    matriceDirection = angleToMatrix[angle] #la matrice des contraintes dans la direction de déplacement du robot
+    
+    
+    new_state = state * md.MatriceD(p.x,p.y,0,None,p.listeMurs) #On utilise la propriété des MatricesD
+    for i in range(vitesse): #Si on bouge de plusieurs cases
+        new_state = new_state * matriceDirection 
+        
+    new_state = new_state * p.mc
+    (pv,x,y,o) = new_state
+    o = (o + carte.angle) % 4
+    new_state = (pv,x,y,o)
     return new_state
 
 
@@ -141,7 +138,7 @@ if __name__ == "__main__":
     import plateau1
     p = plateau1.plateau
     p.prepare()
-    state = (0,4,1,0)
+    state = (9,0,0,0)
     carte = Cartes.Translation(1)
 #    print(p.m0)
 #    print(estimatedStateCarte(state,carte, p))
@@ -151,7 +148,7 @@ if __name__ == "__main__":
                Cartes.Translation(1), Cartes.Translation(2),Cartes.Translation(1),
                Cartes.Rotation(1), Cartes.Rotation(3),Cartes.Rotation(2)]
                
-    outcomes = treeExplorer(state, listeCartes[:9], 5, p)
+    outcomes = treeExplorer(state, listeCartes[:], 2, p)
     for state,liste in outcomes:
         print(state,liste)
     

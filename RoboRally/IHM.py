@@ -15,10 +15,10 @@ from interface import Ui_interface_ihm
 #import Robot as rob
 import Jeu
 import time
-import plateauIA as p #contient un plateau de jeu 'jouable'
+import plateau1 as p #contient un plateau de jeu 'jouable'
 
 
-speed = 2000 #vitesse de la fsm -> du jeu
+speed = 100 #vitesse de la fsm -> du jeu
 
 class IHM(QtGui.QMainWindow):
     def __init__(self):
@@ -209,6 +209,7 @@ class IHM(QtGui.QMainWindow):
 
     def nvllePartie(self):
         self.jeu.plateau.prepare()
+        print(self.jeu.plateau.mc)
         self.jeu.prepareTour()
         self.transition = "pick"
 #        self.ui.tapiscarte.update()

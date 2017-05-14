@@ -69,7 +69,7 @@ class Jeu():
         """
         for joueur in self.listeJoueurs:
             joueur.distribuer(self.pioche)
-            joueur.cartes = [None]*(joueur.pv - 4)
+            joueur.cartes = [None]*5
         pass
     
     def playerPick(self):
@@ -79,16 +79,15 @@ class Jeu():
         
         valeurs = self.listeJoueurs[0].cartesChoisies
         valeurs = [int(valeurs[i])-1 for i in range(len(valeurs))] #On décale de 1 parce que Python
-        
-        if not valeurs:                                     #Si aucune carte n'est choisie (liste valeurs vide)
-           self.__hasPicked = False
+        if not valeurs and (self.listeJoueurs[0].pv - 4 > 0):   #Si aucune carte n'est choisie (liste valeurs vide)
+            self.__hasPicked = False
         for carte in valeurs:
             if int(carte) > 8 or int(carte) < 0:            #vérification que les indices sont entre 0 et 8
                 self.__hasPicked = False
         if not(uniqueness(valeurs)):                         #2 cartes identiques
-           self.__hasPicked = False
+            self.__hasPicked = False
         if len(valeurs) != max(0,self.listeJoueurs[0].pv - 4):     #Nombre de cartes incorrect
-           self.__hasPicked = False
+            self.__hasPicked = False
                 
         
         if self.hasPicked:
@@ -165,20 +164,25 @@ class Jeu():
             for joueur in self.listeJoueurs:
                 # On applique l'effet de la carte:
                 carte = joueur.cartes.pop(0)
-                estimated_state = carte.effet(joueur)
-                real_state = realState(joueur.state,estimated_state,self)
-                joueur.set_state(real_state)
-
-                
-                # On applique l'effet de la case:
-                for row in self.plateau.cases:
-                    for case in row:
-                        if case.position == joueur.position:
-#                            case.effet(joueur.robot)
-                            estimated_state = case.effet(joueur)
-                            real_state = realState(joueur.state,estimated_state,self)
-                            joueur.set_state(real_state)
-
+                if carte:
+                    estimated_state = carte.effet(joueur)
+                    real_state = realState(joueur.state,estimated_state,self)
+                    joueur.set_state(real_state)
+    
+                    try:
+                        # On applique l'effet de la case:
+                        for row in self.plateau.cases:
+                            for case in row:
+                                if case.position == joueur.position:
+                                    estimated_state = case.effet(joueur)
+                                    real_state = realState(joueur.state,estimated_state,self)
+                                    joueur.set_state(real_state)
+                    except Exception as e:
+                        if e == 'Victoire':
+                            break
+                        else:
+                            raise e
+            print(self.listeJoueurs[1].state)
         
     def simpleAction(self,joueur):
         """
