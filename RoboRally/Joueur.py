@@ -6,64 +6,34 @@ Created on Thu Mar 23 12:46:17 2017
 """
 
 
-from Cases import *
-from Cartes import *
-import Robot as rob
+from Robot import Robot
 from random import randint
 
-class Joueur():
+class Joueur(Robot):
     """
     Le joueur est une liste de cartes, qui possède un numero, un robot et qui peut être une IA
     """
-    def __init__(self, numero, robot = None, AI = True):
+    number = 0
+    def __init__(self,position,orientation):
         
-        self.mainJoueur = [0 for i in range(9)]   # Cartes que le joueur s'est vu distribues
+        super().__init__(position,orientation)
+        self.mainJoueur = [None] * 9             # Cartes que le joueur s'est vu distribues
         self.cartesChoisies = []
-        self.cartes = [0 for i in range(5)]   # Cartes que le joueur va jouer
-        self.__num = numero
-        self.robot = robot
-        self.__AI = AI
+        self.cartes = [None] * 5                 # Cartes que le joueur va jouer
+        self.__num = Joueur.number
+        if self.numero != 0:                     # Les IA jouent avec des triskels
+            self.image = 'images/triskel.png'
+        Joueur.number += 1
         pass
     
     def __str__(self):
         return 'Le joueur n°{} joue le robot: {}.'.format(self.__num, self.robot)
     
-#    @property
-#    def mainJoueur(self):
-#        return self.mainJoueur
-#    
-#    @mainJoueur.setter
-#    def mainJoueur(self, carte, indice):
-#        """
-#        Permet de mettre les cartes dans la main du joueur
-#        
-#        Paramètres
-#        ----------
-#        carte: la carte à mettre dans la liste
-#        indice: position à laquelle mettre la carte
-#        """
-#        self.mainJoueur[indice] = carte
-#        pass    
-#    
-#    @property
-#    def cartes(self):
-#        return self.mainJoueur
-#    
-#    @cartes.setter
-#    def carte(self, carte, indice):
-#        """
-#        Permet de mettre une carte dans la liste de cartes actives
-#        
-#        Paramètres
-#        ----------
-#        carte: la carte à mettre dans la liste
-#        indice: position à laquelle mettre la carte
-#        """
-#        self.cartes[indice] = carte
-#        pass
-    
+    @property               #permet de protéger la variable statique number et que le joueur ait tjrs 0 pour numéro
+    def numero(self):
+        return self.__num
  
-    def distribuer(self, pioche):
+    def distribuer(self, pioche, show = False):
         """
         Prend une liste 'pioche' et renvoie une liste de 'nbCartes' elements pris au hasard.
         
@@ -71,43 +41,17 @@ class Joueur():
         ----------
         listeCarte: liste des cartes de la pioche
         """
-
+        self.mainJoueur = [None] * 9
         length = len(pioche)
         # Cartes que l'on a distribuees au joueur de façon aleatoire:
         for i in range(9):
             self.mainJoueur[i] = pioche[randint(0,length-1)]
-        # On affiche sa main au joueur pour qu'il puisse faire son choix
-        for i in range(len(self.mainJoueur)):
-            print(i," - ",self.mainJoueur[i])
-        print('\n')
         
-#        listeChoix = []
-#        # Le joueur choisit ses cartes tout en etant limite par la vie de son robot
-#        valeurs = input("Choisissez vos cartes (par numero): ")
-#        valeurs = valeurs.split(' ')
-#        while not(uniqueness(valeurs)):
-#            print('Cannot pick same card twice')
-#            valeurs = input("Choisissez vos cartes (par numero): ")
-#            valeurs = valeurs.split(' ')
-#
-#        removeList = [] #liste des cartes à retirer de la pioche
-#        for valeur in valeurs:
-#            listeChoix.append(int(valeur))
-#            removeList.append(pioche[int(valeur)])
-#    
-##        for item in removeList:
-##            pioche.remove(item)
-#
-#        """Les deux lignes ci dessus sont commentées car la pioche ne se remplit pas à la fin de chaque tour"""
-#
-#        
-#        # Une fois le choix effectue, on met les cartes choisies dans la variable joueur
-#        for i in range(self.robot.pv - 4):
-#            self.cartes[i] = self.mainJoueur[listeChoix[i]]
-#
-#        # Cette fonction ne renvoie rien
-#        pass
-
+        # On affiche sa main au joueur pour qu'il puisse faire son choix
+        if show:
+            for i in range(len(self.mainJoueur)):
+                print(i," - ",self.mainJoueur[i])
+            print('\n')
 
 def creerJoueur(numero, robot_options = (0,0,0)):
     """
@@ -125,12 +69,16 @@ def creerJoueur(numero, robot_options = (0,0,0)):
 #    x,y,o = valeurs.split(' ')
 #    x,y,o = int(x),int(y),int(o)
     
-    return Joueur(numero, rob.Robot((x,y),o))
+    return Joueur((x,y),o)
 
 
 
     
-    
+if __name__ == "__main__":
+    joueur = Joueur((0,0),3)
+    print(joueur.numero)
+    joueur = Joueur((0,0),3)
+    print(joueur.numero)
     
     
     

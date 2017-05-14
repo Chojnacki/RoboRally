@@ -36,8 +36,20 @@ class Case():
     @property
     def position(self):
         return self.__pos
-        
-        
+    @property
+    def x(self):
+        return self.__pos[0]
+    @property
+    def y(self):
+        return self.__pos[1]
+
+    @property    
+    def MD(self):
+        """
+        Représentation de la case dans l'espace des Matrices-D
+        """
+        return (0,self.x,self.y,0) #Par défaut une case ne fait rien
+       
     def __str__(self):
         """
         Affiche la position de la case.
@@ -64,6 +76,25 @@ class Case():
         Aucun
         """
         return robot.state[:]
+    
+    @abc.abstractmethod
+    def copy(self, x=None,y=None,tourne=None, sym=None):
+        """
+        Applique l'effet de la case sur le robot suivant le type de la case
+        
+        Paramètres
+        ----------
+        x,y position de la nouvelle case
+        tourne: fait tourner la case
+        sym: pour changer la direction des tapis d'angle
+        """
+        if not x:
+            x = self.position[0]
+        if not y:
+            y = self.position[1]
+            
+        return Case((x,y))
+    
     
     def dessin(self, qp, image = 'images/caseNeutre.png'):
         
@@ -107,7 +138,14 @@ class CaseNeutre(Case):
         """
         return "N"
         
-    
+    def copy(self, x=None,y=None,tourne=None, sym=None):
+        
+        if not x:
+            x = self.position[0]
+        if not y:
+            y = self.position[1]
+            
+        return Case((x,y))
 
 
 class CaseArrivee(Case):
@@ -144,7 +182,7 @@ class CaseArrivee(Case):
             Le caractère representant la case.
         """
         return "A"
-    
+      
     
     def effet(self,robot):
         """       
@@ -155,7 +193,17 @@ class CaseArrivee(Case):
         """
         raise Exception('Victoire')
         pass
+    
+    def copy(self, x=None,y=None,tourne=None,sym=None):
+        if not x:
+            x = self.position[0]
+        if not y:
+            y = self.position[1]
+            
+        return CaseArrivee((x,y))
 
+class Victoire(Exception):
+    pass
     
         
 class CaseTrou(Case):
@@ -192,6 +240,13 @@ class CaseTrou(Case):
             Le caractère representant la case.
         """
         return "X"
+        
+    @property    
+    def MD(self):
+        """
+        Représentation de la case dans l'espace des Matrices-D
+        """
+        return (9,self.x,self.y,0) #inflige 9 dégats
     
         
     def effet(self,robot):
@@ -209,7 +264,13 @@ class CaseTrou(Case):
         return estimated_state
         
         
-        
+    def copy(self, x=None,y=None,tourne=None,sym=None):
+        if not x:
+            x = self.position[0]
+        if not y:
+            y = self.position[1]
+            
+        return CaseTrou((x,y))
         
         
 class CaseReparation(Case):
@@ -245,7 +306,13 @@ class CaseReparation(Case):
             Le caractère representant la case.
         """
         return "R"
-    
+        
+    @property    
+    def MD(self):
+        """
+        Représentation de la case dans l'espace des Matrices-D
+        """
+        return (-1,self.x,self.y,0) #inflige -1 dégats
     
     def effet(self,robot):
         """
@@ -260,6 +327,14 @@ class CaseReparation(Case):
         if estimated_state[0] < 9:
             estimated_state[0] += 1
         return estimated_state
+    
+    def copy(self, x=None,y=None,tourne=None,sym=None):
+        if not x:
+            x = self.position[0]
+        if not y:
+            y = self.position[1]
+            
+        return CaseReparation((x,y))
         
         
 class CaseEngrenage(Case):
@@ -284,6 +359,10 @@ class CaseEngrenage(Case):
         self.__sens = sens
         self.image = 'images/engrenage{}.png'.format(self.__sens)
         
+    @property
+    def sens(self):
+        return self.__sens
+        
     @property    
     def car(self):
         """
@@ -299,6 +378,13 @@ class CaseEngrenage(Case):
             Le caractère representant la case.
         """
         return "E"
+
+    @property    
+    def MD(self):
+        """
+        Représentation de la case dans l'espace des Matrices-D
+        """
+        return (0,self.x,self.y,self.sens)
     
     
     def effet(self,robot):
@@ -316,6 +402,17 @@ class CaseEngrenage(Case):
         estimated_state[3] = estimate
         return estimated_state
         
+    def copy(self, x=None,y=None, tourne=None,sym=1):
+        if not x:
+            x = self.position[0]
+        if not y:
+            y = self.position[1]
+            
+        return CaseEngrenage((x,y), self.sens*sym)
+    
+#dictionnaires utiles pour la fonction copy
+dico_virage = {0: "Gauche", 1: "Droite"}
+dico_inv_virage = {"Gauche": 0, "Droite":1}
     
 class Tapis(Case):
     def __init__(self,position,orientation,virage,vitesse=1):
@@ -336,12 +433,25 @@ class Tapis(Case):
         vitesse: int
             {1, 2}
         """
+        if vitesse != 1:
+            raise Exception('vitesse de tapis non prévue')
         super().__init__(position)
         self.__orientation = orientation
         self.__virage = virage
-        self.__vitesse = vitesse 
+        self.__vitesse = vitesse
         self.image = 'images/tapis{}{}{}.png'.format(self.__orientation, self.__virage, self.__vitesse)
         
+    @property
+    def vitesse(self):
+        return self.__vitesse
+    
+    @property
+    def orientation(self):
+        return self.__orientation
+    
+    @property
+    def virage(self):
+        return self.__virage
 
         
     @property
@@ -360,6 +470,21 @@ class Tapis(Case):
         """
         return "T"
         
+    @property    
+    def MD(self):
+        """
+        Représentation de la case dans l'espace des Matrices-D
+        """
+        if self.orientation == 0:
+            x,y = 1,0
+        if self.orientation == 1:
+            x,y = 0,1
+        if self.orientation == 2:
+            x,y = -1,0
+        if self.orientation == 3:
+            x,y = 0,-1
+            
+        return (0,self.x + x,self.y + y,0)
     
     def effet(self,robot):
         """
@@ -442,9 +567,27 @@ class Tapis(Case):
             
             
         
+    def copy(self, x=None,y=None,tourne=0,sym=1):
+        """
+        tourne = 0 ou 2 (2 pour symetrie)
+        sym = 0 ou 1 selon le cadre de symetrie
+        """
+        if not x:
+            x = self.position[0]
+        if not y:
+            y = self.position[1]    
+            
+        if self.__virage == False:
+                return Tapis((x,y), (self.orientation + tourne)%4, False, self.vitesse)
+            
+        else:
+                return Tapis((x,y), (self.orientation + tourne)%4, dico_virage[(dico_inv_virage[self.virage]+sym)%2], self.vitesse)
+            
         
 if __name__ == "__main__":
     case = Tapis((1,2),0,False)
+    print(case.MD)
+    print(isinstance(case,Tapis))
     print(case)
     twonky = rob.Robot((1,1),1)
     print(twonky)
