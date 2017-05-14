@@ -17,7 +17,7 @@ tapis = Cases.Tapis((1,1),0,False)
 engr = Cases.CaseEngrenage((3,1), -1)
 tapis2 = Cases.Tapis((3,2),0,False)
 engr2 = Cases.CaseEngrenage((4,3), -1)
-trou = Cases.CaseArrivee((3,3))
+arrivee = Cases.CaseArrivee((3,3))
 mur = Murs.MurVertical((0,0),(1,0))
 #robot1_start = (5,2)   # A ajouter dans le code
 plateau.ajouterMur(mur)
@@ -36,10 +36,16 @@ for x in range(0,plateau.x,1):
     plateau.ajouterMur(mur)
 
 
+trou = Cases.CaseTrou((0,2))
+trou1 = Cases.CaseTrou((1,2))
+trou2 = Cases.CaseTrou((2,2))
+trou3 = Cases.CaseTrou((2,1))
 
-
-Caz = [tapis,engr,tapis2,engr2,trou]
+trous = [trou, trou1, trou2, trou3]
+Caz = [tapis,engr,tapis2,engr2,arrivee]
 for case in Caz:
+    plateau.mettreCase(case)
+for case in trous:
     plateau.mettreCase(case)
 
 

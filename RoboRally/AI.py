@@ -33,30 +33,40 @@ def Puissante(jeu):
 #        for carte in IA.mainJoueur:
 #            print('cartes disponibles pour l\'ia')
 #            print(carte)
-        print(IA.state)
-        distanceMin = jeu.plateau.x ** 2 + jeu.plateau.y ** 2
+#        print(IA.state)
 
         #Toutes les position possibles dans une liste
         possibleOutcomes = treeExplorer(IA.state, IA.mainJoueur, max(0,IA.pv - 4), jeu.plateau)
-#        min(IA.pv - 4,5)
         
         arrivee = jeu.plateau.casesVictoire[0]      #position d'une case qui fait gagner
-        bestOutcome = possibleOutcomes[0]
-        indiceGagnant = 0
+        indiceGagnant = None                        #Si jamais on ne trouve rien on 'Shut Down'
+        distanceMin = distance((IA.state[1],IA.state[2]),arrivee)       #Distance actuelle à l'arrivée
+#        print(distanceMin)
+#        print(possibleOutcomes)
         for index, outcome in enumerate(possibleOutcomes):
-            x,y = outcome[0][1],outcome[0][2]
+            new_state = outcome[0]
+#            if new_state[0] != 0:
+#                if new_state[2] == 1 and new_state[1] == 2:
+#                    print('erreur')
+#            print(new_state)
+            x,y = new_state[1],new_state[2]
             d = distance((x,y),arrivee)
             if d < distanceMin:
-                distanceMin = d
-                indiceGagnant = index
-                print(distanceMin,x,y)
+                if new_state[0] > 0: #si la distance est meilleur et que l'on vit
+                    print(new_state)
+                    distanceMin = d
+                    indiceGagnant = index
+    #                print(distanceMin,x,y)
         
-        listeIndices = possibleOutcomes[indiceGagnant][1]
 #        print(listeIndices)
-        print('cartes choisies par l\'IA')
-        for idx,val in enumerate(listeIndices):
-            IA.cartes[idx] = IA.mainJoueur[val]
-            print(val,IA.cartes[idx])
+        if indiceGagnant: #si l'on a trouvé une solution meilleure que d'être immobile
+            print('cartes choisies par l\'IA')
+            listeIndices = possibleOutcomes[indiceGagnant][1]
+            for idx,val in enumerate(listeIndices):
+                IA.cartes[idx] = IA.mainJoueur[val]
+                print(val,IA.cartes[idx])
+        else:
+            print('l\'IA ne bouge pas')
 #        for carte in IA.cartes:
 #            print(carte)
 #        for i in range(len(IA.cartes)): #On remplit la liste des cartes
@@ -102,15 +112,23 @@ def estimatedStateCarte(state,carte,p):
 
     matriceDirection = angleToMatrix[angle] #la matrice des contraintes dans la direction de déplacement du robot
     
-    
-    new_state = state * md.MatriceD(p.x,p.y,0,None,p.listeMurs) #On utilise la propriété des MatricesD
+#    print('state',state)
+    new_state = state * matriceDirection #On utilise la propriété des MatricesD
+       
     for i in range(vitesse): #Si on bouge de plusieurs cases
-        new_state = new_state * matriceDirection 
+        new_state = matriceDirection(new_state)
         
-    new_state = new_state * p.mc
+#    print('new_state',new_state) 
+    
+#    if new_state[1] == 2 and new_state[2] == 1:
+#        print('avant',new_state)
+    new_state = p.mc(new_state)
+#    print('new_state',new_state) 
     (pv,x,y,o) = new_state
     o = (o + carte.angle) % 4
-    new_state = (pv,x,y,o)
+    new_state = (pv,x,y,o)    
+#    if new_state[1] == 2 and new_state[2] == 1:
+#        print('après',new_state)
     return new_state
 
 
@@ -151,7 +169,10 @@ if __name__ == "__main__":
     outcomes = treeExplorer(state, listeCartes[:], 2, p)
     for state,liste in outcomes:
         print(state,liste)
-    
+#    for index, outcome in enumerate(outcomes):
+#        state = outcome[0]
+#        if state[0] == 0 and state[2] == 2:
+#            print(True)
 
 
 

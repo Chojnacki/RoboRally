@@ -86,6 +86,9 @@ class IHM(QtGui.QMainWindow):
         self.ui.checkBox_7.stateChanged.connect(self.checkBox7)
         self.ui.checkBox_8.stateChanged.connect(self.checkBox8)
         self.ui.checkBox_9.stateChanged.connect(self.checkBox9)
+        
+        
+        self.nvllePartie() #Une fois que tout est pret on lance la partie
 
 ##############################################      FSM - FSM - FSM       ######################################################
         
@@ -348,7 +351,7 @@ class Victoire(Exception):
 def start():
     app = QtGui.QApplication(sys.argv)
     window = IHM()
-    window.nvllePartie()
+#    window.nvllePartie()
     window.setGeometry(100,50,1300,900)
     window.show()
     app.exec_()

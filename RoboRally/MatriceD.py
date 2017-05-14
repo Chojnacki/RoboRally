@@ -14,7 +14,7 @@ class MatriceD(object): #Matrice de Déplacement
             self.m = matrice[:][:]
         else:
             self.x, self.y = x,y
-            self.m = [[(9,a,b,angle) for a in range(x)] for b in range(y)]
+            self.m = [[(0,a,b,angle) for a in range(x)] for b in range(y)]
         self.listeMurs = listeMurs[:]
     
     def __call__(self,state):
@@ -39,8 +39,8 @@ class MatriceD(object): #Matrice de Déplacement
                 if (0 <= targetx < self.x) and (0 <= targety < self.y):
                     new_target = other.m[targety][targetx]
                     new_damage,new_targetx,new_targety,new_angle = new_target
-#                    new_target[0] += damage                     #On prend en compte les dégats d'avant
-#                    target[0] += damage                         #idem, si on reste sur la même case
+                    new_target[0] += damage                     #On prend en compte les dégats d'avant
+                    target[0] += damage                         #idem, si on reste sur la même case
 #                    new_target[3] += angle % 4                  #On prend en compte l'angle
 #                    target[3] += angle % 4                      #idem
                     for mur in self.listeMurs:
@@ -64,9 +64,12 @@ class MatriceD(object): #Matrice de Déplacement
             return self.m[y][x]
         elif len(other) == 4:   #muliplication à gauche par un état
             x,y = other[1],other[2]
-            damage,x,y,angle = self.m[y][x]
-            pv = max(0,other[0] - damage)
-            o = other[3] + angle
+            pv = other[0]
+            o = other[3]
+            if x and y:         #Permet de tenir compte des non déplacements (None)
+                damage,x,y,angle = self.m[y][x]
+                pv = max(0,other[0] - damage)
+                o = other[3] + angle
             return pv,x,y,o
         else:
             raise TypeError('vous ne multipliez pas la MatriceD par un état / une position')
