@@ -64,65 +64,15 @@ class Plateau():
         for y in range(self.y):
             for x in range(self.x):
                 case = self.cases[y][x]
-                matriceEffetCases.m[y][x] = 
-                if isinstance(case,Cases.Tapis):
-                    vitesse = case.vitesse
-                    o = case.orientation
-                    if o == 0:
-                        matrice = self.m0
-                    if o == 1:
-                        matrice = self.m1
-                    if o == 2:
-                        matrice = self.m2
-                    if o == 3:
-                        matrice = self.m3
-                    new_state = matrice.m[y][x] #On récupère le nouvel état (avec l'influence des murs)
-                    md.MatriceD_cases.m[y][x] = new_state  #On place le nouvel état dans la matrice mc
-                    
-                if isinstance(case,Cases.CaseTrou):
-                    new_state = matrice.m[y][x] #On récupère le nouvel état (avec l'influence des murs)
-                    md.MatriceD_cases.m[y][x] = new_state  #On place le nouvel état dans la matrice mc
-        self.mc = md.MatriceD_cases
+                matriceEffetCases.m[y][x] = case.MD
+        self.mc = matriceEffetCases
         
-                
-
-        
-
-
-#    def __rmul__(self, other):
-#        print ('__rmul__')
-#        return other
-
 
 if __name__ == "__main__":
-    plateau = Plateau(10,5)
-    tapis = Cases.Tapis((1,1),0,False)
-    engr = Cases.CaseEngrenage((3,1), -1)
-    tapis2 = Cases.Tapis((3,2),0,False)
-    engr2 = Cases.CaseEngrenage((4,3), -1)
-    trou = Cases.CaseArrivee((3,3))
-
-    Caz = [tapis,engr,tapis2,engr2,trou]
-    for case in Caz:
-        plateau.mettreCase(case)
-    mur = Murs.MurVertical((0,0),(1,0))
-    #robot1_start = (5,2)   # A ajouter dans le code
-    plateau.ajouterMur(mur)
-    
-    
-    for y in range(0,plateau.y,1):
-        mur = Murs.MurVertical((-1,y),(0,y))
-        plateau.ajouterMur(mur)
-        mur = Murs.MurVertical((plateau.x-1,y),(plateau.x,y))
-        plateau.ajouterMur(mur)
-    
-    for x in range(0,plateau.x,1):
-        mur = Murs.MurHorizontal((x,-1),(x,0))
-        plateau.ajouterMur(mur)
-        mur = Murs.MurHorizontal((x,plateau.y-1),(x,plateau.y))
-        plateau.ajouterMur(mur)
-    
+    import plateau1 as p
+    plateau = p.plateau
     plateau.prepare()
+    
     print('m0')
     print(plateau.m0)
     print('m1')

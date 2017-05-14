@@ -80,7 +80,7 @@ class MatriceD(object): #Matrice de Déplacement
                 s += " "
             s += "\n"
         return s
-        
+    
     def position(self, start):
         return self.m[start[1]][start[0]]
         

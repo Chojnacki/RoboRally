@@ -177,11 +177,9 @@ class Jeu():
                                     estimated_state = case.effet(joueur)
                                     real_state = realState(joueur.state,estimated_state,self)
                                     joueur.set_state(real_state)
-                    except Exception as e:
-                        if e == 'Victoire':
-                            break
-                        else:
-                            raise e
+                    except Victoire:
+                        print('exception rattrapée')
+                         
             print(self.listeJoueurs[1].state)
         
     def simpleAction(self,joueur):
@@ -189,6 +187,9 @@ class Jeu():
         Lance une action: Le joueur concerné joue 1 carte
         """
         pass
+
+class Victoire(Exception):
+    pass
 
 #les deux fonctions qui suivent sont la pour prendre en compte les murs et différents obstacles que peut recontrer le robot
 #et pour lui donner l'état dans lequel il sera après avoir fait la commande que l'on lui donne

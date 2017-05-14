@@ -209,7 +209,7 @@ class IHM(QtGui.QMainWindow):
 
     def nvllePartie(self):
         self.jeu.plateau.prepare()
-        print(self.jeu.plateau.mc)
+#        print(self.jeu.plateau.mc)
         self.jeu.prepareTour()
         self.transition = "pick"
 #        self.ui.tapiscarte.update()

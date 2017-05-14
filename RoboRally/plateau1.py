@@ -18,9 +18,9 @@ engr = Cases.CaseEngrenage((3,1), -1)
 tapis2 = Cases.Tapis((3,2),0,False)
 engr2 = Cases.CaseEngrenage((4,3), -1)
 trou = Cases.CaseArrivee((3,3))
-#mur = Murs.MurVertical((0,0),(1,0))
+mur = Murs.MurVertical((0,0),(1,0))
 #robot1_start = (5,2)   # A ajouter dans le code
-#plateau.ajouterMur(mur)
+plateau.ajouterMur(mur)
 
 
 for y in range(0,plateau.y,1):

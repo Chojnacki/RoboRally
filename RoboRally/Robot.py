@@ -115,7 +115,7 @@ class Robot():
     def dessin(self, qp):
         
         image_robot = QtGui.QImage(self.image)
-        side = 50   #côté du carré qui représente le robot
+        side = 48   #côté du carré qui représente le robot
         image_robot = image_robot.scaled(side,side)
         square_size = 50 #côté du carré d'une case
         

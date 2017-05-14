@@ -36,8 +36,20 @@ class Case():
     @property
     def position(self):
         return self.__pos
-        
-        
+    @property
+    def x(self):
+        return self.__pos[0]
+    @property
+    def y(self):
+        return self.__pos[1]
+
+    @property    
+    def MD(self):
+        """
+        Représentation de la case dans l'espace des Matrices-D
+        """
+        return (0,self.x,self.y,0) #Par défaut une case ne fait rien
+       
     def __str__(self):
         """
         Affiche la position de la case.
@@ -170,7 +182,7 @@ class CaseArrivee(Case):
             Le caractère representant la case.
         """
         return "A"
-    
+      
     
     def effet(self,robot):
         """       
@@ -190,6 +202,8 @@ class CaseArrivee(Case):
             
         return CaseArrivee((x,y))
 
+class Victoire(Exception):
+    pass
     
         
 class CaseTrou(Case):
@@ -226,6 +240,13 @@ class CaseTrou(Case):
             Le caractère representant la case.
         """
         return "X"
+        
+    @property    
+    def MD(self):
+        """
+        Représentation de la case dans l'espace des Matrices-D
+        """
+        return (9,self.x,self.y,0) #inflige 9 dégats
     
         
     def effet(self,robot):
@@ -285,7 +306,13 @@ class CaseReparation(Case):
             Le caractère representant la case.
         """
         return "R"
-    
+        
+    @property    
+    def MD(self):
+        """
+        Représentation de la case dans l'espace des Matrices-D
+        """
+        return (-1,self.x,self.y,0) #inflige -1 dégats
     
     def effet(self,robot):
         """
@@ -351,6 +378,13 @@ class CaseEngrenage(Case):
             Le caractère representant la case.
         """
         return "E"
+
+    @property    
+    def MD(self):
+        """
+        Représentation de la case dans l'espace des Matrices-D
+        """
+        return (0,self.x,self.y,self.sens)
     
     
     def effet(self,robot):
@@ -399,6 +433,8 @@ class Tapis(Case):
         vitesse: int
             {1, 2}
         """
+        if vitesse != 1:
+            raise Exception('vitesse de tapis non prévue')
         super().__init__(position)
         self.__orientation = orientation
         self.__virage = virage
@@ -434,6 +470,21 @@ class Tapis(Case):
         """
         return "T"
         
+    @property    
+    def MD(self):
+        """
+        Représentation de la case dans l'espace des Matrices-D
+        """
+        if self.orientation == 0:
+            x,y = 1,0
+        if self.orientation == 1:
+            x,y = 0,1
+        if self.orientation == 2:
+            x,y = -1,0
+        if self.orientation == 3:
+            x,y = 0,-1
+            
+        return (0,self.x + x,self.y + y,0)
     
     def effet(self,robot):
         """
@@ -535,6 +586,7 @@ class Tapis(Case):
         
 if __name__ == "__main__":
     case = Tapis((1,2),0,False)
+    print(case.MD)
     print(isinstance(case,Tapis))
     print(case)
     twonky = rob.Robot((1,1),1)
