@@ -53,7 +53,7 @@ def Puissante(jeu):
             d = distance((x,y),arrivee)
             if d < distanceMin:
                 if new_state[0] > 0: #si la distance est meilleur et que l'on vit
-                    print(new_state)
+#                    print(new_state)
                     distanceMin = d
                     indiceGagnant = index
 #                    print('meilleur combinaison: d,x,y',distanceMin,x,y)
@@ -66,7 +66,7 @@ def Puissante(jeu):
             for idx,val in enumerate(listeIndices):
                 IA.cartes[idx] = IA.mainJoueur[val]
                 print(val,IA.cartes[idx])
-            print('\n')
+#            print('\n')
         else:
             print('l\'IA ne bouge pas')
 #        for carte in IA.cartes:

@@ -148,35 +148,23 @@ class Translation(Carte):
            
         """
         v = self.__vitesse
-        if v > 0:
-            if robot.orientation == 0:
-                estimate = (robot.position[0]+1*v,robot.position[1])
 
-            elif robot.orientation == 1:
-                estimate = (robot.position[0],robot.position[1]-1*v)
+        if robot.orientation == 0:
+            estimate = (robot.position[0]+1*v,robot.position[1])
 
-            elif robot.orientation == 2:
-                estimate = (robot.position[0]-1*v,robot.position[1])
+        elif robot.orientation == 1:
+            estimate = (robot.position[0],robot.position[1]-1*v)
 
-            elif robot.orientation == 3:
-                estimate = (robot.position[0],robot.position[1]+1*v)
+        elif robot.orientation == 2:
+            estimate = (robot.position[0]-1*v,robot.position[1])
 
-        else:
-            if robot.orientation == 0:
-                estimate = (robot.position[0]-1*v,robot.position[1])
-
-            elif robot.orientation == 1:
-                estimate = (robot.position[0],robot.position[1]+1*v)
-
-            elif robot.orientation == 2:
-                estimate = (robot.position[0]+1*v,robot.position[1])
-
-            elif robot.orientation == 3:
-                estimate = (robot.position[0],robot.position[1]-1*v)
+        elif robot.orientation == 3:
+            estimate = (robot.position[0],robot.position[1]+1*v)
 
         estimated_state = robot.state[:]
         estimated_state[1] = estimate[0]
         estimated_state[2] = estimate[1]
+#        print(estimated_state)
         return estimated_state
 
         

@@ -14,10 +14,11 @@ dico_orientation = {0: "Droite", 1: "Haut", 2: "Gauche", 3: "Bas"} # Ce dictiona
 
 class Robot():
     
-    def __init__(self,position,orientation = 0, liste_murs = []):
-        self.__pv = 9
-        self.__position = position
-        self.__orientation = orientation
+    def __init__(self, start_state, liste_murs = []):
+        pv,x,y,o = start_state
+        self.__pv = pv
+        self.__position = x,y
+        self.__orientation = o
         self.state = [self.pv,self.position[0],self.position[1],self.orientation]
 
         self.image = 'images/gwenHaDu.png'

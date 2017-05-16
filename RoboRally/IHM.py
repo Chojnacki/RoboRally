@@ -15,7 +15,7 @@ from interface import Ui_interface_ihm
 #import Robot as rob
 import Jeu
 import time
-import plateau3 as p #contient un plateau de jeu 'jouable'
+import plateau0 as p #contient un plateau de jeu 'jouable'
 
 
 speed = 100 #vitesse de la fsm -> du jeu
@@ -113,7 +113,9 @@ class IHM(QtGui.QMainWindow):
             new_state = self.dict_tr[(self.current_state,self.transition)]
             if new_state in self.states:
                 if new_state != self.current_state:
+                    print('\n')
                     print("{} -> {}".format(self.current_state,new_state))
+                    print('\n')
                 action = self.dict_ac.get(self.transition,(lambda *args: None))
                 action()
                 self.current_state = new_state

@@ -37,7 +37,10 @@ class Jeu():
 #        nbJoueurs = int(input("Nombre de joueurs?"))
         self.nbJoueurs = nbJoueurs
         
-        self.listeJoueurs = [j.creerJoueur(i) for i in range(nbJoueurs)]
+        try:
+            self.listeJoueurs = [j.Joueur(self.plateau.listeEtatsDepart[i]) for i in range(nbJoueurs)]
+        except IndexError:
+            print('les positions de départ ne sont pas définies')
         
         for joueur in self.listeJoueurs:
             joueur.murs = self.plateau.listeMurs
@@ -82,14 +85,14 @@ class Jeu():
         for carte in valeurs:
             if int(carte) > 8 or int(carte) < 0:            #vérification que les indices sont entre 0 et 8
                 self.__hasPicked = False
-                print('valeurs')
+#                print('valeurs')
         if not(uniqueness(valeurs)):                         #2 cartes identiques
             self.__hasPicked = False
-            print('unique')
+#            print('unique')
         if len(valeurs) != max(0,self.listeJoueurs[0].pv - 4):     #Nombre de cartes incorrect
             if valeurs:
                 self.__hasPicked = False
-                print('last')
+#                print('last')
                 
         
         if self.hasPicked and valeurs: #si le joueur a joué et qu'il a choisit des cartes
@@ -166,17 +169,16 @@ class Jeu():
             pass
         else:
             for joueur in self.listeJoueurs:
-                print('chacun son tour, priorités à régler')
                 # On applique l'effet de la carte:
                 carte = None #Au cas ou le joueur décide de ne rien choisir comme carte
                 if joueur.cartes:
                     carte = joueur.cartes.pop(0)
                 if carte:
-                    print('état du joueur',joueur.state)
+#                    print('état du joueur',joueur.state)
                     estimated_state = carte.effet(joueur)
-                    print('estimation Carte',estimated_state)
+#                    print('estimation Carte',estimated_state)
                     real_state = realState(joueur.state,estimated_state,self)
-                    print('réel carte',real_state)
+#                    print('réel carte',real_state)
 #                    joueur.set_state(real_state)
     
 #                    try:

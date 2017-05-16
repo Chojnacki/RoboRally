@@ -14,9 +14,9 @@ class Joueur(Robot):
     Le joueur est une liste de cartes, qui possède un numero, un robot et qui peut être une IA
     """
     number = 0
-    def __init__(self,position,orientation):
+    def __init__(self,start_state):
         
-        super().__init__(position,orientation)
+        super().__init__(start_state)
         self.mainJoueur = [None] * 9             # Cartes que le joueur s'est vu distribues
         self.cartesChoisies = []
         self.cartes = [None] * 5                 # Cartes que le joueur va jouer
@@ -52,25 +52,6 @@ class Joueur(Robot):
             for i in range(len(self.mainJoueur)):
                 print(i," - ",self.mainJoueur[i])
             print('\n')
-
-def creerJoueur(numero, robot_options = (0,0,0)):
-    """
-    Permet d'instancier un joueur en demandant les paramètres à l'utilisateur
-    robot_options permet de choisir l'orientation du robot par défaut depuis les fichiers Master / IHM
-    """
-
-    ################ automatique ##################
-
-    x,y,o = robot_options
-
-     ############### manuel ##################
-
-#    valeurs = input("Entrez la position de depart du robot et son orientation.")
-#    x,y,o = valeurs.split(' ')
-#    x,y,o = int(x),int(y),int(o)
-    
-    return Joueur((x,y),o)
-
 
 
     
