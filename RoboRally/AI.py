@@ -56,15 +56,17 @@ def Puissante(jeu):
                     print(new_state)
                     distanceMin = d
                     indiceGagnant = index
-    #                print(distanceMin,x,y)
+#                    print('meilleur combinaison: d,x,y',distanceMin,x,y)
         
 #        print(listeIndices)
         if indiceGagnant: #si l'on a trouvé une solution meilleure que d'être immobile
-            print('cartes choisies par l\'IA')
+            print('état final supposé:',possibleOutcomes[indiceGagnant][0])
+            print('cartes choisies par l\'IA:')
             listeIndices = possibleOutcomes[indiceGagnant][1]
             for idx,val in enumerate(listeIndices):
                 IA.cartes[idx] = IA.mainJoueur[val]
                 print(val,IA.cartes[idx])
+            print('\n')
         else:
             print('l\'IA ne bouge pas')
 #        for carte in IA.cartes:
@@ -107,9 +109,9 @@ def estimatedStateCarte(state,carte,p):
     vitesse = carte.vitesse
     angle = state[3]
     if vitesse == -1: #si on recule
-        angle = -state[3]
+        angle = state[3] + 2
         angle = angle % 4 #ne pas réutiliser cet angle pour l'état final: si l'on recule il va se retourner!!
-
+#        print(angle)
     matriceDirection = angleToMatrix[angle] #la matrice des contraintes dans la direction de déplacement du robot
     
 #    print('state',state)
@@ -154,11 +156,13 @@ def distance(A,B):
 #Pour faire quelques tests:
 if __name__ == "__main__":
     import Cartes
-    import plateau1
-    p = plateau1.plateau
+    import plateau3
+    p = plateau3.plateau
     p.prepare()
-    state = (9,1,1,3)
-    carte = Cartes.Translation(1)
+    state = (9,3,0,0)
+    carte = Cartes.Translation(-1)
+    print('carte',carte)
+    print('départ',state,'arrivée',estimatedStateCarte(state,carte,p))
 #    print(p.m0)
 #    print(estimatedStateCarte(state,carte, p))
     

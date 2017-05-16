@@ -79,18 +79,20 @@ class Jeu():
         
         valeurs = self.listeJoueurs[0].cartesChoisies
         valeurs = [int(valeurs[i])-1 for i in range(len(valeurs))] #On décale de 1 parce que Python
-        if not valeurs and (self.listeJoueurs[0].pv - 4 > 0):   #Si aucune carte n'est choisie (liste valeurs vide)
-            self.__hasPicked = False
         for carte in valeurs:
             if int(carte) > 8 or int(carte) < 0:            #vérification que les indices sont entre 0 et 8
                 self.__hasPicked = False
+                print('valeurs')
         if not(uniqueness(valeurs)):                         #2 cartes identiques
             self.__hasPicked = False
+            print('unique')
         if len(valeurs) != max(0,self.listeJoueurs[0].pv - 4):     #Nombre de cartes incorrect
-            self.__hasPicked = False
+            if valeurs:
+                self.__hasPicked = False
+                print('last')
                 
         
-        if self.hasPicked:
+        if self.hasPicked and valeurs: #si le joueur a joué et qu'il a choisit des cartes
 #            removeList = [] #liste des cartes à retirer de la pioche
             for valeur in valeurs:
                 listeChoix.append(int(valeur))
@@ -98,9 +100,11 @@ class Jeu():
         
                 # Une fois le choix effectue, on met les cartes choisies dans la variable joueur
             for i in range(self.listeJoueurs[0].pv - 4):
-                valeurs[i] = self.listeJoueurs[0].mainJoueur[listeChoix[i]]
+#                valeurs[i] = self.listeJoueurs[0].mainJoueur[listeChoix[i]]
                 self.listeJoueurs[0].cartes[i] = self.listeJoueurs[0].mainJoueur[listeChoix[i]]
-        
+        elif not(valeurs): #si il n'a pas choisit de cartes:
+#            valeurs[i] = self.listeJoueurs[0].mainJoueur[listeChoix[i]]
+            self.listeJoueurs[0].cartes = []
         else:
             print("Veuillez choisir {} cartes distinctes entre 1 et 9".format(max(0,self.listeJoueurs[0].pv - 4)) )
             self.__hasPicked = False
@@ -162,24 +166,27 @@ class Jeu():
             pass
         else:
             for joueur in self.listeJoueurs:
+                print('chacun son tour, priorités à régler')
                 # On applique l'effet de la carte:
-                carte = joueur.cartes.pop(0)
+                carte = None #Au cas ou le joueur décide de ne rien choisir comme carte
+                if joueur.cartes:
+                    carte = joueur.cartes.pop(0)
                 if carte:
+                    print('état du joueur',joueur.state)
                     estimated_state = carte.effet(joueur)
+                    print('estimation Carte',estimated_state)
                     real_state = realState(joueur.state,estimated_state,self)
-                    joueur.set_state(real_state)
+                    print('réel carte',real_state)
+#                    joueur.set_state(real_state)
     
-                    try:
-                        # On applique l'effet de la case:
-                        for row in self.plateau.cases:
-                            for case in row:
-                                if case.position == joueur.position:
-                                    estimated_state = case.effet(joueur)
-                                    real_state = realState(joueur.state,estimated_state,self)
-                                    joueur.set_state(real_state)
-                    except Victoire:
-                        print('exception rattrapée')
-                         
+#                    try:
+                    real_state = self.plateau.mc(real_state)
+                    joueur.set_state(real_state)
+
+                    #condition de victoire:
+                    if joueur.position in self.plateau.casesVictoire:
+                        return 'Victoire'
+                    
             print(self.listeJoueurs[1].state)
         
     def simpleAction(self,joueur):

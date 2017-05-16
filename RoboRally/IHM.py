@@ -15,7 +15,7 @@ from interface import Ui_interface_ihm
 #import Robot as rob
 import Jeu
 import time
-import plateau0 as p #contient un plateau de jeu 'jouable'
+import plateau3 as p #contient un plateau de jeu 'jouable'
 
 
 speed = 100 #vitesse de la fsm -> du jeu
@@ -42,7 +42,7 @@ class IHM(QtGui.QMainWindow):
         #partie liée à la fsm qui DOIT se trouver dans init
 
         #liste des états admissibles:
-        self.states = ["initialize","pick","play"]
+        self.states = ["initialize","pick","play","endGame"]
         
         #état dans lequel se situe la fsm
         self.current_state = "initialize"
@@ -58,6 +58,8 @@ class IHM(QtGui.QMainWindow):
                         ("pick","pick"):"pick",
                         ("play","play"):"play",
                         ("play","pick"):"pick",
+                        ("play","endGame"):"endGame",
+                        ("endGame","endGame"):"endGame",
                         }
         
         #dictionnaire des actions à effectuer lors de la transition
@@ -240,17 +242,21 @@ class IHM(QtGui.QMainWindow):
         #penser a coder une liste qui retient les joueurs ayant déjà joué
         #penser à coder la priorité pour les cartes les plus rapides
         
-        self.jeu.jouerTour()
-        finSequence = self.jeu.finSequence
-
-        if finSequence:     #Si la sequence de jeu est finie, on en lance une nouvelle
-            
-            self.jeu.prepareTour()
-            self.transition = "pick"
-        else:            #Si la séquence n'est pas finie, on continue de jouer en lancant un autre tour
-            self.transition = "play" 
-
-        self.ui.progress_pv.setValue(self.jeu.listeJoueurs[0].pv) #On met à jour les pv du joueur
+        victoire = self.jeu.jouerTour() #par défaut victoire = None, victoire = 'Victoire' si qqn à gagné
+        if victoire:
+            print('\n ################ Victoire ############### \n')
+            self.transition = "endGame"
+        else:
+            finSequence = self.jeu.finSequence
+    
+            if finSequence:     #Si la sequence de jeu est finie, on en lance une nouvelle
+                
+                self.jeu.prepareTour()
+                self.transition = "pick"
+            else:            #Si la séquence n'est pas finie, on continue de jouer en lancant un autre tour
+                self.transition = "play" 
+    
+            self.ui.progress_pv.setValue(self.jeu.listeJoueurs[0].pv) #On met à jour les pv du joueur
 
 
     

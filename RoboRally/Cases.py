@@ -415,7 +415,8 @@ dico_virage = {0: "Gauche", 1: "Droite"}
 dico_inv_virage = {"Gauche": 0, "Droite":1}
     
 class Tapis(Case):
-    def __init__(self,position,orientation,virage,vitesse=1):
+    def __init__(self,position,orientation,virage = False, vitesse = 1):
+        #le virage ne sert-il que pour l'affichage?
         """
         Cree un tapis roulant aux coordonnees desirees.
         
