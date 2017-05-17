@@ -191,7 +191,6 @@ class CaseArrivee(Case):
         robot: Robot
             autre idee: teleporte le robot sur une case à part
         """
-        raise Exception('Victoire')
         pass
     
     def copy(self, x=None,y=None,tourne=None,sym=None):
@@ -201,10 +200,6 @@ class CaseArrivee(Case):
             y = self.position[1]
             
         return CaseArrivee((x,y))
-
-class Victoire(Exception):
-    pass
-    
         
 class CaseTrou(Case):
     """

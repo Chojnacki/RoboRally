@@ -27,10 +27,7 @@ class Carte():
 
     def __init__(self):
         """
-        Cree une carte.
-        
-        Paramètres
-        ----------
+        Instancie une carte
         """
         self.__vitesse = 0
         self.__angle = 0
@@ -85,12 +82,11 @@ class Translation(Carte):
     
     def __init__(self, vitesse):
         """
-        Cree une carte translation
+        Instancie une carte translation
         
         Paramètres
         ----------
-        vitesse: int
-            [-1,3]
+        vitesse: int [-1,3]
         """
         super().__init__()
         self.__vitesse = vitesse
@@ -107,7 +103,7 @@ class Translation(Carte):
         
     def __str__(self):
         """
-        Affiche le type de l'objet
+        Renvoie la descritption de la carte
         
         Paramètres
         ----------
@@ -238,19 +234,22 @@ class Rotation(Carte):
         Paramètres
         ----------
         robot: Robot
-           
+        
+        Renvoie
+        -------
+        estimated_state: tuple
+            L'état dans lequel le robot doit se trouver après l'effet seul de la carte
         """
         
         if robot.orientation + self.__angle <= 3:
             estimate = robot.orientation + self.__angle
             
-
         else:
             for i in range(1,4):
-                    if robot.orientation == 4-i and self.__angle >= i:
-                        estimate = self.__angle - i
-                        break #pour eviter de rentrer dans un autre if
-                              #une fois la modification effectuee.
+                if robot.orientation == 4-i and self.__angle >= i:
+                    estimate = self.__angle - i
+                    break #pour eviter de rentrer dans un autre if
+                          #une fois la modification effectuee.
                         
         estimated_state = robot.state[:]
         estimated_state[3] = estimate % 4

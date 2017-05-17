@@ -235,8 +235,6 @@ class IHM(QtGui.QMainWindow):
         """
         Lance une séquence de jeu
         """
-        #penser a coder une liste qui retient les joueurs ayant déjà joué
-        #penser à coder la priorité pour les cartes les plus rapides
         
         victoire = self.jeu.jouerTour() #par défaut victoire = None, victoire = 'Victoire' si qqn à gagné
         if victoire:

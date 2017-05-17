@@ -203,8 +203,6 @@ class Jeu():
         #gestion des obstacles avec le déplacement du à la carte joué
             
         real_state_carte = self.forceMove(joueur,joueur.state,estimated_state) #état réél après l'effet de la carte
-#        print(real_state_carte)
-
         
         estimated_state = self.plateau.mc(real_state_carte)
         #gestion des obstacles avec le déplacement du à la carte joué

@@ -1,36 +1,66 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Mar 23 16:07:07 2017
+Created on Wed May 17 21:01:38 2017
 
-@author: Corazza
+@author: Corazza Alexandre
 """
 
-from Cases import *
-import Robot as rob
-from Cartes import *
-import Master as M
-import Plateau as P
-import Joueur as J
+import unittest
+import Jeu
 
+class TestJeu(unittest.TestCase):
+    
+    def testTri(self):
 
-plateau = Plateau(10,5)
-tapis = Cases.Tapis((1,1),0,False)
-engr = Cases.CaseEngrenage((3,1), -1)
-tapis2 = Cases.Tapis((3,2),0,False)
-engr2 = Cases.CaseEngrenage((4,3), -1)
-trou = Cases.CaseTrou(3,3)
+#        On test si les cartes sont rangées par ordre décroissant de vitesse
+#        (2e paramètre des couples de la liste)
 
-Caz = [tapis,engr,tapis2,engr2,trou]
-for case in Caz:
-    plateau.mettreCase(case)
+        liste = [(1,3),(2,3),(3,3)]
+        Jeu.tri_bulle(liste)
+        self.assertEqual(liste, [(1, 3), (2, 3), (3, 3)])
 
-
-Kertwonky = rob.Robot((0,1),0)
-
-#Kertwonky a pour mission de selectionner 5 cartes avance de 1
-#pour atteindre le trou qui le detruira
-
-listeCartes = [Cartes.Translation(1), Cartes.Translation(2),Cartes.Translation(3),
-               Cartes.Translation(1), Cartes.Translation(2),Cartes.Translation(1),
-               Cartes.Translation(1), Cartes.Translation(2),Cartes.Translation(1)]
+        liste = [(1,1),(2,4),(3,6)]
+        Jeu.tri_bulle(liste)
+        self.assertEqual(liste, [(3, 6), (2, 4), (1, 1)])
+        
+        liste = [(1,-1),(2,6),(3,2)]
+        Jeu.tri_bulle(liste)
+        self.assertEqual(liste, [(2, 6), (3, 2), (1, -1)])
+        
+        liste = [(1,4),(2,1),(3,2)]
+        Jeu.tri_bulle(liste)
+        self.assertEqual(liste, [(1, 4), (3, 2), (2, 1)])
+        
+        liste = [(1,-1),(2,1),(3,2)]
+        Jeu.tri_bulle(liste)
+        self.assertEqual(liste, [(3, 2), (2, 1), (1, -1)])
+        
+        liste = [(1,1),(2,2),(3,-1)]
+        Jeu.tri_bulle(liste)
+        self.assertEqual(liste, [(2, 2), (1, 1), (3, -1)])
+        
+        liste = [(1,3),(2,2),(3,-1)]
+        Jeu.tri_bulle(liste)
+        self.assertEqual(liste, [(1, 3), (2, 2), (3, -1)])     
+        
+        
+    def TestTransitionPosition(self):
+        
+#        On test les positions intermediaires entre deux points
+        
+        
+        liste = Jeu.transitionPositions((0,0),(2,0))
+        self.assertEqual(liste, [(0, 0), (1, 0), (2, 0), (3, 0)])
+        liste = Jeu.transitionPositions((0,0),(0,1))
+        self.assertEqual(liste, [(0, 0), (0, 1), (0, 2)])
+        liste = Jeu.transitionPositions((2,0),(0,0))
+        self.assertEqual(liste, [(2, 0), (1, 0), (0, 0), (-1, 0)])
+        liste = Jeu.transitionPositions((0,2),(0,0))
+        self.assertEqual(liste, [(0, 2), (0, 1), (0, 0), (0, -1)])
+        liste = Jeu.transitionPositions((0,0),(0,0))
+        self.assertEqual(liste, [(0, 0)])
+        
+        
+if __name__ == '__main__':
+    unittest.main()

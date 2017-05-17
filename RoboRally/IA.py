@@ -9,6 +9,7 @@ from random import randint
 
 def pick(jeu):
     Puissante(jeu)
+    # la brownienne ne fonctionne pas très bien car elle peut mourrir en tombant dans un trou et faire bugger le programme
 #    Brownienne(jeu)
     pass
 
@@ -17,42 +18,29 @@ def pick(jeu):
 def Brownienne(jeu):
     listeIA = jeu.listeJoueurs[1:]
     for IA in listeIA:
-#        removeList = []             #liste des cartes à retirer de la pioche
-        
-        for i in range(len(IA.cartes)): #On remplit la liste des cartes
+        for i in range(len(IA.cartes)):                                     #On remplit la liste des cartes
             IA.cartes[i] = IA.mainJoueur[randint(0,len(IA.mainJoueur)-1)]   #carte prise au hasard
             IA.mainJoueur.remove(IA.cartes[i])
-
-
 
 def Puissante(jeu):
     listeIA = jeu.listeJoueurs[1:]
     for IA in listeIA:
 
-        #Toutes les position possibles dans une liste
+        #Toutes les position possibles dans une liste: possibleOutcomes
         possibleOutcomes = treeExplorer(IA.state, IA.mainJoueur, max(0,IA.pv - 4), jeu.plateau)
         
-        arrivee = jeu.plateau.casesVictoire[0]      #position d'une case qui fait gagner
-        indiceGagnant = None                        #Si jamais on ne trouve rien on 'Shut Down'
+        arrivee = jeu.plateau.casesVictoire[0]                          #position d'une case qui fait gagner
+        indiceGagnant = None                                            #Si jamais on ne trouve rien on 'Shut Down'
         distanceMin = distance((IA.state[1],IA.state[2]),arrivee)       #Distance actuelle à l'arrivée
-#        print(distanceMin)
-#        print(possibleOutcomes)
         for index, outcome in enumerate(possibleOutcomes):
             new_state = outcome[0]
-#            if new_state[0] != 0:
-#                if new_state[2] == 1 and new_state[1] == 2:
-#                    print('erreur')
-#            print(new_state)
             x,y = new_state[1],new_state[2]
             d = distance((x,y),arrivee)
-            if d < distanceMin:
-                if new_state[0] > 0: #si la distance est meilleur et que l'on vit
-#                    print(new_state)
+            if d < distanceMin:         #si la distance est meilleure
+                if new_state[0] > 0:    #si le robot vit
                     distanceMin = d
                     indiceGagnant = index
-#                    print('meilleur combinaison: d,x,y',distanceMin,x,y)
-        
-#        print(listeIndices)
+
         if indiceGagnant: #si l'on a trouvé une solution meilleure que d'être immobile
             print('état final supposé:',possibleOutcomes[indiceGagnant][0])
             print('cartes choisies par l\'IA:')
@@ -87,8 +75,6 @@ def treeExplorer(state, mainIA, choixRestants, plateau, indexChoisis = []):
                 new_state = estimatedStateCarte(state,carte,plateau)
                 l += treeExplorer(new_state,mainIA,choixRestants - 1, plateau,indexChoisis2)
         return l
-        
-#        récupérer le __str__, dico ,matrice de déplacement associée
 
 def estimatedStateCarte(state,carte,p):
     """
@@ -100,27 +86,17 @@ def estimatedStateCarte(state,carte,p):
     if vitesse == -1: #si on recule
         angle = state[3] + 2
         angle = angle % 4 #ne pas réutiliser cet angle pour l'état final: si l'on recule il va se retourner!!
-#        print(angle)
+        
     matriceDirection = angleToMatrix[angle] #la matrice des contraintes dans la direction de déplacement du robot
     
-#    print('state',state)
-#    new_state = state * matriceDirection #On utilise la propriété des MatricesD
     new_state = state[:]
     for i in range(abs(vitesse)): #Si on bouge de plusieurs cases
         new_state = matriceDirection(new_state)
         
-#    print(new_state)
-#    print('new_state',new_state) 
-    
-#    if new_state[1] == 2 and new_state[2] == 1:
-#        print('avant',new_state)
     new_state = p.mc(new_state)
-#    print('new_state',new_state) 
     (pv,x,y,o) = new_state
     o = (o + carte.angle) % 4
     new_state = (pv,x,y,o)    
-#    if new_state[1] == 2 and new_state[2] == 1:
-#        print('après',new_state)
     return new_state
 
 

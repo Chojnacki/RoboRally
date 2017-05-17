@@ -6,7 +6,7 @@ Created on Sat May 13 21:34:03 2017
 """
 
 
-class MatriceD(object): #Matrice de Déplacement
+class MatriceD(): #Matrice de Déplacement
     def __init__(self,x = 0,y = 0,angle = 0,matrice = None,listeMurs = []):
         if matrice:
             self.x = len(matrice[0])
