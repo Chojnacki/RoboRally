@@ -109,7 +109,7 @@ class Plateau():
                                     
 
 if __name__ == "__main__":
-    import plateau3 as p
+    import plateau0 as p
     plateau = p.plateau
     plateau.prepare()
     

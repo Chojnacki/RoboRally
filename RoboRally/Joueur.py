@@ -18,7 +18,7 @@ class Joueur(Robot):
         
         super().__init__(start_state)
         self.mainJoueur = [None] * 9             # Cartes que le joueur s'est vu distribues
-        self.cartesChoisies = []
+        self.cartesChoisies = []                 # Cartes que le joueur choisit via l'ihm et l'IA via 'pick' dans IA.py
         self.cartes = [None] * 5                 # Cartes que le joueur va jouer
         self.__num = Joueur.number
         if self.numero != 0:                     # Les IA jouent avec des triskels
@@ -26,8 +26,6 @@ class Joueur(Robot):
         Joueur.number += 1
         pass
     
-    def __str__(self):
-        return 'Le joueur n°{} joue le robot: {}.'.format(self.__num, self.robot)
     
     @property               #permet de protéger la variable statique number et que le joueur ait tjrs 0 pour numéro
     def numero(self):
@@ -56,10 +54,10 @@ class Joueur(Robot):
 
     
 if __name__ == "__main__":
-    joueur = Joueur((0,0),3)
+    joueur = Joueur((9,0,0,3))
     print(joueur.numero)
-    joueur = Joueur((0,0),3)
-    print(joueur.numero)
+#    joueur = Joueur((0,0),3)
+#    print(joueur.numero)
     
     
     

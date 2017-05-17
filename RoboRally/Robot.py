@@ -107,7 +107,7 @@ class Robot():
 
     def set_state(self,given_state):
         [pv,x,y,o] = given_state
-        self.pv = pv
+        self.pv = min(pv,9)
         self.position = (x,y)
         self.orientation = o
         pass

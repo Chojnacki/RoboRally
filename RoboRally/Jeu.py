@@ -5,17 +5,13 @@ Created on Thu Mar 23 12:46:17 2017
 @author: Chojnacki
 """
 
-import AI as ai
+import IA as ia
 import Joueur as j
 import Plateau as p
-import Cartes
-import Murs
-
-#import Robot
 
 class Jeu():
     
-    def __init__(self,plateau = p.Plateau(), pioche = [Cartes.Carte() for i in range(9)], nbJoueurs = 1):
+    def __init__(self,plateau = p.Plateau(), pioche = [None for i in range(9)], nbJoueurs = 1):
         """
         Initialise le jeu.
         1 - Recupère le plateau de jeu
@@ -116,7 +112,7 @@ class Jeu():
         pass
     
     def aiPick(self):
-        ai.pick(self)
+        ia.pick(self)
         pass
     
     
@@ -159,7 +155,6 @@ class Jeu():
         Lance un tour (tout le monde joue une carte)
         Si la séquence de jeu est finie: ne fait rien
         """
-
         self.__finSequence = True
         for joueur in self.listeJoueurs:
             if joueur.cartes:                   #Si un joueur à encore des cartes
@@ -168,37 +163,131 @@ class Jeu():
         if self.finSequence:
             pass
         else:
-            for joueur in self.listeJoueurs:
-                # On applique l'effet de la carte:
+            #On détermine l'ordre de jeu:
+            ordre = []
+            for index,joueur in enumerate(self.listeJoueurs):
                 carte = None #Au cas ou le joueur décide de ne rien choisir comme carte
                 if joueur.cartes:
-                    carte = joueur.cartes.pop(0)
+                    carte = joueur.cartes[0] #non destructif
                 if carte:
-#                    print('état du joueur',joueur.state)
-                    estimated_state = carte.effet(joueur)
-#                    print('estimation Carte',estimated_state)
-                    real_state = realState(joueur.state,estimated_state,self)
-#                    print('réel carte',real_state)
-#                    joueur.set_state(real_state)
-    
-#                    try:
-                    real_state = self.plateau.mc(real_state)
-                    joueur.set_state(real_state)
+                    vitesse = abs(carte.vitesse)
+                    ordre.append((joueur,vitesse))
+                
+            tri_bulle(ordre)
 
-                    #condition de victoire:
-                    if joueur.position in self.plateau.casesVictoire:
-                        return 'Victoire'
-                    
-            print(self.listeJoueurs[1].state)
+            #on remplace la vitesse par la carte pour ensuite lancer les actions
+            for joueur,v in ordre:
+                carte = None
+                if joueur.cartes:
+                    carte = joueur.cartes.pop(0) #destructif
+                if not carte: #si le joueur ne joue pas on le retire de la liste
+                    ordre.remove((joueur,v))
+                else:
+                    ordre[ordre.index((joueur,v))] = (joueur,carte)
+
+                
+            # On lance enfin les actions, dans le bon ordre
+            # On note que le joueur 0 à la priorité sur le 1 etc...
+            for joueur,carte in ordre:
+                print("le joueur {} joue la carte {}".format(joueur.numero,carte))
+                victoire = self.simpleAction(joueur,carte) # permet de jouer une carte et de stopper si le joueur gagne
+                print(carte, " | ", joueur.state)
+                if victoire:
+                    return victoire
+            print('\n')
+#            print(self.listeJoueurs[1].state)
         
-    def simpleAction(self,joueur):
+        
+        
+    def simpleAction(self,joueur,carte):
         """
         Lance une action: Le joueur concerné joue 1 carte
         """
+        
+        estimated_state = carte.effet(joueur)
+        estimated_state = realState(joueur.state,estimated_state,self)
+
+        
+        #gestion des obstacles avec le déplacement du à la carte joué
+        pos1 = joueur.state[1],joueur.state[2]
+        pos2 = estimated_state[1],estimated_state[2]
+        
+        obstacle = self.obstacle(joueur,pos1,pos2)
+        if obstacle:
+            print('positions',pos1,pos2)
+            print("le joueur n°{} bloque le passage, il faut le pousser en {}".format(obstacle[0].numero,obstacle[1]))
+        
+        
+        estimated_state = self.plateau.mc(estimated_state)
+        #gestion des obstacles avec le déplacement du à la carte joué
+        
+        
+        real_state = estimated_state
+
+        joueur.set_state(real_state)
+
+        #condition de victoire:
+        if joueur.position in self.plateau.casesVictoire:
+            return 'Victoire'
         pass
 
-class Victoire(Exception):
+    def obstacle(self,joueur,pos1,pos2):
+        """
+        Détecte si un robot empêche le déplacement du joueur
+        renvoie False si il n'y a pas d'obstacle
+        renvoie le joueur qui gène et le point ou l'on doit le pousser si le cas se présente
+        """
+        positions = transitionPositions(pos1,pos2)[:-1]
+        
+        for player in self.listeJoueurs:
+            if player.position in positions and player != joueur:
+                return player,positions[-1] #la dernière position est celle ou l'on pousse l'autre joueur
+                
+        return False
+        
+        
+        
+
+
+
+def transitionPositions(pos1,pos2):
+    """
+    renvoie la liste des positions intermédiaires en allant de l'état 1 vers l'état 2
+        -> on veut savoir on l'on envoie le robot percuté donc on calcule la case d'après dans la direction
+    ignore les pvs et l'orientation: non affectés par des translations (l'effet de case s'effectue après)
+    """
+    if pos1 == pos2:
+        return [pos1]
+    else:
+        x1,y1 = pos1
+        x2,y2 = pos2
+        d = 1
+        if x1 == x2:
+            if y1 > y2:
+                d = -1 #la direction change si on va de bas en haut
+            l = [(x1,y1)] * (abs(y2-y1)+2) #la liste des états de transition
+            for i in range(0,abs(y2-y1)+1):
+                l[i+1] = (x1,y1+d*(i+1))
+        elif y1 == y2:
+            if x1 > x2:
+                d = -1 #la direction change si on va de droite à gauche
+            l = [(x1,y1)] * (abs(x2-x1)+2) #la liste des états de transition
+            for i in range(0,abs(x2-x1)+1):
+                l[i+1] = (x1+d*(i+1),y1)
+#        print('transition',l)
+        return l
+
+
+
+def tri_bulle(liste):
+    l = len(liste)
+    for i in range(l):
+        for j in range(i+1,l):
+            if liste[i][1] < liste[j][1]:   #on compare les vitesses des cartes et on échange si besoin
+                liste[i],liste[j] = liste[j],liste[i]
     pass
+
+
 
 #les deux fonctions qui suivent sont la pour prendre en compte les murs et différents obstacles que peut recontrer le robot
 #et pour lui donner l'état dans lequel il sera après avoir fait la commande que l'on lui donne
@@ -216,8 +305,7 @@ def realState(state1,state2,jeu):
         real_state = correctedStateMur(state1,real_state,mur)
     
     return real_state
-
-    
+   
 def correctedStateMur (state1,state2,mur):
     """
     renvoie l'état corrigé, en prenant en compte le mur passé en argument
@@ -281,6 +369,25 @@ def main():
 #    print(jeu.pioche)
 #    jeu.Jouer()
     
+    
+    #test du tri à bulles
+#    liste = [(1,1),(2,4),(3,6)]
+#    tri_bulle(liste)
+#    print(liste)
+    
+    
+    #test des positions de transition
+    liste = transitionPositions((0,0),(2,0))
+    print(liste)
+    liste = transitionPositions((0,0),(0,1))
+    print(liste)
+    liste = transitionPositions((2,0),(0,0))
+    print(liste)
+    liste = transitionPositions((0,2),(0,0))
+    print(liste)
+    liste = transitionPositions((0,0),(0,0))
+    print('immobilité',liste)
+#    print(liste[:-1])
     pass
     
     

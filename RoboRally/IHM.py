@@ -5,16 +5,11 @@ Created on Wed Apr  5 19:11:06 2017
 
 @author: Alexandre Corazza
 """
-import os
+
 import sys
 from PyQt4 import QtGui, QtCore
 from interface import Ui_interface_ihm
-#import Joueur
-#import Plateau
-#import Cartes
-#import Robot as rob
 import Jeu
-import time
 import plateau0 as p #contient un plateau de jeu 'jouable'
 
 
@@ -126,7 +121,6 @@ class IHM(QtGui.QMainWindow):
 #            print ("C'est la {} Mamène".format(VouD))
 #            exit()
         
-#        time.sleep(1) #juste pour débugger tranquillement
         self.affichage()
 
 
@@ -302,59 +296,6 @@ class IHM(QtGui.QMainWindow):
         self.drawcards(qp)
         qp.end()
 
-def realState(state1,state2,jeu):
-    """
-    renvoie l'état réel en tenant compte des murs et autres obstacles
-    ----------
-    state1: état de départ
-    state2: état prévu par les cartes / cases en ignorant les conditions externes
-    jeu: le jeu, contient toutes les variables nécessaires à la création de realState
-    """
-    listeMurs = jeu.plateau.listeMurs
-    real_state = state2
-    for mur in listeMurs:
-        real_state = correctedStateMur(state1,real_state,mur)
-    
-    return real_state
-
-    
-def correctedStateMur (state1,state2,mur):
-    """
-    renvoie l'état corrigé, en prenant en compte le mur passé en argument
-    ----------
-    state1: état de départ
-    state2: état prévu par les cartes / cases en ignorant les conditions externes
-    mur: le mur considéré
-    """
-    a, b = state1[1], state1[2]
-    correctedState = state2[:]
-#    print(state1,state2)
-
-    #en fonction de la direction du robot un des deux blocs ne sera pas executé: 'in range' est vide    
-    
-    #si le robot va de gauche à droite ou de haut en bas
-    for x in range(state1[1],state2[1]+1,1):
-        for y in range(state1[2],state2[2]+1,1):
-#            print('gauche,droite',a,b,x,y) #pour vérifier quel mur est testé et dans quelle direction
-            if mur.v1 == (a,b) and mur.v2 == (x,y):
-                correctedState[1],correctedState[2] = a,b
-                break
-            #si on peut avancer d'une case, le problème se ré-itère au cran suivant:
-            a,b = x,y
-    
-    #si le robot va de droite à gauche ou de bas en haut
-    for x in range(state1[1],state2[1]-1,-1):
-        for y in range(state1[2],state2[2]-1,-1):
-#            print('droite,gauche',x,y,a,b)
-            if mur.v1 == (x,y) and mur.v2 == (a,b):
-                correctedState[1],correctedState[2] = a,b
-                break
-            a,b = x,y
-    return correctedState
-    
-    
-class Victoire(Exception):
-    pass
 
 def start():
     app = QtGui.QApplication(sys.argv)
