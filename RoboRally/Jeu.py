@@ -141,14 +141,6 @@ class Jeu():
                 x,y = position
                 c = self.plateau.cases[y][x].car
         return c
-    
-    def moveRobot(self, robot):
-        mur_test = Murs.Mur(robot.position,position)
-            # Mur avec lequel on compare les murs de la liste
-    #        print(mur_test)
-            
-        if not (mur_test in self.plateau.listeMurs):
-            print('move')
 
     def jouerTour(self):
         """
@@ -209,22 +201,20 @@ class Jeu():
 
         
         #gestion des obstacles avec le déplacement du à la carte joué
-        pos1 = joueur.state[1],joueur.state[2]
-        pos2 = estimated_state[1],estimated_state[2]
+            
+        real_state_carte = self.forceMove(joueur,joueur.state,estimated_state) #état réél après l'effet de la carte
+#        print(real_state_carte)
+
         
-        obstacle = self.obstacle(joueur,pos1,pos2)
-        if obstacle:
-            print('positions',pos1,pos2)
-            print("le joueur n°{} bloque le passage, il faut le pousser en {}".format(obstacle[0].numero,obstacle[1]))
-        
-        
-        estimated_state = self.plateau.mc(estimated_state)
+        estimated_state = self.plateau.mc(real_state_carte)
         #gestion des obstacles avec le déplacement du à la carte joué
         
-        
-        real_state = estimated_state
+        real_state = self.forceMove(joueur,joueur.state,estimated_state) #l'état final après le tour du joueur
+#        joueur.set_state(real_state)
 
-        joueur.set_state(real_state)
+
+#        print(self.listeJoueurs[0])
+
 
         #condition de victoire:
         if joueur.position in self.plateau.casesVictoire:
@@ -235,18 +225,61 @@ class Jeu():
         """
         Détecte si un robot empêche le déplacement du joueur
         renvoie False si il n'y a pas d'obstacle
-        renvoie le joueur qui gène et le point ou l'on doit le pousser si le cas se présente
+        renvoie le joueur qui gène et le point ou l'on doit le pousser et la direction de poussée si le cas se présente
         """
-        positions = transitionPositions(pos1,pos2)[:-1]
+        positions,orientation = transitionPositions(pos1,pos2)
         
         for player in self.listeJoueurs:
-            if player.position in positions and player != joueur:
-                return player,positions[-1] #la dernière position est celle ou l'on pousse l'autre joueur
-                
+            if player.position in positions[:-1] and player != joueur: #on ignore la dernière case, la on l'on pousse le joueur adverse
+                return player,positions[-1],orientation #la dernière position est celle ou l'on pousse l'autre joueur
+#        print("il n'ya a pas dobstacle au joueur:", joueur.numero)
         return False
         
         
-        
+    def forceMove(self,joueur,state1,state2):
+#        if joueur.numero == 1:
+#            print(joueur,state1,state2)
+        """
+        Déplace le robot du joueur de l'état vers l'état 2 en poussant les joueurs qui gênent le passage
+        si le déplacement n'est pas possible, bloque le joueur à sa position (initiale ou intermédiaire)
+        cette fonction est récursive pour pousser tous les joueurs
+        """
+        pos1 = state1[1],state1[2]
+        pos2 = state2[1],state2[2]        
+        obstacle = self.obstacle(joueur,pos1,pos2)
+        if not obstacle:
+            o = getDirection(state1,state2)
+            d = getDistance(state1,state2)
+            dic = {0:self.plateau.m0,1:self.plateau.m1,2:self.plateau.m2,3:self.plateau.m3}
+            m = dic[o]
+#            print(o,m)
+            resultingState = state1[0],state1[1],state1[2],state2[3]      # variable contenant le résultat à l'issue de la manoeuvre
+#            resultingState[3] = state2[3] # si on fait une rotation, il faut le prendre en compte
+#            print('before',joueur.numero,resultingState,"distance",d)
+            for i in range(d):
+                resultingState = m(resultingState)
+                resultingState = [resultingState[0],resultingState[1],resultingState[2],resultingState[3]]
+            joueur.set_state(resultingState)
+#            print('after',joueur.numero,resultingState,joueur.state)
+            return resultingState
+        else:
+            player, pos, o = obstacle
+#            print(pos,o)
+            shovedState = (player.state[0],pos[0],pos[1],player.state[3]) #l'état dans lequel le player doit se retrouver
+            shovedState = self.forceMove(player,player.state,shovedState) #l'état dans lequel il est au final
+
+            if o == 0: #si on poussait vers la droite:
+                new_state = (joueur.state[0],shovedState[1]-1,shovedState[2],joueur.state[3]) #le joueur s'arrete une case avant son adversaire
+            if o == 1: #vers le haut:
+                new_state = (joueur.state[0],shovedState[1],shovedState[2]+1,joueur.state[3]) #le joueur s'arrete une case avant son adversaire
+            if o == 2: #si on poussait vers la gauche:
+                new_state = (joueur.state[0],shovedState[1]+1,shovedState[2],joueur.state[3]) #le joueur s'arrete une case avant son adversaire
+            if o == 3: #si on poussait vers le bas:
+                new_state = (joueur.state[0],shovedState[1],shovedState[2]-1,joueur.state[3]) #le joueur s'arrete une case avant son adversaire
+            joueur.set_state(new_state)
+#            print('fin')
+            return new_state
+            
 
 
 
@@ -257,27 +290,31 @@ def transitionPositions(pos1,pos2):
     ignore les pvs et l'orientation: non affectés par des translations (l'effet de case s'effectue après)
     """
     if pos1 == pos2:
-        return [pos1]
+        return [pos1],None
     else:
         x1,y1 = pos1
         x2,y2 = pos2
         d = 1
         if x1 == x2:
+            o = 3 #on pousse vers le bas
             if y1 > y2:
                 d = -1 #la direction change si on va de bas en haut
+                o = 1 #on pousse vers le haut
             l = [(x1,y1)] * (abs(y2-y1)+2) #la liste des états de transition
             for i in range(0,abs(y2-y1)+1):
                 l[i+1] = (x1,y1+d*(i+1))
         elif y1 == y2:
+            o = 0 # on pousse vers la droite
             if x1 > x2:
                 d = -1 #la direction change si on va de droite à gauche
+                o = 2 # on pousse vers la gauche
             l = [(x1,y1)] * (abs(x2-x1)+2) #la liste des états de transition
             for i in range(0,abs(x2-x1)+1):
                 l[i+1] = (x1+d*(i+1),y1)
 #        print('transition',l)
-        return l
+        return l,o
 
-
+    
 
 def tri_bulle(liste):
     l = len(liste)
@@ -287,6 +324,25 @@ def tri_bulle(liste):
                 liste[i],liste[j] = liste[j],liste[i]
     pass
 
+def getDirection(state1,state2):
+    """renvoie la direction de l'état 1 vers l'état 2"""
+    x1,y1 = state1[1],state1[2]
+    x2,y2 = state2[1],state2[2]
+    if x1 == x2:
+        o = 3 #on pousse vers le bas
+        if y1 > y2:
+            o = 1 #on pousse vers le haut
+    elif y1 == y2:
+        o = 0 # on pousse vers la droite
+        if x1 > x2:
+            o = 2 # on pousse vers la gauche
+    return o
+    
+def getDistance(state1,state2):
+    """renvoie la distance entre l'état 1 et l'état 2"""
+    x1,y1 = state1[1],state1[2]
+    x2,y2 = state2[1],state2[2]
+    return abs(x2-x1) + abs(y2-y1)
 
 
 #les deux fonctions qui suivent sont la pour prendre en compte les murs et différents obstacles que peut recontrer le robot
@@ -383,11 +439,24 @@ def main():
     print(liste)
     liste = transitionPositions((2,0),(0,0))
     print(liste)
-    liste = transitionPositions((0,2),(0,0))
+    liste = transitionPositions((0,1),(0,2))
     print(liste)
     liste = transitionPositions((0,0),(0,0))
     print('immobilité',liste)
 #    print(liste[:-1])
+    
+    #test de getDirection
+    o = getDirection((9,0,0,0),(9,2,0,0))
+    print(o)
+    o = getDirection((9,0,0,0),(9,0,2,0))
+    print(o)
+    o = getDirection((9,1,0,0),(9,0,0,0))
+    print(o)
+    o = getDirection((9,0,1,0),(9,0,0,0))
+    print(o)
+    
+    
+    
     pass
     
     

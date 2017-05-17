@@ -106,10 +106,11 @@ class Robot():
 
 
     def set_state(self,given_state):
-        [pv,x,y,o] = given_state
+        pv,x,y,o = given_state
+        self.position = (x,y) # a faire en premier sinon pv empeche la mise en position si l'on meurt
         self.pv = min(pv,9)
-        self.position = (x,y)
         self.orientation = o
+        self.state = [pv,x,y,o]
         pass
     
 
