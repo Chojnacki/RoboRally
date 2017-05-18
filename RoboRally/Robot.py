@@ -106,39 +106,26 @@ class Robot():
 
 
     def set_state(self,given_state):
+        """
+        Affecte
+        """
         pv,x,y,o = given_state
         self.position = (x,y) # a faire en premier sinon pv empeche la mise en position si l'on meurt
-        self.pv = min(pv,9)
-        self.orientation = o
+        self.pv = max(min(pv,9),0)
+        self.orientation = o % 4
         self.state = [pv,x,y,o]
         pass
     
 
     def dessin(self, qp):
+        """
+        Fonction qui dessine le robot sur l'ihm
+        """
         
         image_robot = QtGui.QImage(self.image)
         side = 48   #côté du carré qui représente le robot
         image_robot = image_robot.scaled(side,side)
         square_size = 50 #côté du carré d'une case
-        
-
-#        qp.rotate(self.orientation*20)  #Pour prendre en compte l'orientation du robot dans l'affichage
-#        
-#        if (self.orientation == 1 or self.orientation == 2):
-#            correction_x  = side
-#        else:
-#            correction_x  = 0
-#        if (self.orientation == 2 or self.orientation == 3):
-#            correction_y  = side
-#        else:
-#            correction_y  = 0
-#                    
-#        qp.translate(correction_x,correction_y)           #Pour corriger le décalage créé par la fonction 'rotate'
-#                         
-#        qp.drawImage(QtCore.QRectF(self.position[0]*square_size + 20,self.position[1]*square_size + 45, side, side),image_robot)
-#        qp.resetTransform()
-        
-        
 
 
         qp.rotate((-self.orientation%4)*90)  #Pour prendre en compte l'orientation du robot dans l'affichage

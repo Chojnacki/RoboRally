@@ -2,7 +2,7 @@
 """
 Created on Tue May 16 18:31:49 2017
 
-@author: oblivioner
+@author: Chojnacki
 """
 
 import Cases
@@ -47,6 +47,8 @@ for case in Caz:
 for case in cases:
     plateau.mettreCase(case)
 
+nombreJoueurs = 2
+plateau.nombreJoueurs = nombreJoueurs
 
 # Pour ce tableau, le robot doit commencer à la position O,1 avec une orientation de 0
 

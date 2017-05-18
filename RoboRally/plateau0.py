@@ -3,7 +3,7 @@
 """
 Created on Sat May 13 17:39:49 2017
 
-@author: alex
+@author: Corazza
 """
 
 
@@ -130,7 +130,8 @@ for x in range(0,plateau.x,1):
     plateau.ajouterMur(mur)
 
 
-    
+nombreJoueurs = 2
+plateau.nombreJoueurs = nombreJoueurs
     
 listeCartes = [Cartes.Translation(1), Cartes.Translation(2),Cartes.Translation(3),
                Cartes.Translation(1), Cartes.Translation(2),Cartes.Translation(1),

@@ -72,6 +72,9 @@ class Jeu():
         pass
     
     def playerPick(self):
+        """
+        Fonction qui récupère les cartes choisies par le joueur (cartesChoisies), vérifie si elles sont correctes et les mets dans joueur.cartes
+        """
         self.__hasPicked = True
     
         listeChoix = [] #les cartes que le joueur choisit sur l'ihm
@@ -293,6 +296,8 @@ def transitionPositions(pos1,pos2):
         x1,y1 = pos1
         x2,y2 = pos2
         d = 1
+        l = []
+        o = None
         if x1 == x2:
             o = 3 #on pousse vers le bas
             if y1 > y2:
@@ -315,6 +320,9 @@ def transitionPositions(pos1,pos2):
     
 
 def tri_bulle(liste):
+    """
+    Un simple tri bulle pour établir la priorité de jeu
+    """
     l = len(liste)
     for i in range(l):
         for j in range(i+1,l):
@@ -326,6 +334,7 @@ def getDirection(state1,state2):
     """renvoie la direction de l'état 1 vers l'état 2"""
     x1,y1 = state1[1],state1[2]
     x2,y2 = state2[1],state2[2]
+    o = None
     if x1 == x2:
         o = 3 #on pousse vers le bas
         if y1 > y2:

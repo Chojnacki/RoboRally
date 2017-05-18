@@ -2,7 +2,7 @@
 """
 Created on Sat May 13 21:34:03 2017
 
-@author: oblivioner
+@author: Chojnacki
 """
 
 
@@ -18,6 +18,17 @@ class MatriceD(): #Matrice de Déplacement
         self.listeMurs = listeMurs[:]
     
     def __call__(self,state):
+        """
+        Définit l'appel d'une matrice
+        
+        Paramètres
+        ----------
+        Un état: tuple = (pv,x,y,o)
+        
+        Renvoie
+        -------
+        L'état après effet de la matrice (déplacement, dégats, réparation ou encore rotation)
+        """
         pv,x,y,o = state
         damage,new_x,new_y,angle = self.m[y][x]
         new_pv = max(0,pv - damage)
@@ -25,8 +36,18 @@ class MatriceD(): #Matrice de Déplacement
         return new_pv,new_x,new_y,new_o
     
     def __mul__(self, other):
+        """
+        Définit la multiplication à gauche
+            (exemple -> AxB : B = self, A = other -> renvoie les états de A affectés par B)
         
-#        print ('__mul__')
+        Paramètres
+        ----------
+        other : un autre MatriceD
+        
+        Renvoie
+        -------
+        matrice: la MatriceD qui correspond à la transformation des états de other par self
+        """
         
         matrice = MatriceD(self.x,self.y,0,None,self.listeMurs)
         if not (self.x == other.x and self.y == other.y):

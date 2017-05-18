@@ -2,7 +2,7 @@
 """
 Created on Wed May 17 17:51:10 2017
 
-@author: Corazza Alexandre
+@author: Corazza
 """
 
 import unittest

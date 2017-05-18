@@ -2,7 +2,7 @@
 """
 Created on Tue May  9 13:01:20 2017
 
-@author: oblivioner
+@author: Chojnacki
 """
 
 import Cases
@@ -48,6 +48,8 @@ for case in trous:
     plateau.mettreCase(case)
 
 
+nombreJoueurs = 2
+plateau.nombreJoueurs = nombreJoueurs
 # Pour ce tableau, le robot doit commencer à la position O,1 avec une orientation de 0
 
 #Kertwonky a pour mission de selectionner 5 cartes avance de 1

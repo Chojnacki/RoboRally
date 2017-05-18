@@ -21,13 +21,14 @@ class Plateau():
         self.casesVictoire = []
         self.x = x
         self.y = y
+        self.nombreJoueurs = 2 # par défaut: 2 joueurs, à modifier lors de la création des plateaux
         self.listeMurs = []
         self.listeEtatsDepart = [(9,0,0,0),(9,x-1,0,3),(9,x-1,y-1,2),(9,0,y-1,1)] # par défaut: 9 pv, orientation sens horaire, 4 coins de la carte
-        self.m0 = None #matrice de déplacement de 1 vers la droite
+        self.m0 = None #matrice de déplacement de 1 vers la droite (les murs sont pris en compte, pas les robots ni les cases)
         self.m1 = None #vers le haut
         self.m2 = None #la gauche
         self.m3 = None #le bas
-        self.mc = None #Matrice de déplacement du plateau (dû aux cases, murs compris)
+        self.mc = None #Matrice de déplacement du plateau (effet des cases et murs)
     
 
     def __str__(self):

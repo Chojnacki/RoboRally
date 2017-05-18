@@ -3,7 +3,7 @@
 """
 Created on Wed May 10 09:51:29 2017
 
-@author: corazzal
+@author: Corazza
 """
 
 # -*- coding: utf-8 -*-

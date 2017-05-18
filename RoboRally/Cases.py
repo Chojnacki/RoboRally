@@ -3,7 +3,7 @@
 """
 Created on Wed May 10 09:58:02 2017
 
-@author: corazzal
+@author: Corazza
 """
 
 import abc
@@ -64,18 +64,6 @@ class Case():
             La chaîne de caractères qui sera affichee via ''print''
         """
         return "La case se trouve à la position " + str(self.__pos)
-    
-        
-    @abc.abstractmethod
-    def effet(self,robot):
-        """
-        Applique l'effet de la case sur le robot suivant le type de la case
-        
-        Paramètres
-        ----------
-        Aucun
-        """
-        return robot.state[:]
     
     @abc.abstractmethod
     def copy(self, x=None,y=None,tourne=None, sym=None):

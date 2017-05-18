@@ -3,7 +3,7 @@
 """
 Created on Sat May 13 17:39:49 2017
 
-@author: alex
+@author: Corazza
 """
 
 
@@ -100,6 +100,8 @@ for x in range(0,plateau.x,1):
     plateau.ajouterMur(mur)
 
 
+nombreJoueurs = 2
+plateau.nombreJoueurs = nombreJoueurs
 
 
 # Pour ce tableau, le robot doit commencer à la position O,1 avec une orientation de 0

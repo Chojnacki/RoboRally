@@ -3,17 +3,20 @@
 """
 Created on Wed Apr  5 19:11:06 2017
 
-@author: Alexandre Corazza
+@author: Corazza
 """
 
 import sys
 from PyQt4 import QtGui, QtCore
 from interface import Ui_interface_ihm
 import Jeu
-import plateau0 as p #contient un plateau de jeu 'jouable'
 
 
-speed = 100 #vitesse de la fsm -> du jeu
+############### SELECTION DU PLATEAU DE JEU ###############
+import plateau3 as p #contient un plateau de jeu 'jouable'
+############# ############## ############## #############
+
+speed = 100 #vitesse de la fsm -> d'affichage du jeu
 
 class IHM(QtGui.QMainWindow):
     def __init__(self):
@@ -22,9 +25,7 @@ class IHM(QtGui.QMainWindow):
         # Configuration de l'interface utilisateur.
         self.ui = Ui_interface_ihm()
         self.ui.setupUi(self)
-        self.plateau = p.plateau
-        self.pioche = p.listeCartes
-        self.jeu = Jeu.Jeu(self.plateau, self.pioche, 2)
+        self.jeu = Jeu.Jeu(p.plateau, p.listeCartes, p.nombreJoueurs) #
         self.timer = QtCore.QTimer()
         
         #Mise en place de l'arrière plan
@@ -37,18 +38,16 @@ class IHM(QtGui.QMainWindow):
         #partie liée à la fsm qui DOIT se trouver dans init
 
         #liste des états admissibles:
-        self.states = ["initialize","pick","play","endGame"]
+        self.states = ["pick","play","endGame"]
         
-        #état dans lequel se situe la fsm
-        self.current_state = "initialize"
+        #état dans lequel se situe la fsm au début
+        self.current_state = "pick"
         
-        #transition à effectuer au prochain appel de 'fsm': fonction et nouvel état
-        self.transition = None
+        #transition à effectuer au prochain appel de 'fsm' (valeur au démarrage)
+        self.transition = "pick"
         
         #dictionnaire des transitions
         self.dict_tr = {
-                        ("initialize",None):"initialize",
-                        ("initialize","pick"):"pick",
                         ("pick","play"):"play",
                         ("pick","pick"):"pick",
                         ("play","play"):"play",
@@ -59,9 +58,7 @@ class IHM(QtGui.QMainWindow):
         
         #dictionnaire des actions à effectuer lors de la transition
         self.dict_ac = {
-#                        None: (lambda *args: None),
                         "play": self.play,
-#                        "pick": (lambda *args: None),
                         }
         
         #On lie le timeout à la fsm
@@ -84,13 +81,15 @@ class IHM(QtGui.QMainWindow):
         self.ui.checkBox_8.stateChanged.connect(self.checkBox8)
         self.ui.checkBox_9.stateChanged.connect(self.checkBox9)
         
-        
-        self.nvllePartie() #Une fois que tout est pret on lance la partie
+
+        #Une fois que tout est pret on lance la partie
+        self.jeu.plateau.prepare()
+        self.jeu.prepareTour()
 
 ##############################################      FSM - FSM - FSM       ######################################################
         
         #Partie liée à la fsm
-        #la fsm sert à faire l'affichage correctement, étape par étape: pratique puisque l'on doit pouvoir revenir en arrière
+        #la fsm sert à faire l'affichage correctement, étape par étape.Elle permet également de suivre les différentes étapes de jeu
 
 
 
@@ -116,11 +115,8 @@ class IHM(QtGui.QMainWindow):
                 self.current_state = new_state
 #                self.transition = None
         except KeyError as erreur:
-            print ("transition ou état non définit dans le dictionnaire respectif", erreur)
-#        except Exception as VouD: #Victoire ou Défaite
-#            print ("C'est la {} Mamène".format(VouD))
-#            exit()
-        
+            print ("transition ou état non définit dans le dictionnaire concerné", erreur)
+
         self.affichage()
 
 
@@ -208,16 +204,7 @@ class IHM(QtGui.QMainWindow):
 #        print(self.jeu.listeJoueurs[0].cartesChoisies)
 
 
-    def nvllePartie(self):
-        self.jeu.plateau.prepare()
-#        print(self.jeu.plateau.mc)
-        self.jeu.prepareTour()
-        self.transition = "pick"
-#        self.ui.tapiscarte.update()
-        pass
-        
-    
-        
+    # Permet de lancer le choix des cartes et d'ignorer le bouton si l'on est pas dans la phase de pick      
     def chooseCard(self):
         
         if self.current_state == "pick":
@@ -253,13 +240,6 @@ class IHM(QtGui.QMainWindow):
             self.ui.progress_pv.setValue(self.jeu.listeJoueurs[0].pv) #On met à jour les pv du joueur
 
 
-    
-    def FaireAffichage(self):
-        """
-        Fonction qui affiche les cartes et les pv du joueur
-        """
-        self.faireAffichageDesCartes = True
-
     def affichage(self):
         """
         fonction élémentaire pour lancer toutes fonctions servant à 'refresh' l'affichage du jeu
@@ -267,11 +247,12 @@ class IHM(QtGui.QMainWindow):
         self.ui.centralwidget.update()
 
 
-    #Affichage des robots sur le plateau
+    #Affichage des robots dans l'ihm
     def drawrobot(self, qp):
         for joueur in self.jeu.listeJoueurs:
             joueur.dessin(qp)
             
+    #Affichage des cases et murs dans l'ihm
     def drawboard(self, qp):
         for rangee in self.jeu.plateau.cases:
             for case in rangee:
@@ -279,6 +260,7 @@ class IHM(QtGui.QMainWindow):
         for mur in self.jeu.plateau.listeMurs:
             mur.dessin(qp)
 
+    #Affichage des cartes du joueur dans l'ihm
     def drawcards(self, qp):
         c=0
         y=[0,0,0,1,1,1,2,2,2]
@@ -287,6 +269,7 @@ class IHM(QtGui.QMainWindow):
                 carte.dessin(qp, carte.image, c%3, y[c])
                 c+=1
 
+    #La fonction qui actualise l'affichage, appelée à chaque timeout de qtimer (intervalle de temps = speed)
     def paintEvent(self,e):
         qp = QtGui.QPainter(self)
         self.drawboard(qp)
@@ -294,11 +277,10 @@ class IHM(QtGui.QMainWindow):
         self.drawcards(qp)
         qp.end()
 
-
+#les paramètres de lancement
 def start():
     app = QtGui.QApplication(sys.argv)
     window = IHM()
-#    window.nvllePartie()
     window.setGeometry(100,50,1300,900)
     window.show()
     app.exec_()

@@ -2,27 +2,30 @@
 """
 Created on Sat May 13 10:37:40 2017
 
-@author: oblivioner
+@author: Chojnacki
 """
 
 from random import randint
 
 def pick(jeu):
     Puissante(jeu)
-    # la brownienne ne fonctionne pas très bien car elle peut mourrir en tombant dans un trou et faire bugger le programme
 #    Brownienne(jeu)
     pass
 
 
-
-def Brownienne(jeu):
-    listeIA = jeu.listeJoueurs[1:]
-    for IA in listeIA:
-        for i in range(len(IA.cartes)):                                     #On remplit la liste des cartes
-            IA.cartes[i] = IA.mainJoueur[randint(0,len(IA.mainJoueur)-1)]   #carte prise au hasard
-            IA.mainJoueur.remove(IA.cartes[i])
+# la brownienne ne fonctionne pas très bien car elle peut mourrir en tombant dans un trou et faire bugger le programme
+#def Brownienne(jeu):
+#    listeIA = jeu.listeJoueurs[1:]
+#    for IA in listeIA:
+#        for i in range(len(IA.cartes)):                                     #On remplit la liste des cartes
+#            IA.cartes[i] = IA.mainJoueur[randint(0,len(IA.mainJoueur)-1)]   #carte prise au hasard
+#            IA.mainJoueur.remove(IA.cartes[i])
 
 def Puissante(jeu):
+    """
+    selection des cartes par l'IA
+    Algorithme: le robot choisit la case la plus proche de l'arrivée atteignable avec ses 5 cartes, sans mourrir
+    """
     listeIA = jeu.listeJoueurs[1:]
     for IA in listeIA:
 
@@ -42,12 +45,12 @@ def Puissante(jeu):
                     indiceGagnant = index
 
         if indiceGagnant: #si l'on a trouvé une solution meilleure que d'être immobile
-            print('état final supposé:',possibleOutcomes[indiceGagnant][0])
-            print('cartes choisies par l\'IA:')
+#            print('état final supposé:',possibleOutcomes[indiceGagnant][0])             #Là ou l'ia pense aller
+#            print('cartes choisies par l\'IA:')
             listeIndices = possibleOutcomes[indiceGagnant][1]
             for idx,val in enumerate(listeIndices):
                 IA.cartes[idx] = IA.mainJoueur[val]
-                print(val,IA.cartes[idx])
+#                print(val,IA.cartes[idx])                                               # Les cartes qu'elle a choisies
 #            print('\n')
         else:
             print('l\'IA ne bouge pas')
@@ -78,7 +81,7 @@ def treeExplorer(state, mainIA, choixRestants, plateau, indexChoisis = []):
 
 def estimatedStateCarte(state,carte,p):
     """
-    renvoie l'état d'un parti d'un état 'state' avec la carte 'carte' sur le plateau 'p'
+    renvoie l'état obtenu en partant d'un état 'state' avec la carte 'carte' sur le plateau 'p'
     """
     angleToMatrix = {0: p.m0,1: p.m1, 2: p.m2, 3: p.m3}
     vitesse = carte.vitesse
@@ -102,7 +105,7 @@ def estimatedStateCarte(state,carte,p):
 
 def scalaire(A,B):
     """
-    renvoie la distance entre A et B
+    renvoie le produit scalaire entre 2 vecteurs A et B
     """
     xa,ya = A
     xb,yb = B
