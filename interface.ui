@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>interface_ihm</class>
+ <widget class="QMainWindow" name="interface_ihm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1406</width>
+    <height>900</height>
+   </rect>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::ClickFocus</enum>
+  </property>
+  <property name="windowTitle">
+   <string>RoboRally</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="formLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>741</y>
+      <width>141</width>
+      <height>76</height>
+     </rect>
+    </property>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="2" column="1">
+      <widget class="QProgressBar" name="progress_pv">
+       <property name="maximum">
+        <number>9</number>
+       </property>
+       <property name="value">
+        <number>9</number>
+       </property>
+       <property name="format">
+        <string>%v/%m</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="nomjoueur1">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>KerTwonkaradec</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_4">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>400</y>
+      <width>81</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Carte 4</string>
+    </property>
+    <property name="shortcut">
+     <string>4</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_6">
+    <property name="geometry">
+     <rect>
+      <x>1110</x>
+      <y>400</y>
+      <width>81</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Carte 6</string>
+    </property>
+    <property name="shortcut">
+     <string>6</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_8">
+    <property name="geometry">
+     <rect>
+      <x>1010</x>
+      <y>600</y>
+      <width>81</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Carte 8</string>
+    </property>
+    <property name="shortcut">
+     <string>8</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_9">
+    <property name="geometry">
+     <rect>
+      <x>1110</x>
+      <y>600</y>
+      <width>81</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Carte 9</string>
+    </property>
+    <property name="shortcut">
+     <string>9</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_5">
+    <property name="geometry">
+     <rect>
+      <x>1010</x>
+      <y>400</y>
+      <width>81</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Carte 5</string>
+    </property>
+    <property name="shortcut">
+     <string>5</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_3">
+    <property name="geometry">
+     <rect>
+      <x>1120</x>
+      <y>200</y>
+      <width>81</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Carte 3</string>
+    </property>
+    <property name="shortcut">
+     <string>3</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_7">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>600</y>
+      <width>81</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Carte 7</string>
+    </property>
+    <property name="shortcut">
+     <string>7</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_2">
+    <property name="geometry">
+     <rect>
+      <x>1010</x>
+      <y>200</y>
+      <width>81</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::StrongFocus</enum>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string>Carte 2</string>
+    </property>
+    <property name="shortcut">
+     <string>2</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_1">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>200</y>
+      <width>78</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string>Carte 1</string>
+    </property>
+    <property name="shortcut">
+     <string>1</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+    <property name="tristate">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="textBrowser">
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>710</y>
+      <width>259</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Cantarell'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#ff5500;&quot;&gt;Choisissez 5 cartes differentes et&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; color:#ff5500;&quot;&gt;    envoyez les instructions au robot !&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="choixcarte">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>770</y>
+      <width>259</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="acceptDrops">
+     <bool>true</bool>
+    </property>
+    <property name="statusTip">
+     <string/>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Cantarell'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bouton_instru">
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>800</y>
+      <width>261</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Envoyer les instructions au robot</string>
+    </property>
+    <property name="shortcut">
+     <string>Enter</string>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+    <property name="autoDefault">
+     <bool>false</bool>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Quitter">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>750</y>
+      <width>158</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Quitter</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="formLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>740</y>
+      <width>141</width>
+      <height>76</height>
+     </rect>
+    </property>
+    <layout class="QFormLayout" name="formLayout_2">
+     <item row="2" column="1">
+      <widget class="QProgressBar" name="progress_pv_2">
+       <property name="maximum">
+        <number>9</number>
+       </property>
+       <property name="value">
+        <number>9</number>
+       </property>
+       <property name="format">
+        <string>%v/%m</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="nomjoueur2">
+       <property name="text">
+        <string>IA</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1406</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFIchier">
+    <property name="title">
+     <string>Fichier</string>
+    </property>
+    <addaction name="actionQuitter"/>
+   </widget>
+   <addaction name="menuFIchier"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionQuitter">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Quitter</string>
+   </property>
+  </action>
+  <action name="actionSolo">
+   <property name="text">
+    <string>Solo</string>
+   </property>
+  </action>
+  <action name="actionMultijoueur">
+   <property name="text">
+    <string>Multijoueur</string>
+   </property>
+  </action>
+  <action name="actionIntelligence_Artificielle">
+   <property name="text">
+    <string>Intelligence Artificielle</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>actionQuitter</sender>
+   <signal>triggered()</signal>
+   <receiver>interface_ihm</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>402</x>
+     <y>283</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Quitter</sender>
+   <signal>clicked()</signal>
+   <receiver>interface_ihm</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>159</x>
+     <y>815</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>472</x>
+     <y>535</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
