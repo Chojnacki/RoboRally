@@ -3,7 +3,7 @@
 """
 Created on Wed May 10 09:51:29 2017
 
-@author: Corazza
+@author: corazzal
 """
 
 # -*- coding: utf-8 -*-
@@ -27,7 +27,10 @@ class Carte():
 
     def __init__(self):
         """
-        Instancie une carte
+        Cree une carte.
+        
+        Paramètres
+        ----------
         """
         self.__vitesse = 0
         self.__angle = 0
@@ -82,11 +85,12 @@ class Translation(Carte):
     
     def __init__(self, vitesse):
         """
-        Instancie une carte translation
+        Cree une carte translation
         
         Paramètres
         ----------
-        vitesse: int [-1,3]
+        vitesse: int
+            [-1,3]
         """
         super().__init__()
         self.__vitesse = vitesse
@@ -103,7 +107,7 @@ class Translation(Carte):
         
     def __str__(self):
         """
-        Renvoie la descritption de la carte
+        Affiche le type de l'objet
         
         Paramètres
         ----------
@@ -144,23 +148,35 @@ class Translation(Carte):
            
         """
         v = self.__vitesse
+        if v > 0:
+            if robot.orientation == 0:
+                estimate = (robot.position[0]+1*v,robot.position[1])
 
-        if robot.orientation == 0:
-            estimate = (robot.position[0]+1*v,robot.position[1])
+            elif robot.orientation == 1:
+                estimate = (robot.position[0],robot.position[1]-1*v)
 
-        elif robot.orientation == 1:
-            estimate = (robot.position[0],robot.position[1]-1*v)
+            elif robot.orientation == 2:
+                estimate = (robot.position[0]-1*v,robot.position[1])
 
-        elif robot.orientation == 2:
-            estimate = (robot.position[0]-1*v,robot.position[1])
+            elif robot.orientation == 3:
+                estimate = (robot.position[0],robot.position[1]+1*v)
 
-        elif robot.orientation == 3:
-            estimate = (robot.position[0],robot.position[1]+1*v)
+        else:
+            if robot.orientation == 0:
+                estimate = (robot.position[0]-1*v,robot.position[1])
+
+            elif robot.orientation == 1:
+                estimate = (robot.position[0],robot.position[1]+1*v)
+
+            elif robot.orientation == 2:
+                estimate = (robot.position[0]+1*v,robot.position[1])
+
+            elif robot.orientation == 3:
+                estimate = (robot.position[0],robot.position[1]-1*v)
 
         estimated_state = robot.state[:]
         estimated_state[1] = estimate[0]
         estimated_state[2] = estimate[1]
-#        print(estimated_state)
         return estimated_state
 
         
@@ -234,22 +250,19 @@ class Rotation(Carte):
         Paramètres
         ----------
         robot: Robot
-        
-        Renvoie
-        -------
-        estimated_state: tuple
-            L'état dans lequel le robot doit se trouver après l'effet seul de la carte
+           
         """
         
         if robot.orientation + self.__angle <= 3:
             estimate = robot.orientation + self.__angle
             
+
         else:
             for i in range(1,4):
-                if robot.orientation == 4-i and self.__angle >= i:
-                    estimate = self.__angle - i
-                    break #pour eviter de rentrer dans un autre if
-                          #une fois la modification effectuee.
+                    if robot.orientation == 4-i and self.__angle >= i:
+                        estimate = self.__angle - i
+                        break #pour eviter de rentrer dans un autre if
+                              #une fois la modification effectuee.
                         
         estimated_state = robot.state[:]
         estimated_state[3] = estimate % 4

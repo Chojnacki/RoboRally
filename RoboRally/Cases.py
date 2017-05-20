@@ -3,7 +3,7 @@
 """
 Created on Wed May 10 09:58:02 2017
 
-@author: Corazza
+@author: corazzal
 """
 
 import abc
@@ -64,6 +64,18 @@ class Case():
             La chaîne de caractères qui sera affichee via ''print''
         """
         return "La case se trouve à la position " + str(self.__pos)
+    
+        
+    @abc.abstractmethod
+    def effet(self,robot):
+        """
+        Applique l'effet de la case sur le robot suivant le type de la case
+        
+        Paramètres
+        ----------
+        Aucun
+        """
+        return robot.state[:]
     
     @abc.abstractmethod
     def copy(self, x=None,y=None,tourne=None, sym=None):
@@ -179,6 +191,7 @@ class CaseArrivee(Case):
         robot: Robot
             autre idee: teleporte le robot sur une case à part
         """
+        raise Exception('Victoire')
         pass
     
     def copy(self, x=None,y=None,tourne=None,sym=None):
@@ -188,6 +201,10 @@ class CaseArrivee(Case):
             y = self.position[1]
             
         return CaseArrivee((x,y))
+
+class Victoire(Exception):
+    pass
+    
         
 class CaseTrou(Case):
     """
@@ -362,12 +379,16 @@ class CaseEngrenage(Case):
         """
         return "E"
 
-
-    @property
+    @property    
     def MD(self):
         """
         Représentation de la case dans l'espace des Matrices-D
-        
+        """
+        return (0,self.x,self.y,self.sens)
+    
+    
+    def effet(self,robot):
+        """
         Fait pivoter le robot d'un quart de tour selon le sens de l'engrenage.
         
         Paramètres
@@ -375,8 +396,11 @@ class CaseEngrenage(Case):
         robot: Robot
             Le robot qui se trouve sur la case tourne sur lui même.
         """
-        return (0,self.x,self.y, self.sens)
         
+        estimate = (robot.orientation + self.__sens) % 4
+        estimated_state = robot.state[:]
+        estimated_state[3] = estimate
+        return estimated_state
         
     def copy(self, x=None,y=None, tourne=None,sym=1):
         if not x:
@@ -391,7 +415,7 @@ dico_virage = {0: "Gauche", 1: "Droite"}
 dico_inv_virage = {"Gauche": 0, "Droite":1}
     
 class Tapis(Case):
-    def __init__(self,position,orientation,virage = False, vitesse = 1):
+    def __init__(self,position,orientation,virage,vitesse=1):
         """
         Cree un tapis roulant aux coordonnees desirees.
         
@@ -449,6 +473,21 @@ class Tapis(Case):
     @property    
     def MD(self):
         """
+        Représentation de la case dans l'espace des Matrices-D
+        """
+        if self.orientation == 0:
+            x,y = 1,0
+        if self.orientation == 1:
+            x,y = 0,1
+        if self.orientation == 2:
+            x,y = -1,0
+        if self.orientation == 3:
+            x,y = 0,-1
+            
+        return (0,self.x + x,self.y + y,0)
+    
+    def effet(self,robot):
+        """
         Tapis droit
         
             Le robot se deplace simplement vers la case où le tapis est dirige.
@@ -466,39 +505,65 @@ class Tapis(Case):
             Le robot sur la case se deplace vers une autre case ou pivote.
         """
         
-        #Modifie l'etat du robot (degat, +x, +y, orientation)
+        #Convention x vers le droite, y vers le bas importante ici
+        
+        estimatetr = (robot.state[1],robot.state[2])
+        estimateor = robot.state[3]
+        
         for i in range(self.__vitesse):
             if self.__virage == False and self.__orientation == 0:
-                return (0,self.x+1,self.y,0)
+                estimatetr = (robot.position[0]+1,robot.position[1])
+    
             elif self.__virage == False and self.__orientation == 1:
-                return (0,self.x,self.y-1,0)
+                estimatetr = (robot.position[0],robot.position[1]-1)
+                
             elif self.__virage == False and self.__orientation == 2:
-                return (0,self.x-1,self.y,0)
+                estimatetr = (robot.position[0]-1,robot.position[1])
+                
             elif self.__virage == False and self.__orientation == 3:
-                return (0,self.x,self.y+1,0)
+                estimatetr = (robot.position[0],robot.position[1]+1)
+    
     
             
                 
             if self.__virage == "Droite" and self.__orientation == 0:
-                return (0,self.x,self.y+1,-1)
+                estimatetr = (robot.position[0],robot.position[1]+1)
+                estimateor = robot.orientation - 1
+    
             elif self.__virage == "Droite" and self.__orientation == 1:
-                return (0,self.x+1,self.y,-1)
+                estimatetr = (robot.position[0]+1,robot.position[1])
+                estimateor = robot.orientation - 1
+                
             elif self.__virage == "Droite" and self.__orientation == 2:
-                return (0,self.x-1,self.y,-1)
+                estimatetr = (robot.position[0],robot.position[1]-1)
+                estimateor = robot.orientation - 1
+                
             elif self.__virage == "Droite" and self.__orientation == 3:
-                return (0,self.x-1,self.y,-1)
+                estimatetr = (robot.position[0]-1,robot.position[1])
+                estimateor = robot.orientation - 1
+                
                 
                 
                 
             if self.__virage == "Gauche" and self.__orientation == 0:
-                return (0,self.x,self.y-1,1)
+                estimatetr = (robot.position[0],robot.position[1]-1)
+                estimateor = robot.orientation + 1
+    
             elif self.__virage == "Gauche" and self.__orientation == 1:
-                return (0,self.x-1,self.y,1)
-            elif self.__virage == "Gauche" and self.__orientation == 2:
-                return (0,self.x,self.y+1,1)
-            elif self.__virage == "Gauche" and self.__orientation == 3:
-                return (0,self.x+1,self.y,1)
+                estimatetr = (robot.position[0]-1,robot.position[1])
+                estimateor = robot.orientation + 1
                 
+            elif self.__virage == "Gauche" and self.__orientation == 2:
+                estimatetr = (robot.position[0],robot.position[1]+1)
+                estimateor = robot.orientation + 1
+                
+            elif self.__virage == "Gauche" and self.__orientation == 3:
+                estimatetr = (robot.position[0]+1,robot.position[1])
+                estimateor = robot.orientation + 1
+                
+        estimated_state = robot.state[:]
+        estimated_state[1],estimated_state[2],estimated_state[3] = estimatetr[0],estimatetr[1],estimateor
+        return estimated_state
             
             
         

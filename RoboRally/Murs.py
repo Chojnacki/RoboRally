@@ -34,6 +34,7 @@ class Mur:
         return False
 
         
+        
     def dessin(self, qp):
         pass
         
@@ -42,7 +43,7 @@ class MurHorizontal(Mur):
     def __init__(self, voisin1, voisin2):
         super().__init__(voisin1,voisin2)
         self.image = 'images/murHorizontal.png'
-    
+        
         
     def dessin(self, qp):
         
@@ -71,6 +72,11 @@ class MurVertical(Mur):
         qp.drawImage(QtCore.QRectF(self.x*square_size + 40, self.y*square_size + 43, largeur, hauteur),image_mur)
         qp.resetTransform()
 
+        
+class Laser(Mur):
+    def __init__(self, voisin1, voisin2):
+        super().__init__(voisin1, voisin2)
+        
         
 if __name__ == "__main__":
     mur = Mur((0,0),(1,0))

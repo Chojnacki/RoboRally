@@ -3,20 +3,22 @@
 """
 Created on Wed Apr  5 19:11:06 2017
 
-@author: Corazza
+@author: Alexandre Corazza
 """
-
+import os
 import sys
 from PyQt4 import QtGui, QtCore
 from interface import Ui_interface_ihm
+#import Joueur
+#import Plateau
+#import Cartes
+#import Robot as rob
 import Jeu
+import time
+import plateaufinal as p #contient un plateau de jeu 'jouable'
 
 
-############### SELECTION DU PLATEAU DE JEU ###############
-import plateau3 as p #contient un plateau de jeu 'jouable'
-############# ############## ############## #############
-
-speed = 100 #vitesse de la fsm -> d'affichage du jeu
+speed = 100 #vitesse de la fsm -> du jeu
 
 class IHM(QtGui.QMainWindow):
     def __init__(self):
@@ -25,8 +27,11 @@ class IHM(QtGui.QMainWindow):
         # Configuration de l'interface utilisateur.
         self.ui = Ui_interface_ihm()
         self.ui.setupUi(self)
-        self.jeu = Jeu.Jeu(p.plateau, p.listeCartes, p.nombreJoueurs) #
+        self.plateau = p.plateau
+        self.pioche = p.listeCartes
+        self.jeu = Jeu.Jeu(self.plateau, self.pioche, 2)
         self.timer = QtCore.QTimer()
+        
         
         #Mise en place de l'arrière plan
         palette = QtGui.QPalette()
@@ -38,27 +43,29 @@ class IHM(QtGui.QMainWindow):
         #partie liée à la fsm qui DOIT se trouver dans init
 
         #liste des états admissibles:
-        self.states = ["pick","play","endGame"]
+        self.states = ["initialize","pick","play"]
         
-        #état dans lequel se situe la fsm au début
-        self.current_state = "pick"
+        #état dans lequel se situe la fsm
+        self.current_state = "initialize"
         
-        #transition à effectuer au prochain appel de 'fsm' (valeur au démarrage)
-        self.transition = "pick"
+        #transition à effectuer au prochain appel de 'fsm': fonction et nouvel état
+        self.transition = None
         
         #dictionnaire des transitions
         self.dict_tr = {
+                        ("initialize",None):"initialize",
+                        ("initialize","pick"):"pick",
                         ("pick","play"):"play",
                         ("pick","pick"):"pick",
                         ("play","play"):"play",
                         ("play","pick"):"pick",
-                        ("play","endGame"):"endGame",
-                        ("endGame","endGame"):"endGame",
                         }
         
         #dictionnaire des actions à effectuer lors de la transition
         self.dict_ac = {
+#                        None: (lambda *args: None),
                         "play": self.play,
+#                        "pick": (lambda *args: None),
                         }
         
         #On lie le timeout à la fsm
@@ -69,7 +76,6 @@ class IHM(QtGui.QMainWindow):
 
         #Connecte les boutons aux fonctions définies en dessous
 
-#        self.ui.bouton_partie.clicked.connect(self.restart)
         self.ui.bouton_instru.clicked.connect(self.chooseCard)
         self.ui.checkBox_1.stateChanged.connect(self.checkBox1)
         self.ui.checkBox_2.stateChanged.connect(self.checkBox2)
@@ -80,16 +86,11 @@ class IHM(QtGui.QMainWindow):
         self.ui.checkBox_7.stateChanged.connect(self.checkBox7)
         self.ui.checkBox_8.stateChanged.connect(self.checkBox8)
         self.ui.checkBox_9.stateChanged.connect(self.checkBox9)
-        
-
-        #Une fois que tout est pret on lance la partie
-        self.jeu.plateau.prepare()
-        self.jeu.prepareTour()
 
 ##############################################      FSM - FSM - FSM       ######################################################
         
         #Partie liée à la fsm
-        #la fsm sert à faire l'affichage correctement, étape par étape.Elle permet également de suivre les différentes étapes de jeu
+        #la fsm sert à faire l'affichage correctement, étape par étape: pratique puisque l'on doit pouvoir revenir en arrière
 
 
 
@@ -107,16 +108,18 @@ class IHM(QtGui.QMainWindow):
             new_state = self.dict_tr[(self.current_state,self.transition)]
             if new_state in self.states:
                 if new_state != self.current_state:
-                    print('\n')
                     print("{} -> {}".format(self.current_state,new_state))
-                    print('\n')
                 action = self.dict_ac.get(self.transition,(lambda *args: None))
                 action()
                 self.current_state = new_state
 #                self.transition = None
         except KeyError as erreur:
-            print ("transition ou état non définit dans le dictionnaire concerné", erreur)
-
+            print ("transition ou état non définit dans le dictionnaire respectif", erreur)
+#        except Exception as VouD: #Victoire ou Défaite
+#            print ("C'est la {} Mamène".format(VouD))
+#            exit()
+        
+#        time.sleep(1) #juste pour débugger tranquillement
         self.affichage()
 
 
@@ -204,7 +207,16 @@ class IHM(QtGui.QMainWindow):
 #        print(self.jeu.listeJoueurs[0].cartesChoisies)
 
 
-    # Permet de lancer le choix des cartes et d'ignorer le bouton si l'on est pas dans la phase de pick      
+    def nvllePartie(self):
+        self.jeu.plateau.prepare()
+#        print(self.jeu.plateau.mc)
+        self.jeu.prepareTour()
+        self.transition = "pick"
+#        self.ui.tapiscarte.update()
+        pass
+        
+    
+        
     def chooseCard(self):
         
         if self.current_state == "pick":
@@ -222,23 +234,29 @@ class IHM(QtGui.QMainWindow):
         """
         Lance une séquence de jeu
         """
+        #penser a coder une liste qui retient les joueurs ayant déjà joué
+        #penser à coder la priorité pour les cartes les plus rapides
         
-        victoire = self.jeu.jouerTour() #par défaut victoire = None, victoire = 'Victoire' si qqn à gagné
-        if victoire:
-            print('\n ################ Victoire ############### \n')
-            self.transition = "endGame"
-        else:
-            finSequence = self.jeu.finSequence
-    
-            if finSequence:     #Si la sequence de jeu est finie, on en lance une nouvelle
-                
-                self.jeu.prepareTour()
-                self.transition = "pick"
-            else:            #Si la séquence n'est pas finie, on continue de jouer en lancant un autre tour
-                self.transition = "play" 
-    
-            self.ui.progress_pv.setValue(self.jeu.listeJoueurs[0].pv) #On met à jour les pv du joueur
+        self.jeu.jouerTour()
+        finSequence = self.jeu.finSequence
 
+        if finSequence:     #Si la sequence de jeu est finie, on en lance une nouvelle
+            
+            self.jeu.prepareTour()
+            self.transition = "pick"
+        else:            #Si la séquence n'est pas finie, on continue de jouer en lancant un autre tour
+            self.transition = "play" 
+
+
+        self.ui.progress_pv.setValue(self.jeu.listeJoueurs[0].pv) #On met à jour les pv du joueur
+        self.ui.progress_pv_2.setValue(self.jeu.listeJoueurs[1].pv)
+
+    
+    def FaireAffichage(self):
+        """
+        Fonction qui affiche les cartes et les pv du joueur
+        """
+        self.faireAffichageDesCartes = True
 
     def affichage(self):
         """
@@ -247,12 +265,11 @@ class IHM(QtGui.QMainWindow):
         self.ui.centralwidget.update()
 
 
-    #Affichage des robots dans l'ihm
+    #Affichage des robots sur le plateau
     def drawrobot(self, qp):
         for joueur in self.jeu.listeJoueurs:
             joueur.dessin(qp)
             
-    #Affichage des cases et murs dans l'ihm
     def drawboard(self, qp):
         for rangee in self.jeu.plateau.cases:
             for case in rangee:
@@ -260,7 +277,6 @@ class IHM(QtGui.QMainWindow):
         for mur in self.jeu.plateau.listeMurs:
             mur.dessin(qp)
 
-    #Affichage des cartes du joueur dans l'ihm
     def drawcards(self, qp):
         c=0
         y=[0,0,0,1,1,1,2,2,2]
@@ -269,7 +285,6 @@ class IHM(QtGui.QMainWindow):
                 carte.dessin(qp, carte.image, c%3, y[c])
                 c+=1
 
-    #La fonction qui actualise l'affichage, appelée à chaque timeout de qtimer (intervalle de temps = speed)
     def paintEvent(self,e):
         qp = QtGui.QPainter(self)
         self.drawboard(qp)
@@ -277,10 +292,64 @@ class IHM(QtGui.QMainWindow):
         self.drawcards(qp)
         qp.end()
 
-#les paramètres de lancement
+def realState(state1,state2,jeu):
+    """
+    renvoie l'état réel en tenant compte des murs et autres obstacles
+    ----------
+    state1: état de départ
+    state2: état prévu par les cartes / cases en ignorant les conditions externes
+    jeu: le jeu, contient toutes les variables nécessaires à la création de realState
+    """
+    listeMurs = jeu.plateau.listeMurs
+    real_state = state2
+    for mur in listeMurs:
+        real_state = correctedStateMur(state1,real_state,mur)
+    
+    return real_state
+
+    
+def correctedStateMur (state1,state2,mur):
+    """
+    renvoie l'état corrigé, en prenant en compte le mur passé en argument
+    ----------
+    state1: état de départ
+    state2: état prévu par les cartes / cases en ignorant les conditions externes
+    mur: le mur considéré
+    """
+    a, b = state1[1], state1[2]
+    correctedState = state2[:]
+#    print(state1,state2)
+
+    #en fonction de la direction du robot un des deux blocs ne sera pas executé: 'in range' est vide    
+    
+    #si le robot va de gauche à droite ou de haut en bas
+    for x in range(state1[1],state2[1]+1,1):
+        for y in range(state1[2],state2[2]+1,1):
+#            print('gauche,droite',a,b,x,y) #pour vérifier quel mur est testé et dans quelle direction
+            if mur.v1 == (a,b) and mur.v2 == (x,y):
+                correctedState[1],correctedState[2] = a,b
+                break
+            #si on peut avancer d'une case, le problème se ré-itère au cran suivant:
+            a,b = x,y
+    
+    #si le robot va de droite à gauche ou de bas en haut
+    for x in range(state1[1],state2[1]-1,-1):
+        for y in range(state1[2],state2[2]-1,-1):
+#            print('droite,gauche',x,y,a,b)
+            if mur.v1 == (x,y) and mur.v2 == (a,b):
+                correctedState[1],correctedState[2] = a,b
+                break
+            a,b = x,y
+    return correctedState
+    
+    
+class Victoire(Exception):
+    pass
+
 def start():
     app = QtGui.QApplication(sys.argv)
     window = IHM()
+    window.nvllePartie()
     window.setGeometry(100,50,1300,900)
     window.show()
     app.exec_()
