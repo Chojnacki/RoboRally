@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed May 10 09:51:29 2017
-
-@author: Corazza
-"""
-
 # -*- coding: utf-8 -*-
 """
 Created on Thu Mar 23 12:46:17 2017
@@ -15,7 +7,9 @@ Created on Thu Mar 23 12:46:17 2017
 
 
 import abc
-from PyQt4 import QtGui, QtCore
+#from Cases import *
+#import Robot as rob
+
 
 class Carte():
     """
@@ -27,10 +21,12 @@ class Carte():
 
     def __init__(self):
         """
-        Instancie une carte
+        Cree une carte.
+        
+        Paramètres
+        ----------
+        Aucun
         """
-        self.__vitesse = 0
-        self.__angle = 0
         
     def __str__(self):
         """
@@ -47,33 +43,16 @@ class Carte():
         """
         return "Carte"
         
-    @property
-    def vitesse(self):
-        return self.__vitesse
-        
-    @property
-    def angle(self):
-        return self.__angle
-        
     @abc.abstractmethod
-    def effet(self,robot):
+    def effet(self):
         """
         Applique l'effet de la carte sur le robot
         
         Paramètres
         ----------
-        Le robot sur lequel l'action doit être effectuée
+        Aucun
         """
-        return robot.state[:]
-    
-    def dessin(self, qp, image, x, y):
-        
-        image = QtGui.QImage(self.image)
-        side1 = 100 #dimensions d'une carte
-        side2 = 200
-        qp.drawImage(QtCore.QRectF(x*side1 + 900, y*side2 + 50, side1, side2),image)
-        qp.resetTransform()
-
+        pass
     
 class Translation(Carte):
     """
@@ -82,28 +61,19 @@ class Translation(Carte):
     
     def __init__(self, vitesse):
         """
-        Instancie une carte translation
+        Cree une carte translation
         
         Paramètres
         ----------
-        vitesse: int [-1,3]
+        vitesse: int
+            [-1,3]
         """
         super().__init__()
         self.__vitesse = vitesse
-        self.__angle = 0
-        self.image = 'images/avance{}.png'.format(self.__vitesse)
-        
-    @property
-    def vitesse(self):
-        return self.__vitesse
-        
-    @property
-    def angle(self):
-        return self.__angle
         
     def __str__(self):
         """
-        Renvoie la descritption de la carte
+        Affiche le type de l'objet
         
         Paramètres
         ----------
@@ -143,25 +113,20 @@ class Translation(Carte):
         robot: Robot
            
         """
-        v = self.__vitesse
-
+        
         if robot.orientation == 0:
-            estimate = (robot.position[0]+1*v,robot.position[1])
+            robot.position = (robot.position[0]+self.__vitesse,robot.position[1])
 
         elif robot.orientation == 1:
-            estimate = (robot.position[0],robot.position[1]-1*v)
-
+            robot.position = (robot.position[0],robot.position[1]-self.__vitesse)
+            
         elif robot.orientation == 2:
-            estimate = (robot.position[0]-1*v,robot.position[1])
-
+            robot.position = (robot.position[0]-self.__vitesse,robot.position[1])
+            
         elif robot.orientation == 3:
-            estimate = (robot.position[0],robot.position[1]+1*v)
+            robot.position = (robot.position[0],robot.position[1]+self.__vitesse)
 
-        estimated_state = robot.state[:]
-        estimated_state[1] = estimate[0]
-        estimated_state[2] = estimate[1]
-#        print(estimated_state)
-        return estimated_state
+
 
         
 class Rotation(Carte):
@@ -180,18 +145,8 @@ class Rotation(Carte):
         """
         super().__init__()
         self.__angle = angle
-        self.__vitesse = 0
         # Un angle de 3 correspond à 1/4 de tour à droite 
         # (3/4 de tour à gauche)
-        self.image = 'images/rotat{}.png'.format(self.__angle)
-        
-    @property
-    def vitesse(self):
-        return self.__vitesse
-        
-    @property
-    def angle(self):
-        return self.__angle
         
 
     def __str__(self):
@@ -224,8 +179,8 @@ class Rotation(Carte):
         c: str
             Le caractère representant la carte.
         """
-        return "R"    
-        
+        return "R"
+    
     
     def effet(self,robot):
         """
@@ -234,27 +189,20 @@ class Rotation(Carte):
         Paramètres
         ----------
         robot: Robot
-        
-        Renvoie
-        -------
-        estimated_state: tuple
-            L'état dans lequel le robot doit se trouver après l'effet seul de la carte
+           
         """
         
         if robot.orientation + self.__angle <= 3:
-            estimate = robot.orientation + self.__angle
+            robot.orientation += self.__angle
             
+
         else:
             for i in range(1,4):
-                if robot.orientation == 4-i and self.__angle >= i:
-                    estimate = self.__angle - i
-                    break #pour eviter de rentrer dans un autre if
-                          #une fois la modification effectuee.
-                        
-        estimated_state = robot.state[:]
-        estimated_state[3] = estimate % 4
-        
-        return estimated_state
+                    if robot.orientation == 4-i and self.__angle >= i:
+                        robot.orientation = self.__angle - i
+                        break #pour eviter de rentrer dans un autre if
+                              #une fois la modification effectuee.       
+                    
                     
 if __name__ == '__main__':
     print("OK")

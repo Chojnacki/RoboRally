@@ -3,7 +3,7 @@
 """
 Created on Sat May 13 17:39:49 2017
 
-@author: alex
+@author: Corazza
 """
 
 
@@ -18,10 +18,16 @@ import Plateau
 plateau = Plateau.Plateau(16,12)
 platx = plateau.x - 1
 platy = plateau.y - 1
-plateau.listeDeparts = ((0,0),(15,0),(0,11),(15,11))
 
+#implementation des murs sur le plateau
+mur = Murs.MurVertical((3,2),(4,2))
+mur2 = Murs.MurHorizontal((7,2),(7,3))
+listeMurs= [mur,mur2]
 
-#implementation des cases sur 1/4 du plateau
+for murs in listeMurs:
+    plateau.ajouterMur(murs)
+
+#implementation des cases sur 1/4 du plateau puis symetrie
 tapis = Cases.Tapis((2,1),0,False)
 tapis2 = Cases.Tapis((3,1),0,False)
 tapis3 = Cases.Tapis((4,1),0,"Droite")
@@ -42,32 +48,6 @@ listeTapisHor = [tapis,tapis2,tapis3,tapis4,tapis5]
 listeTapisVer = [tapis6,tapis7]
 listeEngr = [engr,engr2]
 
-#implementation des murs sur le plateau
-mur1 = Murs.MurHorizontal((7,2),(7,3))
-mur2 = Murs.MurVertical((3,2),(4,2))
-listeMursH = [mur1]
-listeMursV = [mur2]
-
-for mur in listeMursH:
-    plateau.ajouterMur(mur)
-    murCopy = Murs.MurHorizontal((platx-mur.v1[0], mur.v1[1]), (platx-mur.v2[0],mur.v2[1]))
-    plateau.ajouterMur(murCopy)
-    murCopy = Murs.MurHorizontal((platx-mur.v1[0], platy - mur.v1[1]),(platx-mur.v2[0], platy - mur.v2[1]))
-    plateau.ajouterMur(murCopy)
-    murCopy = Murs.MurHorizontal((mur.v1[0],platy-mur.v1[1]),(mur.v2[0], platy-mur.v2[1]))
-    plateau.ajouterMur(murCopy)
-    
-for mur in listeMursV:
-    plateau.ajouterMur(mur)
-    murCopy = Murs.MurVertical((platx-mur.v1[0], mur.v1[1]), (platx-mur.v2[0],mur.v1[1]))
-    plateau.ajouterMur(murCopy)
-    murCopy = Murs.MurVertical((platx-mur.v1[0], platy - mur.v1[1]),(platx-mur.v2[0], platy - mur.v2[1]))
-    plateau.ajouterMur(murCopy)
-    murCopy = Murs.MurVertical((mur.v1[0],platy-mur.v1[1]),(mur.v2[0], platy-mur.v2[1]))
-    plateau.ajouterMur(murCopy)
-    
-    
-#Symetrie de toutes les cases et les murs
 for case in listeCases:
     plateau.mettreCase(case)
     caseCopy=case.copy(platx-case.position[0])
@@ -120,6 +100,8 @@ for x in range(0,plateau.x,1):
     plateau.ajouterMur(mur)
 
 
+nombreJoueurs = 2
+plateau.nombreJoueurs = nombreJoueurs
 
 
 # Pour ce tableau, le robot doit commencer à la position O,1 avec une orientation de 0

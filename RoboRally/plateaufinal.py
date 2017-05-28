@@ -130,7 +130,7 @@ for x in range(0,plateau.x,1):
     plateau.ajouterMur(mur)
 
 
-    
+nombreJoueurs = 2
     
 listeCartes = [Cartes.Translation(1), Cartes.Translation(2),Cartes.Translation(3),
                Cartes.Translation(1), Cartes.Translation(2),Cartes.Translation(1),
